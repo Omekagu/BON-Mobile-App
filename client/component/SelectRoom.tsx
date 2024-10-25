@@ -1,6 +1,8 @@
-import { View, Text, Image } from 'react-native';
+import { View, Text, Image, Platform } from 'react-native';
 import React from 'react';
-import TextGreen from './TextGreen';
+import TextGreen from './TextComp/TextGreen';
+import BoldText13 from './TextComp/BoldText13';
+import TextCaps from './TextComp/TextCaps';
 
 export default function SelectRoom() {
   return (
@@ -11,20 +13,36 @@ export default function SelectRoom() {
         marginVertical: 10,
         justifyContent: 'space-between',
         padding: 20,
+        borderRadius: 10,
+        ...Platform.select({
+          ios: {
+            shadowColor: '#000',
+            shadowOffset: {
+              width: 0,
+              height: 2,
+            },
+            shadowOpacity: 0.3,
+            shadowRadius: 4,
+          },
+          android: {
+            elevation: 5,
+          },
+        }),
       }}
     >
       <View>
-        <Text style={{ fontSize: 24, fontWeight: 200 }}>Suite</Text>
-        <Text>Prices for 2 adults</Text>
-        <Text>Roomsize: 45m</Text>
-        <Text>Air conditioning </Text>
-        <Text>Ensuite Bathroom</Text>
-        <Text>Flat tv screen </Text>
-        <Text>Includes parking+ high-speed internet</Text>
-        <Text>Price for 1 night(numberof nights)</Text>
+        <BoldText13 text={'SUITES'} />
+        <TextCaps text={'Prices for 2 adults'} />
+        <TextCaps text={'Roomsize: 45m'} />
+        <TextCaps text={'Air conditioning '} />
+        <TextCaps text={'Ensuite Bathroom'} />
+        <TextCaps text={'Flat tv screen'} />
+        <TextCaps text={'Includes parking+ high-speed internet'} />
+        <TextCaps text={'Flat tv screen'} />
+        <TextCaps text={'Price for 1 night(numberof nights)'} />
+        <TextCaps text={'Includes tax and charges'} />
         <TextGreen text={'Only 3 units left'} />
         <TextGreen text={'US$119'} />
-        <Text>Includes tax and charges</Text>
       </View>
 
       <Image

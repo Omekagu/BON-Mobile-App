@@ -9,11 +9,12 @@ const Search = ({ icon, text }) => {
           borderColor: '#a63932',
           flexDirection: 'row',
           alignItems: 'center',
-          borderRadius: 25,
+          borderRadius: 10,
           borderCurve: 'circular',
-          borderWidth: 3,
-          marginBottom: 2,
-          padding: 15,
+          borderWidth: 2,
+          marginBottom: 5,
+          paddingVertical: 5,
+          paddingHorizontal: 10,
           marginLeft: 10,
         }}
       >

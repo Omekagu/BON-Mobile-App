@@ -4,7 +4,11 @@ import React from 'react';
 export default function BoldText13({ text }) {
   return (
     <View>
-      <Text style={{ fontSize: 16, fontWeight: 'bold' }}>{text}</Text>
+      <Text
+        style={{ fontSize: 14, fontWeight: 'bold', textTransform: 'uppercase' }}
+      >
+        ・{text}
+      </Text>
     </View>
   );
 }

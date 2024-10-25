@@ -24,12 +24,20 @@ export default function TabBar({ state, descriptors, navigation }) {
         {...props}
       />
     ),
-    More: (props) => (
-      <MaterialIcons name="more-horiz" size={24} color={grayColor} {...props} />
+    SearchPageInfo: (props) => (
+      <MaterialCommunityIcons
+        name="content-save-check-outline"
+        size={24}
+        color={grayColor}
+        {...props}
+      />
     ),
-    Profile: (props) => (
-      <MaterialIcons name="more-horiz" size={24} color={grayColor} {...props} />
-    ),
+    // More: (props) => (
+    //   <MaterialIcons name="more-horiz" size={24} color={grayColor} {...props} />
+    // ),
+    // Profile: (props) => (
+    //   <MaterialIcons name="more-horiz" size={24} color={grayColor} {...props} />
+    // ),
   };
   const primaryColor = '#a63932';
   const grayColor = '#a3a195';

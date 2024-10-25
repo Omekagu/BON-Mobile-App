@@ -1,11 +1,12 @@
 import React from 'react';
 import { Image, Platform, ScrollView, Text, View } from 'react-native';
 import SuggestionBox from './SuggestionBox';
+import BoldText13 from './TextComp/BoldText13';
 
 const Suggestions = () => {
   return (
     <View style={{ marginVertical: 10 }}>
-      <Text style={{ fontSize: 20, fontWeight: '400' }}> Best Suggestions</Text>
+      <BoldText13 text={'suggestion based on loaction'} />
       <ScrollView
         horizontal
         style={{ marginHorizontal: -10, paddingVertical: 10, paddingLeft: 10 }}

@@ -1,9 +1,9 @@
-import { View, Text } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import React from 'react';
 
 export default function ExtraMoreComp({ icon, name, subname }) {
   return (
-    <View
+    <TouchableOpacity
       style={{
         flexDirection: 'row',
         alignItems: 'flex-start',
@@ -29,6 +29,6 @@ export default function ExtraMoreComp({ icon, name, subname }) {
           {subname}
         </Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }

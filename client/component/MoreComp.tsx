@@ -1,15 +1,14 @@
-import { View, Text } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import React from 'react';
 
 export default function MoreComp({ name, icon }) {
   return (
-    <View
+    <TouchableOpacity
       style={{
         flexDirection: 'row',
         alignItems: 'center',
         marginHorizontal: 10,
         marginVertical: 5,
-        // backgroundColor: '#fff',
         padding: 10,
         borderRadius: 10,
       }}
@@ -21,6 +20,6 @@ export default function MoreComp({ name, icon }) {
           {name}
         </Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }
