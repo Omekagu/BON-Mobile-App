@@ -12,6 +12,8 @@ import Entypo from '@expo/vector-icons/Entypo';
 import Heading from '@/component/TextComp/Heading';
 import CheckInOutComp from '@/component/CheckInOutComp';
 import RoomsNGuest from '@/component/RoomsNGuest';
+import PricePerNight from '@/component/PricePerNight';
+import CustomBotton from '@/component/CustomBotton';
 
 export default function SearchPageInfo() {
   return (
@@ -131,6 +133,15 @@ export default function SearchPageInfo() {
             />
           </View>
         </View>
+
+        <View style={{ paddingVertical: 10 }}>
+          <PricePerNight
+            number={1}
+            start={'25 Oct'}
+            end={'26 Oct'}
+            price={'us$100'}
+          />
+        </View>
         <View>
           <View style={{ marginVertical: 10 }}>
             <BoldText13 text={'Need more info to decide?'} />
@@ -155,6 +166,7 @@ export default function SearchPageInfo() {
           }
         />
       </ScrollView>
+      <CustomBotton button={'select rooms'} />
     </SafeAreaView>
   );
 }

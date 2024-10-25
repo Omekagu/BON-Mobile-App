@@ -6,8 +6,8 @@ export default function TextGreen({ text }) {
     <View>
       <Text
         style={{
-          fontSize: 15,
-          fontWeight: '500',
+          fontSize: 18,
+          fontWeight: '700',
           color: 'green',
           textTransform: 'uppercase',
         }}
