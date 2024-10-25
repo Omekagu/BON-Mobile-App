@@ -1,21 +1,15 @@
+import { Link } from 'expo-router';
 import React from 'react';
-import { SafeAreaView, ScrollView, StatusBar, View } from 'react-native';
-import Header from '@/component/Header';
-import SearchSection from '@/component/SearchSection';
-import PressButton from '@/component/PressButton';
-import Suggestions from '@/component/Suggestions';
+import { Button, SafeAreaView, Text } from 'react-native';
 
 const index = () => {
   return (
     <SafeAreaView>
-      <StatusBar barStyle="light-content" backgroundColor="#a63932" />
-      <Header />
-      <ScrollView style={{ paddingHorizontal: 10, height: '100%' }}>
-        <SearchSection />
-        <PressButton text={'search'} />
+      <Text>Hello bonami</Text>
 
-        <Suggestions />
-      </ScrollView>
+      <Link href="/registration/Login" asChild>
+        <Button title="Login" />
+      </Link>
     </SafeAreaView>
   );
 };

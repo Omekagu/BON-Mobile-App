@@ -1,28 +1,32 @@
+import { View, Text } from 'react-native';
 import React from 'react';
-import { Tabs } from 'expo-router';
-import TabBar from '@/component/TabBar';
+import { Stack } from 'expo-router';
 
-const _layout = () => {
+export default function _layout() {
   return (
-    <Tabs tabBar={(props) => <TabBar {...props} />}>
-      <Tabs.Screen
-        name="index"
-        options={{ title: 'Home', headerShown: false }}
+    <Stack
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: '#a63932',
+        },
+        headerTintColor: '#a63932',
+      }}
+    >
+      <Stack.Screen name="index" options={{ title: 'Home' }} />
+      <Stack.Screen
+        name="registration/Registration"
+        options={{ title: 'Registration' }}
       />
-      <Tabs.Screen
-        name="Bookings"
-        options={{ title: 'Bookings', headerShown: false }}
-      />
-      <Tabs.Screen
-        name="Saved"
-        options={{ title: 'Saved', headerShown: false }}
-      />
-      <Tabs.Screen
-        name="SearchPageInfo"
-        options={{ title: 'More', headerShown: false }}
-      />
-    </Tabs>
-  );
-};
+      <Stack.Screen
+        name="registration/Login"
+        options={{
+          title: 'Login',
 
-export default _layout;
+          presentation: 'modal',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen name="[missing]" options={{ title: '404' }} />
+    </Stack>
+  );
+}
