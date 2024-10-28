@@ -1,7 +1,7 @@
 import React from 'react';
 import { SafeAreaView, View } from 'react-native';
-import BoldText13 from '../TextComp/BoldText13';
-import TextCaps from '../TextComp/TextCaps';
+import BoldText13 from '@/component/TextComp/BoldText13';
+import TextCaps from '@/component/TextComp/TextCaps';
 
 export default function DescriptionPage() {
   return (

@@ -8,8 +8,8 @@ import Suggestions from '@/component/Suggestions';
 export default function Home() {
   return (
     <View>
-      <StatusBar barStyle="light-content" backgroundColor="#a63932" />
-      <Header />
+      {/* <StatusBar barStyle="light-content" backgroundColor="#a63932" /> */}
+      {/* <Header /> */}
       <ScrollView style={{ paddingHorizontal: 10, height: '100%' }}>
         <SearchSection />
         <PressButton text={'search'} />

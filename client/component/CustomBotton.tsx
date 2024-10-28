@@ -1,12 +1,15 @@
 import { View, Text, TouchableOpacity } from 'react-native';
 import React from 'react';
+import { useRouter } from 'expo-router';
 
 export default function CustomBotton({ button }) {
+  //   const router = useRouter();
   return (
     <TouchableOpacity
+      //   onPress={() => {
+      //     router.push('/SearchPage');
+      //   }}
       style={{
-        position: 'absolute',
-        bottom: 300,
         padding: 20,
         alignItems: 'center',
         backgroundColor: '#a63932',

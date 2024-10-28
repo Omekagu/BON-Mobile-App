@@ -11,6 +11,7 @@ export default function SearchHeader({ location, date }) {
         borderRadius: 10,
         padding: 20,
         marginHorizontal: 10,
+        marginTop: 10,
         flexDirection: 'row',
         alignItems: 'center',
       }}

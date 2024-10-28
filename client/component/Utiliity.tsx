@@ -3,7 +3,7 @@ import { Text, View } from 'react-native';
 
 export default function Utility({ icon, name }) {
   return (
-    <View style={{ alignItems: 'center', margin: 10, gap: 5 }}>
+    <View style={{ alignItems: 'center', margin: 10, gap: 5, height: 50 }}>
       <View
         style={{ backgroundColor: '#b9bdba', padding: 10, borderRadius: 50 }}
       >

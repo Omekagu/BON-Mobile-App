@@ -1,15 +1,18 @@
-import { Link } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 import React from 'react';
 import { Button, SafeAreaView, Text } from 'react-native';
 
 const index = () => {
+  const router = useRouter();
   return (
     <SafeAreaView>
       <Text>Hello bonami</Text>
+      <Button
+        title="Login"
+        onPress={() => router.push('/registration/Login')}
+      />
 
-      <Link href="/registration/Login" asChild>
-        <Button title="Login" />
-      </Link>
+      <Button title="home" onPress={() => router.push('/Home')} />
     </SafeAreaView>
   );
 };

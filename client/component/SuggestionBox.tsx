@@ -1,11 +1,15 @@
+import { useRouter } from 'expo-router';
 import React from 'react';
 import { Image, Platform, Text, TouchableOpacity, View } from 'react-native';
 
-const SuggestionBox = ({ name, price, meter }) => {
+const SuggestionBox = ({ name, price, meter, image }) => {
+  const router = useRouter();
   return (
     <TouchableOpacity
+      onPress={() => {
+        router.push('/BookingInfo');
+      }}
       style={{
-        //   borderRadius: 40,
         width: 250,
         marginRight: 10,
         ...Platform.select({
@@ -27,13 +31,13 @@ const SuggestionBox = ({ name, price, meter }) => {
       <Image
         style={{
           width: 250,
-          height: 250,
+          height: 200,
           marginTop: 10,
           borderTopRightRadius: 20,
           borderTopLeftRadius: 20,
         }}
         source={{
-          uri: 'https://transtell.bonhotelsinternational.com/wp-content/uploads/2024/10/bon-hotel-transtell-main-block-img-2.jpg',
+          uri: image,
         }}
       />
       <View
@@ -55,7 +59,7 @@ const SuggestionBox = ({ name, price, meter }) => {
             fontSize: 18,
           }}
         >
-          US${price}
+          ${price}
         </Text>
       </View>
     </TouchableOpacity>

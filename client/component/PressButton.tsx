@@ -1,9 +1,14 @@
+import { useRouter } from 'expo-router';
 import React from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 
 const PressButton = ({ text }) => {
+  const router = useRouter();
   return (
     <TouchableOpacity
+      onPress={() => {
+        router.push('/SearchPage');
+      }}
       style={{
         backgroundColor: '#a63932',
         alignSelf: 'center',

@@ -6,10 +6,11 @@ export default function TextGreen({ text }) {
     <View>
       <Text
         style={{
-          fontSize: 18,
+          marginBottom: 5,
+          fontSize: 15,
           fontWeight: '700',
           color: 'green',
-          textTransform: 'uppercase',
+          textTransform: 'capitalize',
         }}
       >
         {text}

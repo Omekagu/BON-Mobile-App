@@ -1,10 +1,19 @@
-import { View, Text, Image, Platform } from 'react-native';
+import { View, Text, Image, Platform, Button } from 'react-native';
 import React from 'react';
 import TextGreen from './TextComp/TextGreen';
 import BoldText13 from './TextComp/BoldText13';
 import TextCaps from './TextComp/TextCaps';
+import CustomBotton from './CustomBotton';
 
-export default function SelectRoom() {
+export default function SelectRoom({
+  image,
+  suite,
+  number,
+  noOfNights,
+  size,
+  price,
+  units,
+}) {
   return (
     <View
       style={{
@@ -30,19 +39,21 @@ export default function SelectRoom() {
         }),
       }}
     >
-      <View>
-        <BoldText13 text={'SUITES'} />
-        <TextCaps text={'Prices for 2 adults'} />
-        <TextCaps text={'Roomsize: 45m'} />
+      <View style={{ gap: 5 }}>
+        <BoldText13 text={suite} />
+        <TextCaps text={`Prices for ${number} adults`} />
+        <TextCaps text={`Roomsize: ${size}m`} />
         <TextCaps text={'Air conditioning '} />
         <TextCaps text={'Ensuite Bathroom'} />
         <TextCaps text={'Flat tv screen'} />
         <TextCaps text={'Includes parking+ high-speed internet'} />
         <TextCaps text={'Flat tv screen'} />
-        <TextCaps text={'Price for 1 night(numberof nights)'} />
-        <TextCaps text={'Includes tax and charges'} />
-        <TextGreen text={'Only 3 units left'} />
-        <TextGreen text={'US$119'} />
+        <TextCaps text={`Price for ${noOfNights} night`} />
+        <TextCaps text={`Includes tax and charges`} />
+        <TextGreen text={`Only ${units} units left`} />
+        <TextGreen text={`$${price}`} />
+
+        <CustomBotton button={'select room'} />
       </View>
 
       <Image
@@ -52,9 +63,10 @@ export default function SelectRoom() {
           borderRadius: 10,
           marginRight: 10,
         }}
-        source={{
-          uri: 'https://transtell.bonhotelsinternational.com/wp-content/uploads/2024/10/bon-hotel-transtell-main-block-img-2.jpg',
-        }}
+        source={{ uri: image }}
+        // source={{
+        //   uri: 'https://transtell.bonhotelsinternational.com/wp-content/uploads/2024/10/bon-hotel-transtell-main-block-img-2.jpg',
+        // }}
       />
     </View>
   );

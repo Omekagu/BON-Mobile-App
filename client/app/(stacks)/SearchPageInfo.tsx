@@ -39,7 +39,16 @@ export default function SearchPageInfo() {
       <View>
         <Heading heading={'Bon lekki residence'} sub={'8.1'} />
       </View>
-      <ScrollView horizontal style={{ marginHorizontal: -20 }}>
+      <ScrollView
+        horizontal
+        style={{
+          marginHorizontal: -20,
+          paddingBottom: 10,
+          height: 120,
+          borderBottomColor: '#000',
+          borderBottomWidth: 1,
+        }}
+      >
         <Utility
           icon={
             <MaterialCommunityIcons name="parking" size={24} color="black" />
@@ -64,10 +73,6 @@ export default function SearchPageInfo() {
           icon={<MaterialIcons name="bathroom" size={24} color="black" />}
           name={'Private bathroom'}
         />
-        {/* <Utility
-          icon={<EvilIcons name="eye" size={24} color="black" />}
-          name={'View'}
-        /> */}
         <Utility
           icon={<FontAwesome5 name="shower" size={24} color="black" />}
           name={'Shower'}
@@ -91,82 +96,86 @@ export default function SearchPageInfo() {
       </ScrollView>
 
       <ScrollView>
-        <View
-          style={{
-            borderWidth: 0.5,
-            padding: 5,
-            borderRadius: 10,
-            borderColor: '#a63932',
-            marginVertical: 10,
-            gap: 30,
-            backgroundColor: '#fff',
-
-            ...Platform.select({
-              ios: {
-                shadowColor: '#000',
-                shadowOffset: {
-                  width: 0,
-                  height: 2,
-                },
-                shadowOpacity: 0.9,
-                shadowRadius: 2,
-              },
-              android: {
-                elevation: 5,
-              },
-            }),
-          }}
-        >
+        <View style={{ marginBottom: 500 }}>
           <View
-            style={{ flexDirection: 'row', justifyContent: 'space-between' }}
+            style={{
+              borderWidth: 0.5,
+              padding: 5,
+              borderRadius: 10,
+              borderColor: '#a63932',
+              marginVertical: 10,
+              gap: 30,
+              backgroundColor: '#fff',
+
+              ...Platform.select({
+                ios: {
+                  shadowColor: '#000',
+                  shadowOffset: {
+                    width: 0,
+                    height: 2,
+                  },
+                  shadowOpacity: 0.9,
+                  shadowRadius: 2,
+                },
+                android: {
+                  elevation: 5,
+                },
+              }),
+            }}
           >
-            <CheckInOutComp name={'CHECK - IN'} date={'Fri, 25 Oct'} />
-            <CheckInOutComp name={'CHECK - out'} date={'Sat, 26 Oct'} />
+            <View
+              style={{ flexDirection: 'row', justifyContent: 'space-between' }}
+            >
+              <CheckInOutComp name={'CHECK - IN'} date={'Fri, 25 Oct'} />
+              <CheckInOutComp name={'CHECK - out'} date={'Sat, 26 Oct'} />
+            </View>
+
+            <View>
+              <RoomsNGuest
+                name={'Rooms and Guests'}
+                roomNo={'1'}
+                childrenNo={'0'}
+                peopleNo={'1'}
+              />
+            </View>
           </View>
 
-          <View>
-            <RoomsNGuest
-              name={'Rooms and Guests'}
-              roomNo={'1'}
-              childrenNo={'0'}
-              peopleNo={'1'}
+          <View style={{ paddingVertical: 10 }}>
+            <PricePerNight
+              number={1}
+              start={'25 Oct'}
+              end={'26 Oct'}
+              price={'us$100'}
             />
           </View>
-        </View>
-
-        <View style={{ paddingVertical: 10 }}>
-          <PricePerNight
-            number={1}
-            start={'25 Oct'}
-            end={'26 Oct'}
-            price={'us$100'}
-          />
-        </View>
-        <View>
+          <View>
+            <View style={{ marginVertical: 10 }}>
+              <BoldText13 text={'Need more info to decide?'} />
+            </View>
+            <TextCaps
+              text={
+                'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin pretium ante ipsum,  scelerisque enim pretium quis.'
+              }
+            />
+            <MoreComp
+              icon={<Feather name="phone-call" size={24} color="black" />}
+              name={'contact customer care'}
+            />
+          </View>
           <View style={{ marginVertical: 10 }}>
-            <BoldText13 text={'Need more info to decide?'} />
+            <BoldText13 text={'Description'} />
           </View>
           <TextCaps
             text={
-              'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin pretium ante ipsum,  scelerisque enim pretium quis.'
+              'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin pretium ante ipsum, sed scelerisque enim pretium quis. Ut tempus augue sodales dolor maximus consequat a in mi. Quisque ullamcorper aliquam commodo. In tristique sapien lorem, nec imperdiet ligula imperdiet at. Duis ut pharetra est, at finibus turpis.'
             }
           />
-          <MoreComp
-            icon={<Feather name="phone-call" size={24} color="black" />}
-            name={'contact customer care'}
-          />
         </View>
-
-        <View style={{ marginVertical: 10 }}>
-          <BoldText13 text={'Description'} />
-        </View>
-        <TextCaps
-          text={
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin pretium ante ipsum, sed scelerisque enim pretium quis. Ut tempus augue sodales dolor maximus consequat a in mi. Quisque ullamcorper aliquam commodo. In tristique sapien lorem, nec imperdiet ligula imperdiet at. Duis ut pharetra est, at finibus turpis.'
-          }
-        />
       </ScrollView>
-      <CustomBotton button={'select rooms'} />
+
+      <View style={{ position: 'absolute', bottom: 430, width: '100%' }}>
+        <CustomBotton button={'Book room'} />
+      </View>
     </SafeAreaView>
   );
 }

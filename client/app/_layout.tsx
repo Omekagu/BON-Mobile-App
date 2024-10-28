@@ -1,8 +1,9 @@
-import { View, Text } from 'react-native';
+import { View, Text, Button } from 'react-native';
 import React from 'react';
-import { Stack } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 
 export default function _layout() {
+  // const router = useRouter();
   return (
     <Stack
       screenOptions={{
@@ -15,17 +16,20 @@ export default function _layout() {
       <Stack.Screen name="index" options={{ title: 'Home' }} />
       <Stack.Screen
         name="registration/Registration"
-        options={{ title: 'Registration' }}
+        options={{
+          title: 'Registration',
+        }}
       />
       <Stack.Screen
         name="registration/Login"
         options={{
           title: 'Login',
-
           presentation: 'modal',
           headerShown: false,
         }}
       />
+      <Stack.Screen name="(stacks)" />
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen name="[missing]" options={{ title: '404' }} />
     </Stack>
   );
