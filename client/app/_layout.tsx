@@ -13,7 +13,10 @@ export default function _layout() {
         headerTintColor: '#a63932',
       }}
     >
-      <Stack.Screen name="index" options={{ title: 'Home' }} />
+      <Stack.Screen
+        name="index"
+        options={{ title: 'Home', headerShown: false }}
+      />
       <Stack.Screen
         name="registration/Registration"
         options={{
