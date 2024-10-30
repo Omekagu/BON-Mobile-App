@@ -3,13 +3,18 @@ import LabelInputComp from '@/component/LabelInputComp';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import React from 'react';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { Button, SafeAreaView, View } from 'react-native';
+import { Button, View } from 'react-native';
+
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const index = () => {
   const router = useRouter();
   return (
-    <SafeAreaView>
+    <KeyboardAwareScrollView
+      resetScrollToCoords={{ x: 0, y: 0 }}
+      // contentContainerStyle={styles.container}
+      scrollEnabled={false}
+    >
       <LinearGradient
         colors={['hsla(14, 65%, 58%, 1)', '#b8b2a2']}
         style={{
@@ -39,8 +44,7 @@ const index = () => {
           />
         </View>
       </LinearGradient>
-    </SafeAreaView>
-    // </GestureHandlerRootView>
+    </KeyboardAwareScrollView>
   );
 };
 
