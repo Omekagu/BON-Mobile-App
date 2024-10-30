@@ -6,27 +6,6 @@ import {
   GestureHandlerRootView,
   Swipeable,
 } from 'react-native-gesture-handler';
-// import { GestureHandlerRootView } from 'react-native-gesture-handler';
-// import ReanimatedSwipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
-// import Reanimated, {
-//   SharedValue,
-//   useAnimatedStyle,
-// } from 'react-native-reanimated';
-
-// function RightAction(prog: SharedValue<number>, drag: SharedValue<number>) {
-//   const styleAnimation = useAnimatedStyle(() => {
-//     console.log('showRightProgress:', prog.value);
-//     console.log('appliedTranslation:', drag.value);
-
-//     return {
-//       transform: [{ translateX: drag.value + 50 }],
-//     };
-//   });
-
-type UserItemsProps = {
-  items: any;
-  onDeletePressed: () => void;
-};
 
 export default function CancellationBox({
   city,

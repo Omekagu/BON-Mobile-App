@@ -1,5 +1,6 @@
 import { View, Text, TextInput } from 'react-native';
 import React from 'react';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 export default function LabelInputComp({ placeholder, label }) {
   return (
@@ -10,12 +11,13 @@ export default function LabelInputComp({ placeholder, label }) {
           textTransform: 'capitalize',
           fontWeight: '600',
           marginLeft: 15,
-          marginBottom: 5, 
+          marginBottom: 5,
         }}
       >
         {label}
       </Text>
       <TextInput
+        placeholderTextColor={'gray'}
         style={{
           backgroundColor: '#fff',
           height: 60,

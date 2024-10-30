@@ -1,9 +1,11 @@
 import { View, Text, TouchableOpacity } from 'react-native';
 import React from 'react';
+import { useRouter } from 'expo-router';
 
-export default function MoreComp({ name, icon }) {
+export default function MoreComp({ name, icon, onPress }) {
   return (
     <TouchableOpacity
+      onPress={onPress}
       style={{
         flexDirection: 'row',
         alignItems: 'center',
