@@ -11,7 +11,6 @@ const Login = () => {
   return (
     <KeyboardAwareScrollView
       resetScrollToCoords={{ x: 0, y: 0 }}
-      // contentContainerStyle={styles.container}
       scrollEnabled={false}
       style={{ height: '100%' }}
     >

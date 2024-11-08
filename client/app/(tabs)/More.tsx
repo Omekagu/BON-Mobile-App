@@ -17,6 +17,13 @@ export default function More() {
 
       <ScrollView style={{ height: '100%' }}>
         <MoreComp
+          onPress={() => router.push('/Profile')}
+          name={'Manage Profile details'}
+          icon={
+            <Ionicons name="person-circle-sharp" size={24} color="#a63932" />
+          }
+        />
+        <MoreComp
           onPress={() => router.push('/Reward')}
           name={'Rewards & Wallet'}
           icon={<Fontisto name="wallet" size={24} color="#a63932" />}

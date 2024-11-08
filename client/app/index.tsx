@@ -4,7 +4,6 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import { Button, View } from 'react-native';
-
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const index = () => {
@@ -12,7 +11,6 @@ const index = () => {
   return (
     <KeyboardAwareScrollView
       resetScrollToCoords={{ x: 0, y: 0 }}
-      // contentContainerStyle={styles.container}
       scrollEnabled={false}
     >
       <LinearGradient
@@ -27,8 +25,6 @@ const index = () => {
             title="Login"
             onPress={() => router.push('/registration/Login')}
           />
-
-          {/* <Button title="home" onPress={() => router.push('/Home')} /> */}
           <LabelInputComp label={'first name'} placeholder={'first name'} />
           <LabelInputComp label={'middle name'} placeholder={'middlename'} />
           <LabelInputComp label={'surname'} placeholder={'surname'} />

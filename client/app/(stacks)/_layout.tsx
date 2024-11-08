@@ -41,6 +41,14 @@ export default function _layout() {
         }}
       />
       <Stack.Screen
+        name="Profile"
+        options={{
+          title: 'Profile',
+          headerShown: false,
+          // statusBarHidden: true,
+        }}
+      />
+      <Stack.Screen
         name="CustomerService"
         options={{
           title: 'CustomerService',
@@ -114,6 +122,63 @@ export default function _layout() {
         name="CryptoPayment"
         options={{
           title: 'CryptoPayment',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="EditName"
+        options={{
+          title: 'EditName',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="EditContact"
+        options={{
+          title: 'EditContact',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="EditDob"
+        options={{
+          title: 'EditDob',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="EditEmail"
+        options={{
+          title: 'EditEmail',
+          headerShown: false,
+        }}
+      />
+
+      <Stack.Screen
+        name="EditNationality"
+        options={{
+          title: 'EditNationality',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="EditAddress"
+        options={{
+          title: 'EditAddress',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="EditGender"
+        options={{
+          title: 'EditGender',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="EditPhone"
+        options={{
+          title: 'EditPhone',
           headerShown: false,
         }}
       />

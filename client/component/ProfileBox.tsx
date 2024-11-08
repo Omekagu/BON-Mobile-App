@@ -1,6 +1,7 @@
 import { Image, StyleSheet, Text, View } from 'react-native';
 import React from 'react';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { router } from 'expo-router';
 
 export default function ProfileBox() {
   return (
@@ -27,18 +28,18 @@ export default function ProfileBox() {
       />
 
       <View>
-        <Text style={{ fontSize: 19, fontWeight: '500' }}>
-          Olivia Freya, zenya
+        <Text style={{ fontSize: 22, fontWeight: '700' }}>
+          Olivia Freya, Zenya.
         </Text>
-        <Text>Account Details</Text>
+        {/* <Text>Account Details</Text> */}
       </View>
 
-      <MaterialIcons
+      {/* <MaterialIcons
         style={{ marginLeft: 'auto' }}
         name="keyboard-arrow-right"
         size={24}
         color="black"
-      />
+      /> */}
     </View>
   );
 }

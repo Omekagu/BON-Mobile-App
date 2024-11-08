@@ -27,7 +27,6 @@ export default function _layout() {
         name="registration/Login"
         options={{
           title: 'Login',
-          // presentation: 'modal',
           headerShown: false,
         }}
       />
