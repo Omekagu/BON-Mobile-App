@@ -1,5 +1,6 @@
 {
   "expo": {
+    "newArchEnabled": true,
     "name": "Bon-hotel",
     "slug": "Bon-hotel",
     "version": "1.0.0",
