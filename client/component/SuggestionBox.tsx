@@ -59,7 +59,7 @@ const SuggestionBox = ({ name, price, meter, image }) => {
             fontSize: 18,
           }}
         >
-          ${price}
+          ₦{price}
         </Text>
       </View>
     </TouchableOpacity>

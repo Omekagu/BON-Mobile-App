@@ -13,7 +13,7 @@ export default function BookingInfo() {
           noOfNights={2}
           size={45}
           units={9}
-          price={90}
+          price={"90,000.00"}
           image={'https://i.postimg.cc/QtffXzX9/BON-HOTEL-TRANSTELL-ROOMS6.jpg'}
         />
         <SelectRoom
@@ -22,7 +22,7 @@ export default function BookingInfo() {
           noOfNights={1}
           size={50}
           units={2}
-          price={190}
+          price={"190,000.00"}
           image={
             'https://i.postimg.cc/BQXVvJPq/BON-HOTEL-TRANSTELL-ROOMS11.jpg'
           }
@@ -33,7 +33,7 @@ export default function BookingInfo() {
           noOfNights={4}
           size={40}
           units={0}
-          price={50}
+          price={"50,000.00"}
           image={'https://i.postimg.cc/9MHhdrTt/BON-HOTEL-TRANSTELL-ROOMS7.jpg'}
         />
         <SelectRoom
@@ -42,7 +42,7 @@ export default function BookingInfo() {
           noOfNights={10}
           size={105}
           units={20}
-          price={300}
+          price={"300,000.00"}
           image={'https://i.postimg.cc/7L0vZwcC/BON-HOTEL-TRANSTELL-ROOMS1.jpg'}
         />
       </ScrollView>

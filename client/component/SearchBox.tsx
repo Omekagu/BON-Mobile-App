@@ -93,7 +93,7 @@ export default function SearchBox({
 
           <View style={{ alignItems: 'flex-end' }}>
             <TextCaps text={`HOTEL ROOM : ${noBed} bed `} />
-            <TextGreen text={`$${price}`} />
+            <TextGreen text={`₦${price}`} />
             <TextCaps text={'includes taxes and charges'} />
             {/* <TextGreen text={'free cancellation'} /> */}
           </View>

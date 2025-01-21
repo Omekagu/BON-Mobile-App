@@ -51,7 +51,7 @@ export default function SelectRoom({
         <TextCaps text={`Price for ${noOfNights} night`} />
         <TextCaps text={`Includes tax and charges`} />
         <TextGreen text={`Only ${units} units left`} />
-        <TextGreen text={`$${price}`} />
+        <TextGreen text={`₦${price}`} />
 
         <CustomBotton button={'select room'} />
       </View>

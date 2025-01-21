@@ -1,7 +1,6 @@
 import { View, Text } from 'react-native';
 import React from 'react';
 import { Stack } from 'expo-router';
-
 export default function _layout() {
   return (
     <Stack>
@@ -111,6 +110,27 @@ export default function _layout() {
           headerShown: false,
         }}
       />
+      <Stack.Screen
+        name="Payments"
+        options={{
+          title: 'Payments',
+          headerShown: false,
+        }}
+      />
+        <Stack.Screen
+          name="BookingHistory"
+          options={{
+            title: 'BookingHistory',
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="ConnectWallet"
+          options={{
+            title: 'ConnectWallet',
+            headerShown: false,
+          }}
+        />
       <Stack.Screen
         name="CardPayment"
         options={{

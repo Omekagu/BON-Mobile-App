@@ -167,7 +167,7 @@ export default function SearchPageInfo() {
                 number={1}
                 start={'25 Oct'}
                 end={'26 Oct'}
-                price={'us$100'}
+                price={'₦100,000.00'}
               />
             </View>
             <View>
@@ -207,8 +207,8 @@ export default function SearchPageInfo() {
           }}
         >
           <CustomBotton
-            button={'Book room'}
-            onPress={() => router.push('/CardPayment')}
+            button={'Book room - ₦100,000.00'}
+            onPress={() => router.push('/Payments')}
           />
           {/* <BottomSheet ref={sheetRef} snapPoints={snapPoints}>
             <BottomSheetView>

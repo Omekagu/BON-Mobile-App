@@ -11,7 +11,7 @@ const Bookings = () => {
           city={'Lagos'}
           date={'16 - 20 Oct 2024'}
           name={'Bon Lekki'}
-          datePrice={'16 - 20 Oct $55'}
+          datePrice={'16 - 20 Oct ₦55,00.00'}
           type={'Done'}
           color={'green'}
         />
@@ -20,7 +20,7 @@ const Bookings = () => {
           city={'Asaba'}
           date={'10 - 12 Dec 2024'}
           name={'Bon Asaba'}
-          datePrice={'10 - 12 Dec $95'}
+          datePrice={'10 - 12 Dec ₦95,00.00'}
           type={'Cancelled'}
           color={'red'}
         />
@@ -31,7 +31,7 @@ const Bookings = () => {
           city={'Abuja'}
           date={'16 - 30 april 2025'}
           name={'Bon Lekki'}
-          datePrice={'16 - 20 Oct $500'}
+          datePrice={'16 - 20 Oct ₦50,00.000'}
           type={'Pending'}
           color={'orange'}
         />
@@ -40,7 +40,7 @@ const Bookings = () => {
           city={'Benin'}
           date={'16 - 20 Oct 2024'}
           name={'Bon Lekki'}
-          datePrice={'16 - 20 Oct $55'}
+          datePrice={'16 - 20 Oct ₦55,00.00'}
           type={'Pending'}
           color={'green'}
         />
@@ -49,7 +49,7 @@ const Bookings = () => {
           city={'Delta'}
           date={'16 - 20 Oct 2024'}
           name={'Bon Lekki'}
-          datePrice={'16 - 20 Oct $55'}
+          datePrice={'16 - 20 Oct ₦55,00.00'}
           type={'Pending'}
           color={'green'}
         />
@@ -58,7 +58,7 @@ const Bookings = () => {
           city={'Enugu'}
           date={'10 - 12 Dec 2024'}
           name={'Bon Asaba'}
-          datePrice={'10 - 12 Dec $95'}
+          datePrice={'10 - 12 Dec ₦95,00.00'}
           type={'Cancelled'}
           color={'green'}
         />
@@ -69,7 +69,7 @@ const Bookings = () => {
           city={'Kaduna'}
           date={'16 - 30 april 2025'}
           name={'Bon Lekki'}
-          datePrice={'16 - 20 Oct $500'}
+          datePrice={'16 - 20 Oct ₦50,00.000'}
           type={'Pending'}
           color={'green'}
         />
@@ -78,7 +78,7 @@ const Bookings = () => {
           city={'osun'}
           date={'16 - 20 Oct 2024'}
           name={'Bon Lekki'}
-          datePrice={'16 - 20 Oct $55'}
+          datePrice={'16 - 20 Oct ₦55,00.00'}
           type={'Pending'}
           color={'green'}
         />
@@ -87,7 +87,7 @@ const Bookings = () => {
           city={'umuahia'}
           date={'16 - 20 Oct 2024'}
           name={'Bon Lekki'}
-          datePrice={'16 - 20 Oct $55'}
+          datePrice={'16 - 20 Oct ₦55,00.00'}
           type={'Pending'}
           color={'green'}
         />
@@ -96,7 +96,7 @@ const Bookings = () => {
           city={'calabar'}
           date={'10 - 12 Dec 2024'}
           name={'Bon Asaba'}
-          datePrice={'10 - 12 Dec $95'}
+          datePrice={'10 - 12 Dec ₦95,00.00'}
           type={'Cancelled'}
           color={'green'}
         />
@@ -107,7 +107,7 @@ const Bookings = () => {
           city={'awka'}
           date={'16 - 30 april 2025'}
           name={'Bon Lekki'}
-          datePrice={'16 - 20 Oct $500'}
+          datePrice={'16 - 20 Oct ₦50,00.000'}
           type={'Pending'}
           color={'green'}
         />
@@ -116,7 +116,7 @@ const Bookings = () => {
           city={'Bayelsa'}
           date={'16 - 20 Oct 2024'}
           name={'Bon Lekki'}
-          datePrice={'16 - 20 Oct $55'}
+          datePrice={'16 - 20 Oct ₦55,00.00'}
           type={'Pending'}
           color={'green'}
         />
