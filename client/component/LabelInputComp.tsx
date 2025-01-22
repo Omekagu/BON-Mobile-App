@@ -2,7 +2,7 @@ import { View, Text, TextInput, KeyboardAvoidingView } from 'react-native';
 import React from 'react';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 
-export default function LabelInputComp({ placeholder, label }) {
+export default function LabelInputComp({ placeholder, label, Value,onchangeText }) {
   return (
     <KeyboardAvoidingView>
       <View>
@@ -27,6 +27,9 @@ export default function LabelInputComp({ placeholder, label }) {
             marginBottom: 10,
           }}
           placeholder={placeholder}
+
+          value={Value}
+          onChangeText={onchangeText}
         />
       </View>
     </KeyboardAvoidingView>
