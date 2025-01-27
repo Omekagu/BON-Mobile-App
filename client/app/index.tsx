@@ -27,7 +27,7 @@ const handleSubmit =()=>{
   }
   // if( firstName && lastName && email && password && phoneNumber  )
   console.log(firstName,lastName,email,password);
-  axios.post("http://10.0.1.21:5001/register", userData)
+  axios.post("http://10.0.1.35:5001/register", userData)
         .then((res)=>console.log(res.data))
         .catch(e => console.log(e))
 

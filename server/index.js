@@ -33,7 +33,7 @@ const encryptedPassword = await bcrypt.hash(password, 10)
             lastName,
             email, 
             password:encryptedPassword,
-            phoneNumber, 
+            phoneNumber 
         });
         res.send({status:"ok",data:  "User Created Successfully" })
     }catch(error){
