@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 import { View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import axios from 'axios';
 
 const Login = () => {
   const [email, setEmail]= useState("")
@@ -12,8 +13,22 @@ const Login = () => {
   const router = useRouter();
 
   const handleSubmit =()=>{
-    console.log(email, password)
-   router.push('/Home')
+    if (email.trim() === '' || password.trim() === '') {
+      alert('Please fill in missing fields'); // Show error if either input is empty
+    } else {
+      alert('Input is valid'); // Show success message if inputs are filled
+      const userData = { email: email.trim().toLocaleLowerCase(), password }; // Ensure you have the user data to send
+      axios.post('http://10.0.1.35:5001/login', userData)
+        .then((res) => {
+          console.log(res.data); // Log the response data
+          router.push('/Home'); // Navigate to the Home page
+          alert(`welcome Back`)
+        })
+        .catch((e) => {
+          console.log(e); // Handle error in case of failed login
+        });
+      console.log(email, password); // Debugging: logging the email and password
+    }
   }
   return (
     <KeyboardAwareScrollView
