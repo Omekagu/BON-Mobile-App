@@ -122,8 +122,8 @@ app.post('/login', async(req,res)=>{
 app.post('/userData', async(req, res)=>{
     const {token} = req.body;
     try {
-        const user = jwt.verify(token, jwtSecret)
-        const userEmail = user.email;
+        const decoded = jwt.verify(token, jwtSecret); // Ensure `token` is a valid string
+        const userEmail = decoded.email;
         User.findOne({email: userEmail})
         .then((data) => {
             return res.send({status: 'ok', data: data})

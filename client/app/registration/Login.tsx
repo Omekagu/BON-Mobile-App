@@ -6,6 +6,7 @@ import { View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const Login = () => {
   const [email, setEmail]= useState("")
@@ -17,19 +18,33 @@ const Login = () => {
       alert('Please fill in missing fields'); // Show error if either input is empty
     } else {
       alert('Input is valid'); // Show success message if inputs are filled
-      const userData = { email: email.trim().toLocaleLowerCase(), password }; // Ensure you have the user data to send
+      const userData = { email: email.trim().toLowerCase(), password }; // Ensure you have the user data to send
+    
       axios.post('http://10.0.1.35:5001/login', userData)
-        .then((res) => {
-          console.log(res.data); // Log the response data
-          router.push('/Home'); // Navigate to the Home page
-          alert(`welcome Back`)
-        })
-        .catch((e) => {
-          console.log(e); // Handle error in case of failed login
-        });
+      .then((res) => {
+        if (res.data && res.data.data) { // Check if response contains the token
+          const token = res.data.data; // Extract the JWT token from the `data` field
+          console.log('JWT Token:', token);
+    
+          // Store only the token string in AsyncStorage
+          // AsyncStorage.setItem("token", JSON.stringify(token));
+    
+          // Redirect user
+          router.push('/Home');
+          alert('Welcome Back!');
+        } else {
+          alert('Login failed! Token not received.');
+        }
+      })
+      .catch((e) => {
+        console.error('Login Error:', e);
+        alert('Login failed! Please check your credentials.');
+      });
+    
       console.log(email, password); // Debugging: logging the email and password
     }
   }
+    
   return (
     <KeyboardAwareScrollView
       resetScrollToCoords={{ x: 0, y: 0 }}
