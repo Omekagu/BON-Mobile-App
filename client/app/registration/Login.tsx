@@ -20,14 +20,14 @@ const Login = () => {
       alert('Input is valid'); // Show success message if inputs are filled
       const userData = { email: email.trim().toLowerCase(), password }; // Ensure you have the user data to send
     
-      axios.post('http://10.0.1.35:5001/login', userData)
+      axios.post('http://172.20.10.3:5001/login', userData)
       .then((res) => {
         if (res.data && res.data.data) { // Check if response contains the token
           const token = res.data.data; // Extract the JWT token from the `data` field
           console.log('JWT Token:', token);
     
           // Store only the token string in AsyncStorage
-          // AsyncStorage.setItem("token", JSON.stringify(token));
+          AsyncStorage.setItem("token", JSON.stringify(token));
     
           // Redirect user
           router.push('/Home');

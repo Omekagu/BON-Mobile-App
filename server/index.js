@@ -6,7 +6,8 @@ const bcrypt =  require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
-
+const Hotel = require('./model/hotelModel');
+const { error } = require('console');
 
 
 require('./model/UserDetails');
@@ -43,7 +44,7 @@ const transporter = nodemailer.createTransport({
   // Function to send welcome email
   const sendWelcomeEmail = (email, firstName) => {
     const mailOptions = {
-      from: 'yellowtrumpethotels@gmail.com', // Sender address
+      from: 'ea@bonhotelsinternational.com', // Sender address
       to: email, // Recipient email
       subject: 'Welcome to Our App!',
       html: `<h1>Welcome, ${firstName}!</h1>
@@ -80,7 +81,7 @@ const encryptedPassword = await bcrypt.hash(password, 10)
             password:encryptedPassword,
             phoneNumber 
         });
-        // sendWelcomeEmail(email, firstName);
+        sendWelcomeEmail(email, firstName);
         res.send({status:"ok",data:  "User Created Successfully" })
     }catch(error){
         res.send({status: "error", data: error})
@@ -110,8 +111,8 @@ app.post('/login', async(req,res)=>{
           // Generate JWT token
           const token = jwt.sign({ email: user.email }, jwtSecret, { expiresIn: '1h' });
           return res.status(200).json({ status: 'ok', data: token })
-        //    sendWelcomeEmail(email);
         });
+        sendWelcomeEmail(user.email);
       })
       .catch(err => {
         res.status(500).json({ status: 'error', message: 'Server error' });
@@ -134,6 +135,46 @@ app.post('/userData', async(req, res)=>{
 
 
 })
+
+
+// Get list of hotels 
+app.get('/hotels', async(req, res) => {
+    try {
+        const hotels = await Hotel.find();
+        res.json(hotels)
+        // console.log(hotels)
+    } catch (error) {
+        rmSync.status(500).json({error: 'Failed to fetch hotels'})
+    }
+})
+
+// Get hotel by ID
+app.get('/hotels/:id', async(req, res) => {
+    try {
+        const hotel = await Hotel.findById(req.params.id);
+        if(!hotel) return res.status(404).json({error: 'Hotel not found'});
+        res.json(hotel);
+    } catch (error) {
+        res.status(500).json({error: 'Failed to fetch hotel'})
+    }
+})
+
+// Hotel search by name
+// Search hotels by name or related name
+app.get("/hotels/search/:name", async (req, res) => {
+    try {
+      const { name } = req.params; // Get the name from the URL parameter
+      if (!name) return res.status(400).json({ error: "Hotel name is required" });
+  
+      const hotels = await Hotel.find({ name: { $regex: name, $options: "i" } }); // Case-insensitive search
+      res.json(hotels);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to search hotels" });
+    }
+  });
+  
+
+  
 app.get('/', (req, res)=>{
 res.send('Hello server connected')
 })
