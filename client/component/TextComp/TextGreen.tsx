@@ -6,7 +6,7 @@ export default function TextGreen({ text }) {
     <View>
       <Text
         style={{
-          marginBottom: 5,
+          // marginBottom: 5,
           fontSize: 15,
           fontWeight: '700',
           color: 'green',

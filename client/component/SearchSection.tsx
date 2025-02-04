@@ -19,7 +19,7 @@ const SearchSection = () => {
       }}
     >
       <Search
-        onPress={() => router.push('/Search')}
+        onPress={() => router.push('/')}
         icon={
           <MaterialIcons name="location-searching" size={24} color="black" />
         }
@@ -31,7 +31,7 @@ const SearchSection = () => {
         text={'Sat, 26 Oct - Sun, 27 Oct'}
       />
       <Search
-        onPress={() => router.push('/ChooseNo')}
+        onPress={() => router.push('/')}
         icon={<Octicons name="person" size={24} color="black" />}
         text={'1 room · 2 adults · No children'}
       />

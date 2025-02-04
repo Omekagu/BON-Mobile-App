@@ -24,7 +24,7 @@ export default function Home() {
       console.log("JWT Token:", token);
   
       // Send the token in the POST request
-      const response = await axios.post("http://172.20.10.3:5001/userData", { token });
+      const response = await axios.post("http://10.0.1.35:5001/userData", { token });
       console.log("User Data:", response.data);
     } catch (error) {
       console.error("Error in getData:", error);

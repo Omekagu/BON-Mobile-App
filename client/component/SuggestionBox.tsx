@@ -1,8 +1,9 @@
 import { useRouter } from 'expo-router';
 import React from 'react';
+import EvilIcons from '@expo/vector-icons/EvilIcons';
 import { Image, Platform, Text, TouchableOpacity, View } from 'react-native';
 
-const SuggestionBox = ({ name, price, meter, image }) => {
+const SuggestionBox = ({ name, price, location, image }) => {
   const router = useRouter();
   return (
     <TouchableOpacity
@@ -10,8 +11,9 @@ const SuggestionBox = ({ name, price, meter, image }) => {
         router.push('/BookingInfo');
       }}
       style={{
-        width: 250,
+        width:'100%',
         marginRight: 10,
+        marginBottom:30,
         ...Platform.select({
           ios: {
             shadowColor: '#000',
@@ -30,11 +32,12 @@ const SuggestionBox = ({ name, price, meter, image }) => {
     >
       <Image
         style={{
-          width: 250,
-          height: 200,
+          width: '100%',
+          height: 300,
           marginTop: 10,
-          borderTopRightRadius: 20,
-          borderTopLeftRadius: 20,
+          borderRadius:20
+          // borderTopRightRadius: 20,
+          // borderTopLeftRadius: 20,
         }}
         source={{
           uri: image,
@@ -44,22 +47,29 @@ const SuggestionBox = ({ name, price, meter, image }) => {
         style={{
           backgroundColor: '#fff',
           gap: 5,
-          padding: 5,
-          borderBottomRightRadius: 10,
-          borderBottomLeftRadius: 10,
+          padding:5,
+          // borderBottomRightRadius: 10,
+          borderRadius: 10,
+          marginTop: -90,
+          marginHorizontal:5,
+          paddingLeft:10
         }}
       >
+        
         <Text style={{ fontWeight: '700' }}>{name}</Text>
-        <Text>{meter}m</Text>
+
+        <View style={{flexDirection:'row', alignItems:'center'}}>
+        <Text><EvilIcons name="location" size={24} color="black" />{location}</Text>
+        </View>
         <Text
           style={{
             fontWeight: '700',
-            color: '#3ac93f',
-            alignSelf: 'flex-end',
-            fontSize: 18,
+            // color: '#3ac93f',
+            // alignSelf: 'flex-end',
+            fontSize: 14,
           }}
         >
-          ₦{price}
+          ${price}/night
         </Text>
       </View>
     </TouchableOpacity>

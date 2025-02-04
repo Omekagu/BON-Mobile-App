@@ -3,9 +3,11 @@ import LabelInputComp from '@/component/LabelInputComp';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { Button, View } from 'react-native';
+import { Button, Text, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import AntDesign from '@expo/vector-icons/AntDesign';
 import axios from 'axios';
+import TextGreen from '@/component/TextComp/TextGreen';
 
 
 const index = () => {
@@ -14,6 +16,7 @@ const [lastName, setLastName]= useState("")
 const [email, setEmail]= useState("")
 const [password, setPassword]= useState("")
 const [phoneNumber, setPhoneNumber]= useState("")
+const [referal, setReferal]= useState("")
 
 // Function to validate password
 const validatePassword = (password) => {
@@ -94,39 +97,56 @@ const handleSubmit =()=>{
       resetScrollToCoords={{ x: 0, y: 0 }}
       scrollEnabled={false}
     >
-      <LinearGradient
+      {/* <LinearGradient
         colors={['hsla(14, 65%, 58%, 1)', '#b8b2a2']}
         style={{
           paddingHorizontal: 20,
-          height: '100%',
+          paddingVertical:40,
+          
+         
         }}
-      >
-        <View style={{ marginTop: 150 }}>
-          <Button
-            title="Login"
+      > */}
+        <View style={{flexDirection:'column',height: '130%',  paddingHorizontal: 20,
+          paddingVertical:40, backgroundColor: '#DBD6D2',
+          }}>
+
+
+          <View style={{flexDirection: "row", alignItems: 'center', justifyContent: 'space-between',marginBottom: 25}}><AntDesign name="arrowleft" size={24} color="black" /> <Button
+            title="Login instead"
             onPress={() => router.push('/registration/Login')}
-          />
-          <LabelInputComp label={'First Name'} placeholder={'first name'} Value={firstName}
+          /> </View>
+         
+          <View><Text style={{lineHeight:25,fontSize: 16, alignSelf: 'center', textAlign:'center', marginBottom:25, marginHorizontal:10, textTransform: 'capitalize', fontWeight:'500'}}>we just need a bit information. Please enter your details to get started.</Text> </View>
+
+          <View>
+
+          <LabelInputComp label={'First Name'} placeholder={'First name'} Value={firstName}
         onchangeText={setFirstName} />
-          <LabelInputComp label={'Last Name'} placeholder={'surname'} Value={lastName}
+          <LabelInputComp label={'Last Name'} placeholder={'Surname'} Value={lastName}
         onchangeText={setLastName}/>
           <LabelInputComp label={'Email'} placeholder={'Email'} Value={email}
         onchangeText={setEmail} />
           <LabelInputComp label={'Phone Number'} placeholder={'Phone Number'} Value={phoneNumber}
         onchangeText={setPhoneNumber} />
-          <LabelInputComp label={'password'} placeholder={'password'} Value={password}
+          <LabelInputComp label={'Password'} placeholder={'Password'} Value={password}
         onchangeText={setPassword} />
+          <LabelInputComp label={'referal code'} placeholder={'Enter referral code'} Value={referal}
+        onchangeText={setReferal} />
           {/* <LabelInputComp
             label={'confirm password'}
             placeholder={'confirm password'} value={text}
             onChangeText={setText}
-          /> */}
+            /> */}
+            <View><Text style={{fontSize: 15, alignSelf: 'center', textAlign:'center', padding: 10}}>By signing up, you agree to BON'S  <TextGreen text={'Terms of use'}/>  and <TextGreen text={'privacy policy'}/>.</Text> </View>
           <CustomBotton
             onPress={handleSubmit}
             button={'sign up'}
-          />
+            />
+            </View>
+
+
         </View>
-      </LinearGradient>
+      {/* </LinearGradient> */}
     </KeyboardAwareScrollView>
   );
 };

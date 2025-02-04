@@ -20,7 +20,7 @@ const Login = () => {
       alert('Input is valid'); // Show success message if inputs are filled
       const userData = { email: email.trim().toLowerCase(), password }; // Ensure you have the user data to send
     
-      axios.post('http://172.20.10.3:5001/login', userData)
+      axios.post('http://10.0.1.35:5001/login', userData)
       .then((res) => {
         if (res.data && res.data.data) { // Check if response contains the token
           const token = res.data.data; // Extract the JWT token from the `data` field
@@ -49,20 +49,20 @@ const Login = () => {
     <KeyboardAwareScrollView
       resetScrollToCoords={{ x: 0, y: 0 }}
       scrollEnabled={false}
-      style={{ height: '100%' }}
     >
-      <LinearGradient
-        colors={['hsla(14, 65%, 58%, 1)', '#b8b2a2']}
-        style={{ height: '100%', paddingHorizontal: 10 }}
-      >
-        <View style={{ marginTop: 500 }}>
-          <LabelInputComp label={'Email'} placeholder={'Email'}  Value={email}
-        onchangeText={setEmail}  />
-          <LabelInputComp label={'password'} placeholder={'password'}  Value={password}
+
+        <View style={{flexDirection:'column', paddingHorizontal: 20,
+          paddingVertical:40, backgroundColor: '#DBD6D2',justifyContent:'flex-end', height:'auto'
+          }}>
+          <LabelInputComp label={'Email'} placeholder={'Email'} Value={email}
+        onchangeText={setEmail} />
+          <LabelInputComp label={'password'} placeholder={'password'} Value={password}
         onchangeText={setPassword} />
-          <CustomBotton button={'login'} onPress={handleSubmit} />
-        </View>
-      </LinearGradient>
+                 <CustomBotton
+            onPress={handleSubmit}
+            button={'sign up'}
+            />
+            </View>
     </KeyboardAwareScrollView>
   );
 };

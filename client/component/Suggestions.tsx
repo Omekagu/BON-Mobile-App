@@ -128,10 +128,10 @@ const Suggestions = () => {
         keyExtractor={(item) => item._id}
         renderItem={({ item }) => (
           <SuggestionBox
-            image={item.image || "https://i.postimg.cc/7L0vZwcC/BON-HOTEL-TRANSTELL-ROOMS1.jpg"}
+            image={item.images[0] || "https://i.postimg.cc/5ttJxCXK/YTW-DELUXE-6.jpg"}
             name={item.name}
             price={item.pricePerNight || "100,000,00"}
-            meter={item.description || "N/A"} // Replace "distance" with the actual field name
+            location={item.location || "N/A"} // Replace "distance" with the actual field name
           />
         )}
       />

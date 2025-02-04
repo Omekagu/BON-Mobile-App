@@ -4,14 +4,14 @@ import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 export default function LabelInputComp({ placeholder, label, Value,onchangeText }) {
   return (
-    <KeyboardAvoidingView>
+    // <KeyboardAvoidingView>
       <View>
         <Text
           style={{
             fontSize: 15,
-            textTransform: 'capitalize',
+            textTransform: 'uppercase',
             fontWeight: '600',
-            marginLeft: 15,
+            marginLeft: 10,
             marginBottom: 5,
           }}
         >
@@ -22,7 +22,7 @@ export default function LabelInputComp({ placeholder, label, Value,onchangeText 
           style={{
             backgroundColor: '#fff',
             height: 60,
-            borderRadius: 20,
+            borderRadius: 13,
             paddingLeft: 10,
             marginBottom: 10,
           }}
@@ -32,6 +32,6 @@ export default function LabelInputComp({ placeholder, label, Value,onchangeText 
           onChangeText={onchangeText}
         />
       </View>
-    </KeyboardAvoidingView>
+    // </KeyboardAvoidingView>
   );
 }
