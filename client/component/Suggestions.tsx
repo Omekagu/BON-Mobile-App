@@ -74,9 +74,10 @@
 
 // export default Suggestions;
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, FlatList } from "react-native";
+import { View, Text, TextInput, Button, FlatList, StyleSheet, TouchableOpacity } from "react-native";
 import axios from "axios";
 import SuggestionBox from "./SuggestionBox"; // Make sure this is the correct path
+import Toast from "react-native-toast-message";
 
 const Suggestions = () => {
   const [hotelName, setHotelName] = useState("");
@@ -84,15 +85,26 @@ const Suggestions = () => {
   const [error, setError] = useState("");
 
   const searchHotelsByName = async () => {
-    setError(""); // Reset error state
+    // Reset the previous error
+    Toast.hide(); 
 
     if (!hotelName.trim()) {
-      setError("Hotel name cannot be empty.");
+      // Display error message using Toast
+      Toast.show({
+        type: 'error',
+        position: 'top',
+        text1: 'Hotel name cannot be empty.',
+      });
       return;
     }
 
     if (!/^[a-zA-Z0-9\s]+$/.test(hotelName)) {
-      setError("Invalid hotel name. Use only letters and numbers.");
+      // Display error message using Toast
+      Toast.show({
+        type: 'error',
+        position: 'top',
+        text1: 'Invalid hotel name. Use only letters and numbers.',
+      });
       return;
     }
 
@@ -100,26 +112,52 @@ const Suggestions = () => {
       const response = await axios.get(`http://10.0.1.35:5001/hotels/search/${encodeURIComponent(hotelName)}`);
 
       if (response.data.length === 0) {
-        setError("No hotels found matching the given name.");
+        // Display error message using Toast
+        Toast.show({
+          type: 'error',
+          position: 'top',
+          text1: 'No hotels found matching the given name.',
+        });
         setHotels([]); // Clear previous results
       } else {
         setHotels(response.data); // Update state with hotel data
       }
     } catch (error) {
-      setError("Error searching for hotels.");
+      // Display error message using Toast
+      Toast.show({
+        type: 'error',
+        position: 'top',
+        text1: 'Error searching for hotels. Please try again.',
+      });
       console.error(error);
     }
   };
 
   return (
-    <View>
-      <TextInput
-        placeholder="Search hotels..."
-        value={hotelName}
-        onChangeText={setHotelName}
-        style={{ borderWidth: 1, padding: 10, marginBottom: 10 }}
-      />
-      <Button title="Search" onPress={searchHotelsByName} />
+    <View  style={styles.container}>
+
+<View style={styles.searchContainer}>
+            <TextInput
+              placeholder="Search hotels..."
+              value={hotelName}
+              onChangeText={setHotelName}
+              style={styles.textInput}
+            />
+            <TouchableOpacity style={styles.searchButton}>
+              <Text style={styles.searchButtonText}  onPress={searchHotelsByName}>Search</Text>
+            </TouchableOpacity>
+          </View>
+       {/* <View style={styles.searchContainer}>
+                  <TextInput
+                    placeholder="Search hotels..."
+                    value={hotelName}
+                    onChangeText={setHotelName}
+                    style={styles.textInput}
+                  />
+                  <TouchableOpacity style={styles.searchButton}>
+                    <Text style={styles.searchButtonText}  onPress={searchHotelsByName}>Search</Text>
+                  </TouchableOpacity>
+                  </View> */}
 
       {error ? <Text style={{ color: "red" }}>{error}</Text> : null}
 
@@ -138,5 +176,59 @@ const Suggestions = () => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#f9f9f9", 
+    padding: 10,
+    borderRadius:10
+  },
+  textInput: {
+    width:'100%',
+    flex: 1,
+    color:'black',
+    fontSize: 16,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    marginBottom: 20,
+    borderRadius: 8,
+    backgroundColor: "#fff",
+    padding: 20,
+  },
+  errorText: {
+    color: "red",
+    marginBottom: 10,
+  },
+  searchContainer: {
+    flexDirection: 'column',
+    marginTop: 15,
+    backgroundColor: "#fff",
+    borderRadius: 25,
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    width: "100%",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 16,
+    paddingLeft: 10,
+  },
+  searchButton: {
+    backgroundColor: "#2D9CDB",
+    borderRadius: 20,
+    paddingVertical: 8,
+    paddingHorizontal: 15,
+  },
+  searchButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
+  },
+});
 
 export default Suggestions;

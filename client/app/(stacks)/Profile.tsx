@@ -3,9 +3,11 @@ import React from 'react';
 import ExtComp from '@/component/ExtComp';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { router } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Profile() {
   return (
+    <SafeAreaView>
     <ScrollView style={{ padding: 10 }}>
       <View
         style={{
@@ -22,7 +24,7 @@ export default function Profile() {
           source={{
             uri: 'https://media.gettyimages.com/id/2042540731/photo/successful-businesswoman-portrait.jpg?s=612x612&w=0&k=20&c=wGC1ix5qcXdAYdPKNdvhmUWN7NPSJlndh2sV4FK5fls=',
           }}
-        />
+          />
         <TouchableOpacity>
           <MaterialCommunityIcons
             name="camera-plus-outline"
@@ -35,14 +37,14 @@ export default function Profile() {
               padding: 0.1,
               borderRadius: 100,
             }}
-          />
+            />
         </TouchableOpacity>
       </View>
       <ExtComp
         head={'Name'}
         tag={'Olivia Freya Zenya'}
         onPress={() => router.push('/EditName')}
-      />
+        />
       <ExtComp
         head={'Gender'}
         tag={'Select Your Gender'}
@@ -52,32 +54,33 @@ export default function Profile() {
         head={'Date of Birth'}
         tag={'Enter date of birth'}
         onPress={() => router.push('/EditDob')}
-      />
+        />
       <ExtComp
         head={'Email'}
         tag={'Enter Email Address'}
         onPress={() => router.push('/EditAddress')}
-      />
+        />
       <ExtComp
         head={'Contact Details'}
         tag={'Our company will use'}
         onPress={() => router.push('/EditContact')}
-      />
+        />
       <ExtComp
         head={'Phone Number'}
         tag={'Add your phone number'}
         onPress={() => router.push('/EditPhone')}
-      />
+        />
       <ExtComp
         head={'Address'}
         tag={'Add your address'}
         onPress={() => router.push('/EditAddress')}
-      />
+        />
       <ExtComp
         head={'Nationalty'}
         tag={'Select your nationality'}
         onPress={() => router.push('/EditNationality')}
-      />
+        />
     </ScrollView>
+    </SafeAreaView>
   );
 }

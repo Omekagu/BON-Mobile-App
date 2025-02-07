@@ -1,154 +1,138 @@
-import CustomBotton from '@/component/CustomBotton';
-import LabelInputComp from '@/component/LabelInputComp';
-import { LinearGradient } from 'expo-linear-gradient';
-import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { Button, Text, View } from 'react-native';
+import { View, Text, Button, StyleSheet, Alert } from 'react-native';
+import { useRouter } from 'expo-router';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import axios from 'axios';
+import LabelInputComp from '@/component/LabelInputComp';
 import TextGreen from '@/component/TextComp/TextGreen';
+import CustomBotton from '@/component/CustomBotton';
+import Toast from 'react-native-toast-message';
 
-
-const index = () => {
-const [firstName, setFirstName]= useState("")
-const [lastName, setLastName]= useState("")
-const [email, setEmail]= useState("")
-const [password, setPassword]= useState("")
-const [phoneNumber, setPhoneNumber]= useState("")
-const [referal, setReferal]= useState("")
-
-// Function to validate password
-const validatePassword = (password) => {
-  const hasUpperCase = /[A-Z]/.test(password); // Check for uppercase letter
-  const hasDigit = /\d/.test(password); // Check for a digit
-  const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password); // Check for special character
-
-  // Return true if all conditions are met
-  return hasUpperCase && hasDigit && hasSpecialChar;
-};
-
-
-//  Validate phone number
-const validatePhoneNumber = (phoneNumber) => {
-  // Check if phone number is exactly 11 digits and contains only numbers
-  const phoneRegex = /^\d{11}$/;
-  return phoneRegex.test(phoneNumber); 
-};
-
-
-// Validate Email
-const validateEmail = (email) => {
-  // Regular expression for validating email format
-  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  return emailRegex.test(email); // Returns true if email matches the pattern
-};
-
-
-const handleSubmit =()=>{
-  const clearInputs = () => {
-    setEmail(''); // Clear email input
-    setPassword(''); // Clear password input
-    setFirstName(''); // Clear first name input
-    setLastName(''); // Clear last name input
-    setPhoneNumber(''); // Clear phone number input
-  };
-  const userData = {
-    firstName: firstName.trim(),
-    lastName: lastName.trim(),
-    email: email.trim().toLowerCase(),
-    password: password.trim(),
-    phoneNumber: phoneNumber.trim(),
-  }
-  // if( firstName && lastName && email && password && phoneNumber  )
-  console.log(firstName,lastName,email,password,phoneNumber);
-  // Check if any input is empty
-  if (email.trim() === '' || password.trim() === '' || firstName.trim() === '' || lastName.trim() === '' || phoneNumber.trim() === '') {
-    alert('Please fill in missing fields'); // Alert for empty fields
-  } else if (!validateEmail(email)) {
-    // Check if email is valid
-    alert('Please enter a valid email address');
-  } else if (!validatePassword(password)) {
-    // Check if password meets the criteria
-    alert('Password must contain at least one uppercase letter, one digit, and one special character');
-  } else if (!validatePhoneNumber(phoneNumber)) {
-    // Check if phone number is exactly 11 digits
-    alert('Phone number must be exactly 11 digits');
-  } else {
-    // Send registration data if all inputs are valid
-    axios
-      .post('http://10.0.1.35:5001/register', userData)
-      .then((res) => {
-        console.log(res.data); // Log the response data
-        alert('Successful'); // Set success message
-        clearInputs(); // Clear form after successful registration
-        router.push('/registration/Login')
-      })
-      .catch((e) => {
-        console.log(e); // Log error
-        alert('Registration Failed! Please try again.');
-        clearInputs(); // Clear form after failed registration attempt
-      });
-  }
-}
+const Index = () => {
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [referal, setReferal] = useState('');
   const router = useRouter();
+
+  const validatePassword = (password) => {
+    return /[A-Z]/.test(password) && /\d/.test(password) && /[!@#$%^&*(),.?":{}|<>]/.test(password);
+  };
+
+  const validatePhoneNumber = (phoneNumber) => {
+    return /^\d{11}$/.test(phoneNumber);
+  };
+
+  const validateEmail = (email) => {
+    return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email);
+  };
+
+  const handleSubmit = () => {
+    if (!firstName || !lastName || !email || !password || !phoneNumber) {
+      Toast.show({ type: 'error', text1: 'Error', text2: 'Please fill in all fields' });
+      return;
+    }
+    if (!validateEmail(email)) {
+      Toast.show({ type: 'error', text1: 'Error', text2: 'Please enter a valid email address' });
+      return;
+    }
+    if (!validatePassword(password)) {
+      Toast.show({ type: 'error', text1: 'Error', text2: 'Password must contain an uppercase letter, a number, and a special character' });
+      return;
+    }
+    if (!validatePhoneNumber(phoneNumber)) {
+      Toast.show({ type: 'error', text1: 'Error', text2: 'Phone number must be exactly 11 digits' });
+      return;
+    }
+  
+    const userData = { firstName, lastName, email: email.toLowerCase(), password, phoneNumber };
+  
+    axios.post('http://10.0.1.35:5001/register', userData)
+      .then(() => {
+        Toast.show({ type: 'success', text1: 'Success', text2: 'Registration successful' });
+        setFirstName('');
+        setLastName('');
+        setEmail('');
+        setPassword('');
+        setPhoneNumber('');
+        setReferal('');
+        router.push('/registration/Login');
+      })
+      .catch(() => {
+        Toast.show({ type: 'error', text1: 'Error', text2: 'Registration failed! Please try again.' });
+      });
+  };
+  
+
   return (
-    <KeyboardAwareScrollView
-      resetScrollToCoords={{ x: 0, y: 0 }}
-      scrollEnabled={false}
-    >
-      {/* <LinearGradient
-        colors={['hsla(14, 65%, 58%, 1)', '#b8b2a2']}
-        style={{
-          paddingHorizontal: 20,
-          paddingVertical:40,
-          
-         
-        }}
-      > */}
-        <View style={{flexDirection:'column',height: '130%',  paddingHorizontal: 20,
-          paddingVertical:40, backgroundColor: '#DBD6D2',
-          }}>
+    <KeyboardAwareScrollView contentContainerStyle={styles.container}>
+      <View style={styles.header}>
+        <AntDesign name="arrowleft" size={24} color="black" onPress={() => router.back()} />
+        <Button title="Login instead" onPress={() => router.push('/registration/Login')} />
+      </View>
 
+      <Text style={styles.infoText}>
+        We just need a bit of information. Please enter your details to get started.
+      </Text>
 
-          <View style={{flexDirection: "row", alignItems: 'center', justifyContent: 'space-between',marginBottom: 25}}><AntDesign name="arrowleft" size={24} color="black" /> <Button
-            title="Login instead"
-            onPress={() => router.push('/registration/Login')}
-          /> </View>
-         
-          <View><Text style={{lineHeight:25,fontSize: 16, alignSelf: 'center', textAlign:'center', marginBottom:25, marginHorizontal:10, textTransform: 'capitalize', fontWeight:'500'}}>we just need a bit information. Please enter your details to get started.</Text> </View>
+      <View style={styles.formContainer}>
+        <LabelInputComp label="First Name" placeholder="First name" Value={firstName} onchangeText={setFirstName} />
+        <LabelInputComp label="Last Name" placeholder="Surname" Value={lastName} onchangeText={setLastName} />
+        <LabelInputComp label="Email" placeholder="Email" Value={email} onchangeText={setEmail} />
+        <LabelInputComp label="Phone Number" placeholder="Phone Number" Value={phoneNumber} onchangeText={setPhoneNumber} />
+        <LabelInputComp label="Password" placeholder="Password" Value={password} onchangeText={setPassword} />
+        <LabelInputComp label="Referral Code" placeholder="Enter referral code" Value={referal} onchangeText={setReferal} />
 
-          <View>
+        <Text style={styles.termsText}>
+          By signing up, you agree to BON'S <TextGreen text="Terms of Use" /> and <TextGreen text="Privacy Policy" />.
+        </Text>
 
-          <LabelInputComp label={'First Name'} placeholder={'First name'} Value={firstName}
-        onchangeText={setFirstName} />
-          <LabelInputComp label={'Last Name'} placeholder={'Surname'} Value={lastName}
-        onchangeText={setLastName}/>
-          <LabelInputComp label={'Email'} placeholder={'Email'} Value={email}
-        onchangeText={setEmail} />
-          <LabelInputComp label={'Phone Number'} placeholder={'Phone Number'} Value={phoneNumber}
-        onchangeText={setPhoneNumber} />
-          <LabelInputComp label={'Password'} placeholder={'Password'} Value={password}
-        onchangeText={setPassword} />
-          <LabelInputComp label={'referal code'} placeholder={'Enter referral code'} Value={referal}
-        onchangeText={setReferal} />
-          {/* <LabelInputComp
-            label={'confirm password'}
-            placeholder={'confirm password'} value={text}
-            onChangeText={setText}
-            /> */}
-            <View><Text style={{fontSize: 15, alignSelf: 'center', textAlign:'center', padding: 10}}>By signing up, you agree to BON'S  <TextGreen text={'Terms of use'}/>  and <TextGreen text={'privacy policy'}/>.</Text> </View>
-          <CustomBotton
-            onPress={handleSubmit}
-            button={'sign up'}
-            />
-            </View>
-
-
-        </View>
-      {/* </LinearGradient> */}
+        <CustomBotton onPress={handleSubmit} button="Sign Up" />
+      </View>
     </KeyboardAwareScrollView>
   );
 };
 
-export default index;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#a63932',
+    paddingHorizontal: 20,
+    paddingVertical: 40,
+    justifyContent: 'center',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 25,
+    marginTop:25,
+  },
+  infoText: {
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 25,
+    fontWeight: '500',
+    lineHeight: 25,
+  },
+  formContainer: {
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 8,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 5,
+    elevation: 3,
+  },
+  termsText: {
+    fontSize: 15,
+    textAlign: 'center',
+    padding: 10,
+  },
+});
+
+export default Index;

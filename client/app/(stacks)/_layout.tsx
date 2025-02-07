@@ -1,7 +1,13 @@
-import { View, Text } from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity } from 'react-native';
+import { Feather, FontAwesome} from '@expo/vector-icons';
 import { Stack } from 'expo-router';
 export default function _layout() {
+  const [isHeartClicked, setHeartClicked] = useState(false);
+
+  const toggleHeart = () => {
+    setHeartClicked(!isHeartClicked);
+  };
   return (
     <Stack>
       <Stack.Screen
@@ -27,9 +33,27 @@ export default function _layout() {
       />
       <Stack.Screen
         name="SearchPageInfo"
+        
         options={{
           title: 'SearchPageInfo',
           headerShown: false,
+          headerRight: () => (
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginRight: 10 }}>
+              {/* Search Icon */}
+              <TouchableOpacity onPress={() => console.log('Search clicked')}>
+                <Feather name="search" size={24} color="black" style={{ marginRight: 15 }} />
+              </TouchableOpacity>
+
+              {/* Heart Icon */}
+              <TouchableOpacity onPress={toggleHeart}>
+                <FontAwesome
+                  name={isHeartClicked ? 'heart' : 'heart-o'}
+                  size={24}
+                  color={isHeartClicked ? 'red' : 'black'}
+                />
+              </TouchableOpacity>
+            </View>
+          ),
         }}
       />
       <Stack.Screen
