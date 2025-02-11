@@ -1,37 +1,40 @@
-import { View, Text, TextInput, KeyboardAvoidingView } from 'react-native';
-import React from 'react';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
+import React from "react";
+import { View, Text, TextInput, StyleSheet } from "react-native";
 
-export default function LabelInputComp({ placeholder, label, Value,onchangeText }) {
+export default function LabelInputComp({ label, placeholder, value, onChangeText }) {
   return (
-    // <KeyboardAvoidingView>
-      <View>
-        <Text
-          style={{
-            fontSize: 15,
-            textTransform: 'uppercase',
-            fontWeight: '600',
-            marginLeft: 10,
-            marginBottom: 5,
-          }}
-        >
-          {label}
-        </Text>
-        <TextInput
-          placeholderTextColor={'gray'}
-          style={{
-            backgroundColor: '#fff',
-            height: 60,
-            borderRadius: 13,
-            paddingLeft: 10,
-            marginBottom: 10,
-          }}
-          placeholder={placeholder}
-
-          value={Value}
-          onChangeText={onchangeText}
-        />
-      </View>
-    // </KeyboardAvoidingView>
+    <View style={styles.container}>
+      <Text style={styles.label}>{label}</Text>
+      <TextInput
+        style={styles.input}
+        placeholder={placeholder}
+        placeholderTextColor="#888"
+        value={value}
+        onChangeText={onChangeText}
+      />
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    marginBottom: 15,
+  },
+  label: {
+    fontSize: 14,
+    fontWeight: "600",
+    textTransform: "capitalize",
+    marginBottom: 5,
+    color: "#333",
+  },
+  input: {
+    backgroundColor: "#fff",
+    height: 50,
+    borderRadius: 10,
+    paddingHorizontal: 15,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    fontSize: 16,
+    color: "#333",
+  },
+});

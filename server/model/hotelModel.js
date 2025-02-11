@@ -4,13 +4,18 @@ const hotelSchema = new mongoose.Schema({
   name: { type: String, required: true },
   location: { type: String, required: true },
   description: { type: String, required: true },
-  amenities: [String], // Array of amenities
+  amenities: { type: [String], required: true },
   pricePerNight: { type: Number, required: true },
-  images: [String], // Array of image URLs
-  rating: { type: Number, default: 0 },
+  images: { type: [String], required: true },  
+  owners: { 
+    ownerImage: {type: String, required: true},
+    name: {type: String, required: true} 
+  },  
+  reviews: { type: Number, required: true },  
+  rating: { type: Number, required: true, min: 0, max: 5 },
   contact: {
-    phone: String,
-    email: String,
+    phone: { type: String, required: true },
+    email: { type: String, required: true },
   },
   createdAt: { type: Date, default: Date.now },
 });

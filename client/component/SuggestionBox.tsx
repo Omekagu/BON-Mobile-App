@@ -1,15 +1,12 @@
-import { useRouter } from 'expo-router';
 import React from 'react';
 import EvilIcons from '@expo/vector-icons/EvilIcons';
 import { Image, Platform, Text, TouchableOpacity, View } from 'react-native';
 
-const SuggestionBox = ({ name, price, location, image }) => {
-  const router = useRouter();
+const SuggestionBox = ({ name, price, location, image, onPress }) => {
+  
   return (
     <TouchableOpacity
-      onPress={() => {
-        router.push('/BookingInfo');
-      }}
+      onPress={onPress}
       style={{
         width:'100%',
         marginRight: 10,
@@ -36,8 +33,6 @@ const SuggestionBox = ({ name, price, location, image }) => {
           height: 300,
           marginTop: 10,
           borderRadius:20
-          // borderTopRightRadius: 20,
-          // borderTopLeftRadius: 20,
         }}
         source={{
           uri: image,
@@ -47,7 +42,7 @@ const SuggestionBox = ({ name, price, location, image }) => {
         style={{
           backgroundColor: '#fff',
           gap: 5,
-          padding:5,
+          padding:15,
           // borderBottomRightRadius: 10,
           borderRadius: 10,
           marginTop: -90,
@@ -57,20 +52,19 @@ const SuggestionBox = ({ name, price, location, image }) => {
       >
         
         <Text style={{ fontWeight: '700' }}>{name}</Text>
-
+      <View style={{flexDirection: 'row', justifyContent:'space-between', alignItems:'center'}}>
         <View style={{flexDirection:'row', alignItems:'center'}}>
-        <Text><EvilIcons name="location" size={24} color="black" />{location}</Text>
+        <EvilIcons name="location" size={24} color="black" /><Text  style={{fontWeight: '300'}}>{location}</Text>
         </View>
         <Text
           style={{
-            fontWeight: '700',
-            // color: '#3ac93f',
-            // alignSelf: 'flex-end',
-            fontSize: 14,
+            fontWeight: '900',
+            fontSize: 17,
           }}
-        >
-          ${price}/night
+          >
+          ${price}
         </Text>
+        </View>
       </View>
     </TouchableOpacity>
   );

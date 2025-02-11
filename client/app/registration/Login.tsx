@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import axios from 'axios';
@@ -68,6 +68,10 @@ const Login = () => {
       });
   };
 
+  const FgPassword = ()=>{
+    router.push("registration/ForgotPassword")
+  }
+
   return (
     <KeyboardAwareScrollView 
       resetScrollToCoords={{ x: 0, y: 0 }} 
@@ -75,8 +79,12 @@ const Login = () => {
       contentContainerStyle={styles.container}
     >
       <View style={styles.formContainer}>
-        <LabelInputComp label="Email" placeholder="Enter your email" Value={email} onchangeText={setEmail} />
-        <LabelInputComp label="Password" placeholder="Enter your password" Value={password} onchangeText={setPassword} />
+        <LabelInputComp label="Email" placeholder="Enter your email" value={email} onChangeText={setEmail} />
+        <LabelInputComp label="Password" placeholder="Enter your password" value={password} onChangeText={setPassword} />
+
+        <TouchableOpacity onPress={FgPassword}>
+        <Text style={styles.forgot}>forgot password?</Text>
+        </TouchableOpacity>
         <CustomBotton onPress={handleSubmit} button="Sign In" />
       </View>
     </KeyboardAwareScrollView>
@@ -100,6 +108,11 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 5,
     elevation: 3,
+  },
+  forgot:{
+    paddingVertical:10,
+    fontSize:20,
+    textTransform:'capitalize',
   }
 });
 

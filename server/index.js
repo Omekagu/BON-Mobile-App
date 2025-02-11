@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const Hotel = require('./model/hotelModel');
-const { error } = require('console');
+const Otp = require('./model/Otpmodel')
 
 
 require('./model/UserDetails');
@@ -16,6 +16,9 @@ app.use(express.json())
 
 // Json webtoken 
 const jwtSecret = crypto.randomBytes(64).toString('hex');
+
+// Generate OTP
+const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString();
 
 // Mongo db Connection
 const mongoUrl = "mongodb+srv://mikecheq5:GMxS40xnuCn8Jwp0@cluster0.sz9xp.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
@@ -29,22 +32,34 @@ console.log(e)
 // Fetching Userschema from Db
 const User = mongoose.model('UserInfo');
 
-
-// Configure your email transporter
 const transporter = nodemailer.createTransport({
-    host: 'mail.bonhotelsinternational.com', // Commonly used SMTP host format for custom domains
-    port: 465, // For SSL
-    secure: true, // Use true for port 465, false for port 587
-    auth: {
-      user: 'ea@bonhotelsinternational.com', // Full email address
-      pass: '0~q^NNVW', // Email password (use environment variables for security)
-    },
-  });
+  host: 'smtp.office365.com',  // Outlook SMTP server
+  port: 587,                   // Use 587 for TLS
+  secure: false,               // false for TLS (must be true for SSL on port 465)
+  auth: {
+    user: 'ea@bonhotelsinternational.com',   // Your Outlook email
+    pass: process.env.EMAIL_PASSWORD  // App Password if 2FA is enabled
+  },
+  tls: {
+    ciphers: 'SSLv3',
+    rejectUnauthorized: false}
+  })
+
+
+// // Email Transporter Setup
+// const transporter = nodemailer.createTransport({
+//   service: 'gmail',
+//   auth: {
+//     user: 'bonhotels68@gmail.com', // Set in .env
+//     pass: 'Yzkvng@1999', // Set in .env
+//   }
+// });
+
   
   // Function to send welcome email
   const sendWelcomeEmail = (email, firstName) => {
     const mailOptions = {
-      from: 'ea@bonhotelsinternational.com', // Sender address
+      from: 'bonhotels68@gmail.com', // Sender address
       to: email, // Recipient email
       subject: 'Welcome to Our App!',
       html: `<h1>Welcome, ${firstName}!</h1>
@@ -119,6 +134,62 @@ app.post('/login', async(req,res)=>{
       });
     
 })
+
+
+// 📌 1️⃣ Send OTP
+app.post('/send-otp', async (req, res) => {
+  const { email } = req.body;
+  
+  try {
+    const user = await User.findOne({ email });
+    if (!user) return res.status(400).json({ message: 'User not found' });
+    
+    const otp = generateOTP();
+    await Otp.create({ email, otp });
+    console.log(email,otp)
+
+    // Send email
+    await transporter.sendMail({
+      from: 'bonhotels68@gmail.com',
+      to: email,
+      subject: 'Password Reset OTP',
+      text: `Your OTP is ${otp}. It expires in 5 minutes.`
+    });
+
+    res.json({ message: 'OTP sent to email' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error sending OTP' });
+    console.log(error)
+  }
+});
+
+// 📌 2️⃣ Verify OTP
+app.post('/verify-otp', async (req, res) => {
+  const { email, otp } = req.body;
+
+  try {
+    const otpRecord = await Otp.findOne({ email, otp });
+    if (!otpRecord) return res.status(400).json({ message: 'Invalid OTP or expired' });
+
+    res.json({ message: 'OTP Verified' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error verifying OTP' });
+  }
+});
+
+// 📌 3️⃣ Reset Password
+app.post('/reset-password', async (req, res) => {
+  const { email, newPassword } = req.body;
+
+  try {
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await User.findOneAndUpdate({ email }, { password: hashedPassword });
+
+    res.json({ message: 'Password reset successful' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error resetting password' });
+  }
+});
 
 app.post('/userData', async(req, res)=>{
     const {token} = req.body;

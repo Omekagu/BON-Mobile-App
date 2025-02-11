@@ -79,12 +79,12 @@ const Index = () => {
       </Text>
 
       <View style={styles.formContainer}>
-        <LabelInputComp label="First Name" placeholder="First name" Value={firstName} onchangeText={setFirstName} />
-        <LabelInputComp label="Last Name" placeholder="Surname" Value={lastName} onchangeText={setLastName} />
-        <LabelInputComp label="Email" placeholder="Email" Value={email} onchangeText={setEmail} />
-        <LabelInputComp label="Phone Number" placeholder="Phone Number" Value={phoneNumber} onchangeText={setPhoneNumber} />
-        <LabelInputComp label="Password" placeholder="Password" Value={password} onchangeText={setPassword} />
-        <LabelInputComp label="Referral Code" placeholder="Enter referral code" Value={referal} onchangeText={setReferal} />
+        <LabelInputComp label="First Name" placeholder="First name" value={firstName} onChangeText={setFirstName} />
+        <LabelInputComp label="Last Name" placeholder="Surname" value={lastName} onChangeText={setLastName} />
+        <LabelInputComp label="Email" placeholder="Email" value={email} onChangeText={setEmail} />
+        <LabelInputComp label="Phone Number" placeholder="Phone Number" value={phoneNumber} onChangeText={setPhoneNumber} />
+        <LabelInputComp label="Password" placeholder="Password" value={password} onChangeText={setPassword} />
+        <LabelInputComp label="Referral Code" placeholder="Enter referral code" value={referal} onChangeText={setReferal} />
 
         <Text style={styles.termsText}>
           By signing up, you agree to BON'S <TextGreen text="Terms of Use" /> and <TextGreen text="Privacy Policy" />.

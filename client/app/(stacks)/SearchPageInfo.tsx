@@ -1,4 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useLocalSearchParams } from "expo-router";
+import axios from "axios";
+import Toast from "react-native-toast-message";
 import {
   View,
   SafeAreaView,
@@ -7,6 +10,9 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
+  Linking,
+  Modal,
+ ActivityIndicator
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Feather from "@expo/vector-icons/Feather";
@@ -14,44 +20,137 @@ import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import Entypo from "@expo/vector-icons/Entypo";
-import { AntDesign } from "@expo/vector-icons";
+import { AntDesign, FontAwesome } from "@expo/vector-icons";
 
 export default function HotelBookingScreen() {
+  const [liked, setLiked] = useState(false);
+  const [likesCount, setLikesCount] = useState(2800); // Example initial likes count
+  const [modalVisible, setModalVisible] = useState(false);
+  const { id } = useLocalSearchParams(); // Get hotel ID from route params
+  const [hotel, setHotel] = useState(null);
+  const [loading, setLoading] = useState(true);
+  
+  const handleLike = async () => {
+    const newLikedState = !liked;
+    const newCount = newLikedState ? likesCount + 1 : likesCount - 1;
+
+    setLiked(newLikedState);
+    setLikesCount(newCount);
+
+    try {
+      // Simulating API call to update likes in the database
+      await fetch("https://your-api.com/update-likes", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ liked: newLikedState, likesCount: newCount }),
+      });
+    } catch (error) {
+      console.error("Error updating likes:", error);
+    }
+  };
+
+  
+  useEffect(() => {
+    const fetchHotelDetails = async () => {
+      try {
+        const response = await axios.get(`http://10.0.1.35:5001/hotels/${id}`);
+        setHotel(response.data);
+      } catch (error) {
+        Toast.show({ type: "error", text1: "Failed to load hotel details." });
+      }
+      setLoading(false);
+    };
+    
+    fetchHotelDetails();
+  }, [id]);
+  
+  if (loading) {
+    return <ActivityIndicator size="large" color="#a63932" style={styles.loader} />;
+  }
+  
+  if (!hotel) {
+    return <Text style={styles.errorText}>Hotel details not found.</Text>;
+  }
+  
+  const handleCall = () => {
+    Linking.openURL(`tel:${hotel.contact.phone}`); 
+  };
+  
+  const handleEmail = () => {
+    Linking.openURL(`mailto:${hotel.contact.email}?subject=Support Request&body=Hello, I need help with...`);
+  };
+  // console.log(hotel.contact)
+  // console.log(hotel.reviews)
+
   return (
     <GestureHandlerRootView>
       <SafeAreaView style={styles.container}>
-        {/* Navigation & Header */}
+        <ScrollView>
+
         {/* <View> */}
 
+        {/* Navigation & Header */}
         <View style={styles.header}>
           <Feather name="arrow-left" size={24} color="black" />
 
           <View  style={styles.right}>
           <AntDesign style={{marginRight:20}} name="sharealt" size={30} color="black" />
-          <Feather name="heart" size={30} color="black" />
+          <TouchableOpacity onPress={handleLike}>
+              <AntDesign name="heart" size={30} color={liked ? "red" : "black"} />
+            </TouchableOpacity>
           </View>
         </View>
 
         {/* Hotel Image */}
-        <Image
-          style={styles.image}
-          source={{
-            uri: "https://transtell.bonhotelsinternational.com/wp-content/uploads/2024/10/bon-hotel-transtell-main-block-img-2.jpg",
-          }}
-          />
+         {/* Hotel Image (Click to Open Modal) */}
+         <TouchableOpacity onPress={() => setModalVisible(true)}>
+          <Image
+            style={styles.image}
+            source={{ uri: hotel.images?.[0] || "https://i.postimg.cc/5ttJxCXK/YTW-DELUXE-6.jpg" }}
+            />
+        </TouchableOpacity>
+
+        {/* Image Modal */}
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => setModalVisible(false)}
+          >
+          <View style={styles.modalContainer}>
+            <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
+              <AntDesign name="close" size={30} color="white" />
+            </TouchableOpacity>
+            <ScrollView horizontal pagingEnabled style={styles.imageScroll}>
+              {[
+                hotel.images?.[0],
+                hotel.images?.[1],
+                hotel.images?.[2],
+                hotel.images?.[3],
+                // "https://i.postimg.cc/sDF3pxL1/YTW-EXECUTIVE-3.jpg",
+                // "https://i.postimg.cc/Bnps9gn1/YTW-SUPERIOR-6.jpg",
+                // "https://i.postimg.cc/5ttJxCXK/YTW-DELUXE-6.jpg",
+              ].map((img, index) => (
+                <Image key={index} style={styles.modalImage} source={{ uri: img }} />
+              ))}
+            </ScrollView>
+          </View>
+        </Modal>
 
         {/* Hotel Details */}
         <View style={styles.detailsContainer}>
-          <Text style={styles.hotelName}>Starlight Haven Lodge</Text>
+          <Text style={styles.hotelName}>{hotel.name}</Text>
           <View style={styles.location}>
             <Feather name="map-pin" size={16} color="gray" />
-            <Text style={styles.locationText}>Greenwood Heights, New York</Text>
+            <Text style={styles.locationText}>{hotel.location}</Text>
           </View>
           <View style={styles.rating}>
-            <Text style={styles.star}>⭐ 4.9</Text>
-            <Text style={styles.reviews}>(2.8k)</Text>
+            <Text style={styles.star}>⭐{hotel.rating}</Text>
+            <Text style={styles.reviews}>{hotel.reviews}</Text>
           </View>
-          <Text style={styles.price}>$325/night</Text>
+          <Text style={styles.price}>${hotel.pricePerNight} - per night</Text>
         </View>
 
         {/* Amenities */}
@@ -59,6 +158,14 @@ export default function HotelBookingScreen() {
           <View style={styles.amenityBox}>
             <FontAwesome5 name="bed" size={20} color="black" />
             <Text style={styles.amenityText}>2 Bed</Text>
+          </View>
+          <View style={styles.amenityBox}>
+          <FontAwesome name="bathtub" size={24} color="black" />
+            <Text style={styles.amenityText}>Bathroom</Text>
+          </View>
+          <View style={styles.amenityBox}>
+          <FontAwesome5 name="wifi" size={24} color="black" />
+            <Text style={styles.amenityText}>wifi</Text>
           </View>
           <View style={styles.amenityBox}>
             <MaterialIcons name="ac-unit" size={24} color="black" />
@@ -78,19 +185,17 @@ export default function HotelBookingScreen() {
         <View style={styles.ownerSection}>
           <Image
             style={styles.ownerImage}
-            source={{
-              uri: "https://randomuser.me/api/portraits/men/32.jpg",
-            }}
+            source={{ uri: hotel.owners?.ownerImage || "https://i.postimg.cc/5ttJxCXK/YTW-DELUXE-6.jpg" }}
             />
           <View>
-            <Text style={styles.ownerName}>Matthew Miller</Text>
-            <Text style={styles.ownerRole}>Owner</Text>
+            <Text style={styles.ownerName}>{hotel.owners?.name}</Text>
+            <Text style={styles.ownerRole}>Customer Service</Text>
           </View>
           <View style={styles.contactIcons}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={handleEmail}>
               <Feather name="message-circle" size={24} color="black" />
             </TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={handleCall}>
               <Feather name="phone-call" size={24} color="black" />
             </TouchableOpacity>
           </View>
@@ -98,15 +203,15 @@ export default function HotelBookingScreen() {
 
         {/* Description */}
         <Text style={styles.description}>
-          Starlight Haven Lodge offers curated hotel stays with unmatched comfort
-          and thoughtful amenities. Book your perfect escape today!...
+          {hotel.description}
         </Text>
 
         {/* Book Now Button */}
         <TouchableOpacity style={styles.bookButton}>
-          <Text style={styles.bookButtonText}>Next - $325</Text>
+          <Text style={styles.bookButtonText}>Next - ${hotel.pricePerNight}</Text>
         </TouchableOpacity>
         {/* </View> */}
+        </ScrollView>
       </SafeAreaView>
     </GestureHandlerRootView>
   );
@@ -117,6 +222,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  loader: { 
+    flex: 1, 
+    justifyContent: "center", 
+    alignItems: "center" 
+  },
+  errorText: { 
+    textAlign: "center", 
+    fontSize: 18, 
+    marginTop: 20, 
+    color: "red" },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -236,7 +351,7 @@ const styles = StyleSheet.create({
   bookButton: {
     backgroundColor: "#a63932",
     margin: 10,
-    padding: 10,
+    padding: 20,
     borderRadius: 10,
     alignItems: "center",
     marginTop: 20,
@@ -246,173 +361,33 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
   },
+  // Modal Styles
+  modalContainer: {
+    flex: 1,
+    flexDirection:'row',
+    backgroundColor: "#000",
+    justifyContent: "center",
+    alignItems: "center",
+    // height:'3%',
+  },
+  closeButton: {
+    position: "absolute",
+    top: 50,
+    right: 20,
+    zIndex: 10,
+  },
+  imageScroll: {
+    flexDirection: "row",
+    width: "100%",
+  },
+  modalImage: {
+    width: 350,
+    height: 400,
+    marginHorizontal: 10,
+    resizeMode: "cover",
+    borderRadius: 10,
+  },
 });
 
 
 
-
-
-
-// import React, { useRef, useState } from "react";
-// import {
-//   View,
-//   SafeAreaView,
-//   ScrollView,
-//   Image,
-//   Linking,
-//   StyleSheet,
-// } from "react-native";
-// import BottomSheet from "@gorhom/bottom-sheet";
-// import { GestureHandlerRootView } from "react-native-gesture-handler";
-// import { router } from "expo-router";
-
-// // Icons
-// import Feather from "@expo/vector-icons/Feather";
-// import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
-// import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-// import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-// import Entypo from "@expo/vector-icons/Entypo";
-
-// // Components
-// import Heading from "@/component/TextComp/Heading";
-// import CheckInOutComp from "@/component/CheckInOutComp";
-// import RoomsNGuest from "@/component/RoomsNGuest";
-// import PricePerNight from "@/component/PricePerNight";
-// import BoldText13 from "@/component/TextComp/BoldText13";
-// import TextCaps from "@/component/TextComp/TextCaps";
-// import MoreComp from "@/component/MoreComp";
-// import Utility from "@/component/Utiliity";
-// import CustomBotton from "@/component/CustomBotton";
-
-// export default function SearchPageInfo() {
-//   const sheetRef = useRef(null);
-//   const [isOpen, setIsOpen] = useState(false);
-//   const snapPoints = ["20%"];
-
-//   return (
-//     <GestureHandlerRootView>
-//       <SafeAreaView style={styles.container}>
-//         {/* Image Section */}
-//         <View style={styles.imageWrapper}>
-//           <Image
-//             style={styles.image}
-//             source={{
-//               uri: "https://transtell.bonhotelsinternational.com/wp-content/uploads/2024/10/bon-hotel-transtell-main-block-img-2.jpg",
-//             }}
-//           />
-//         </View>
-
-//         {/* Hotel Details */}
-//         <View>
-//           <Heading heading={"Bon Lekki Residence"} sub={"8.1"} />
-//         </View>
-
-//         {/* Features / Amenities */}
-//         <ScrollView horizontal style={styles.amenitiesScroll}>
-//           <Utility icon={<MaterialCommunityIcons name="parking" size={24} />} name={"Free Parking"} />
-//           <Utility icon={<MaterialIcons name="pool" size={24} />} name={"Outdoor Pool"} />
-//           <Utility icon={<MaterialIcons name="restaurant" size={24} />} name={"Restaurant"} />
-//           <Utility icon={<MaterialCommunityIcons name="air-filter" size={24} />} name={"Air Conditioning"} />
-//           <Utility icon={<MaterialIcons name="bathroom" size={24} />} name={"Private Bathroom"} />
-//           <Utility icon={<FontAwesome5 name="shower" size={24} />} name={"Shower"} />
-//           <Utility icon={<MaterialIcons name="tv" size={24} />} name={"Flat Screen TV"} />
-//           <Utility icon={<Entypo name="aircraft-take-off" size={24} />} name={"Airport Shuttle"} />
-//           <Utility icon={<MaterialCommunityIcons name="broom" size={24} />} name={"Room Service"} />
-//           <Utility icon={<Feather name="more-horizontal" size={24} color="blue" />} name={"More"} />
-//         </ScrollView>
-
-//         {/* Booking Details */}
-//         <ScrollView>
-//           <View style={styles.bookingContainer}>
-//             {/* Check-in & Check-out */}
-//             <View style={styles.checkInOutWrapper}>
-//               <CheckInOutComp name={"CHECK - IN"} date={"Fri, 25 Oct"} />
-//               <CheckInOutComp name={"CHECK - OUT"} date={"Sat, 26 Oct"} />
-//             </View>
-
-//             {/* Rooms & Guests */}
-//             <RoomsNGuest name={"Rooms and Guests"} roomNo={"1"} childrenNo={"0"} peopleNo={"1"} />
-//           </View>
-
-//           {/* Pricing Section */}
-//           <View style={styles.priceSection}>
-//             <PricePerNight number={1} start={"25 Oct"} end={"26 Oct"} price={"₦100,000.00"} />
-//           </View>
-
-//           {/* Contact Section */}
-//           <View>
-//             <BoldText13 text={"Need more info to decide?"} />
-//             <TextCaps text={"Feel free to reach out for any inquiries about your stay."} />
-//             <MoreComp
-//               onPress={() => Linking.openURL("tel:08120190530")}
-//               icon={<Feather name="phone-call" size={24} />}
-//               name={"Contact Customer Care"}
-//             />
-//           </View>
-
-//           {/* Description */}
-//           <View>
-//             <BoldText13 text={"Description"} />
-//             <TextCaps text={"Experience premium hospitality with top-notch amenities and excellent service at Bon Lekki Residence."} />
-//           </View>
-//         </ScrollView>
-
-//         {/* Book Button */}
-//         <View style={styles.bookButtonWrapper}>
-//           <CustomBotton button={"Book Room - ₦100,000.00"} onPress={() => router.push("/Payments")} />
-//         </View>
-//       </SafeAreaView>
-//     </GestureHandlerRootView>
-//   );
-// }
-
-// // Styles
-// const styles = StyleSheet.create({
-//   container: {
-//     margin: 20,
-//   },
-//   imageWrapper: {
-//     borderBottomWidth: 0.5,
-//     borderColor: "#000",
-//     paddingBottom: 10,
-//   },
-//   image: {
-//     width: "100%",
-//     height: 250,
-//     marginTop: 10,
-//     borderRadius: 10,
-//   },
-//   amenitiesScroll: {
-//     marginHorizontal: -20,
-//     paddingBottom: 10,
-//     height: 120,
-//     borderBottomColor: "#000",
-//     borderBottomWidth: 1,
-//   },
-//   bookingContainer: {
-//     borderWidth: 0.5,
-//     padding: 10,
-//     borderRadius: 10,
-//     borderColor: "#a63932",
-//     marginVertical: 10,
-//     backgroundColor: "#fff",
-//     shadowColor: "#000",
-//     shadowOffset: { width: 0, height: 2 },
-//     shadowOpacity: 0.2,
-//     shadowRadius: 2,
-//     elevation: 5,
-//   },
-//   checkInOutWrapper: {
-//     flexDirection: "row",
-//     justifyContent: "space-between",
-//     marginBottom: 10,
-//   },
-//   priceSection: {
-//     paddingVertical: 10,
-//   },
-//   bookButtonWrapper: {
-//     position: "absolute",
-//     bottom: 20,
-//     width: "100%",
-//   },
-// });

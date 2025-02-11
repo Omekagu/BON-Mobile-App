@@ -50,7 +50,7 @@ export default function Home() {
         imageStyle={{ opacity: 0.6 }}
       >
         <View style={styles.overlay}>
-          <Text style={styles.title}>Home Luxury & Comfort.</Text>
+          <Text style={styles.title}>Luxury and Comfort.</Text>
           <Text style={styles.subtitle}>
           Good people. Good thinking. Good feeling.
           </Text>
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
   },
   background: {
     width: "100%",
-    height: 200,
+    height: 250,
     justifyContent: "center",
     alignItems: "center",
     borderBottomRightRadius:"100px",
