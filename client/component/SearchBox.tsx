@@ -1,33 +1,65 @@
 import { View, Image, TouchableOpacity, Platform } from 'react-native';
 import React, { useState } from 'react';
-import AntDesign from '@expo/vector-icons/AntDesign';
 import TextGreen from './TextComp/TextGreen';
 import TextCaps from './TextComp/TextCaps';
 import BoldText13 from './TextComp/BoldText13';
 import { useRouter } from 'expo-router';
 import Fontisto from '@expo/vector-icons/Fontisto';
+import Toast from 'react-native-toast-message';
 
-export default function SearchBox({
+interface SearchBoxProps {
+  hotelname: string;
+  image: string;
+  review: number;
+  landmark: string;
+  distantFromLandmark: string;
+  noBed: number;
+  price: number;
+  onPress?: () => void;
+}
+
+const SearchBox: React.FC<SearchBoxProps> = ({
   hotelname,
   image,
-  rating,
   review,
   landmark,
   distantFromLandmark,
   noBed,
   price,
-  onPress
-}) {
+  onPress,
+}) => {
   const router = useRouter();
-  const [iconColor, setIconColor] = useState('black');
-  const handlePress = () => {
-    // Toggle between black and red color on press
-    setIconColor((prevColor) => (prevColor === 'black' ? 'red' : 'black'));
+  const [liked, setLiked] = useState<boolean>(false);
+  const [likesCount, setLikesCount] = useState<number>(2800);
+
+  const handleLike = async () => {
+    const newLikedState = !liked;
+    const newCount = newLikedState ? likesCount + 1 : likesCount - 1;
+
+    if (newLikedState) {
+      setLiked(newLikedState);
+      setLikesCount(newCount);
+      Toast.show({ type: 'success', text1: 'Saved to your Favourite.' });
+    } else {
+      Toast.show({ type: 'error', text1: 'Unsaved from Favourite.' });
+      setLiked(newLikedState);
+    }
+
+    try {
+      await fetch('https://your-api.com/update-likes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ liked: newLikedState, likesCount: newCount }),
+      });
+    } catch (error) {
+      console.error('Error updating likes:', error);
+    }
   };
+
   return (
-    <TouchableOpacity
-      onPress={onPress}
-    >
+    <TouchableOpacity onPress={onPress}>
       <View
         style={{
           flexDirection: 'row',
@@ -35,22 +67,15 @@ export default function SearchBox({
           padding: 8,
           borderRadius: 10,
           marginVertical: 5,
-          marginHorizontal:5,
-          
-
+          marginHorizontal: 5,
           ...Platform.select({
             ios: {
               shadowColor: '#000',
-              shadowOffset: {
-                width: 0,
-                height: 2,
-              },
+              shadowOffset: { width: 0, height: 2 },
               shadowOpacity: 0.3,
               shadowRadius: 4,
             },
-            android: {
-              elevation: 5,
-            },
+            android: { elevation: 5 },
           }),
         }}
       >
@@ -61,46 +86,32 @@ export default function SearchBox({
             borderRadius: 10,
             marginRight: 10,
           }}
-          source={{
-            uri: image,
-          }}
+          source={{ uri: image }}
         />
 
-        <View
-          style={{
-            justifyContent: 'space-between',
-            width: '65%',
-            padding: 5,
-          }}
-        >
+        <View style={{ justifyContent: 'space-between', width: '65%', padding: 5 }}>
           <View>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-              }}
-            >
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
               <BoldText13 text={hotelname} />
-              <TouchableOpacity onPress={handlePress}>
-                <Fontisto name="heart" size={24} color={iconColor} />
+              <TouchableOpacity onPress={handleLike}>
+                <Fontisto name="heart" size={24} color={liked ? 'red' : 'black'} />
               </TouchableOpacity>
             </View>
-            <TextCaps text={`⭐⭐⭐⭐`} />
-            <TextCaps text={`(${review})k reviews`} />
+            <TextCaps text="⭐⭐⭐⭐" />
+            <TextCaps text={`(${review}k reviews)`} />
             <TextCaps text={landmark} />
             <TextCaps text={distantFromLandmark} />
           </View>
 
           <View style={{ alignItems: 'flex-end' }}>
-            <TextCaps text={`HOTEL ROOM : ${noBed} bed `} />
+            <TextCaps text={`HOTEL ROOM : ${noBed} bed`} />
             <TextGreen text={`₦${price}`} />
-            <TextCaps text={'includes taxes and charges'} />
-            {/* <TextGreen text={'free cancellation'} /> */}
+            <TextCaps text="includes taxes and charges" />
           </View>
         </View>
-        {/* <CustomBotton button={'select'} /> */}
       </View>
     </TouchableOpacity>
   );
-}
+};
+
+export default SearchBox;

@@ -85,7 +85,7 @@ export default function More() {
         onPress={async () => {
         try {
           await AsyncStorage.removeItem("token"); // Clear the token
-          router.replace("/registration/Login"); // Redirect to login page
+          router.replace("/registration/Registration"); // Redirect to login page
         } catch (error) {
           console.error("Logout Error:", error);
         }

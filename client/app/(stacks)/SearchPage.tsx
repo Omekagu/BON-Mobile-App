@@ -1,74 +1,6 @@
-// import { View, SafeAreaView, ScrollView } from 'react-native';
-// import React from 'react';
-// import SearchBox from '@/component/SearchBox';
-// import SearchHeader from '@/component/SearchHeader';
-
-// export default function SearchPage() {
-//   return (
-//     <SafeAreaView>
-//       <View>
-//         <SearchHeader
-//           location={'lagos, Nigeria'}
-//           date={'Sat, 26 Oct - Sun, 27 Oct'}
-//         />
-//       </View>
-//       <ScrollView style={{ margin: 10 }}>
-//         <SearchBox
-//           hotelname={'Bon Lekki residence'}
-//           image={'https://i.postimg.cc/QtffXzX9/BON-HOTEL-TRANSTELL-ROOMS6.jpg'}
-//           rate={'good'}
-//           rating={5}
-//           review={2}
-//           landmark={'beach sideasate'}
-//           distantFromLandmark={'230km away'}
-//           noBed={1}
-//           price={100}
-//         />
-//         <SearchBox
-//           hotelname={'Bon Ikeja residence'}
-//           image={'https://i.postimg.cc/9MHhdrTt/BON-HOTEL-TRANSTELL-ROOMS7.jpg'}
-//           rate={'very good'}
-//           rating={8}
-//           review={5}
-//           landmark={'maleek estate'}
-//           distantFromLandmark={'1,030km away'}
-//           noBed={2}
-//           price={300}
-//         />
-//         <SearchBox
-//           hotelname={'Bon Asokoro residence'}
-//           image={'https://i.postimg.cc/7L0vZwcC/BON-HOTEL-TRANSTELL-ROOMS1.jpg'}
-//           rate={'Excellent'}
-//           rating={10}
-//           review={10}
-//           landmark={'aso villa manor'}
-//           distantFromLandmark={'230km away'}
-//           noBed={1}
-//           price={900}
-//         />
-//         <SearchBox
-//           hotelname={'Bon kubwa residence'}
-//           image={
-//             'https://i.postimg.cc/BQXVvJPq/BON-HOTEL-TRANSTELL-ROOMS11.jpg'
-//           }
-//           rate={'good'}
-//           rating={5}
-//           review={2}
-//           landmark={'sinete roundabout'}
-//           distantFromLandmark={'30km away'}
-//           noBed={1}
-//           price={90}
-//         />
-//       </ScrollView>
-//     </SafeAreaView>
-//   );
-// }
-
-
 import React, { useState } from "react";
 import { View, Text, TextInput, FlatList, StyleSheet, TouchableOpacity, ActivityIndicator } from "react-native";
 import axios from "axios";
-import SuggestionBox from "@/component/SuggestionBox";
 import Toast from "react-native-toast-message";
 import * as Animatable from "react-native-animatable";
 import { Feather } from "@expo/vector-icons";
@@ -86,7 +18,7 @@ const SkeletonLoader = () => (
   </View>
 );
 
-const SearchPage = ( {item}) => {
+const SearchPage = ({item}) => {
   const [hotelName, setHotelName] = useState("");
   const [hotels, setHotels] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -145,7 +77,7 @@ const SearchPage = ( {item}) => {
                 }}
                 image={item.images[0] || "https://i.postimg.cc/5ttJxCXK/YTW-DELUXE-6.jpg"}
                 hotelname={item.name}
-                rating={item.rating}
+                // rating={item.rating}
                 review={item.reviews}
                 price={(item.pricePerNight ? Number(item.pricePerNight).toLocaleString() : "100,000,000")}
                 // location={item.location || "N/A"}
@@ -166,7 +98,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f9f9f9",
-    margin: 5,
+    marginHorizontal:5,
     marginTop:50,
     borderTopRightRadius:10,
     borderTopLeftRadius:10
@@ -185,8 +117,8 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   flatList:{
-    marginBottom:170,
-    marginHorizontal:10,
+    marginBottom:10,
+    marginHorizontal:5,
   },
   textInput: {
     flex: 1,

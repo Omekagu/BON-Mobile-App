@@ -92,7 +92,7 @@ if(newLikedState){
   const handleShare = async () => {
     try {
       const hotelLink = `https://yourhotelwebsite.com/hotel/${hotel._id}`; // Ensure it's a full URL
-      const message = `🏨 Check out this amazing hotel: *${hotel.name}* 📍 ${hotel.location}\n💰 Price: $${hotel.pricePerNight} per night.\n🔗 Click here: ${hotelLink}`;
+      const message = `🏨 Check out this amazing hotel: *${hotel.name}* 📍 ${hotel.location}\n💰 Price: $₦{hotel.pricePerNight.toLocaleString()} per night.\n🔗 Click here: ${hotelLink}`;
   
       const result = await Share.share({
         message: message,

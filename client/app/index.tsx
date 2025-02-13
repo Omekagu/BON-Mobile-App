@@ -26,10 +26,10 @@ export default function IndexPage() {
         }
 
         // Redirect to Login if not authenticated
-        router.replace("/registration/Login");
+        router.replace("/registration/Registration");
       } catch (error) {
         console.error("Auth Check Error:", error);
-        router.replace("/registration/Login");
+        router.replace("/registration/Registration");
       } finally {
         setLoading(false);
       }

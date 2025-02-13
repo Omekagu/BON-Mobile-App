@@ -1,86 +1,92 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, Button, StyleSheet, Image, TouchableOpacity, SafeAreaView } from 'react-native';
-import { useRouter } from 'expo-router';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import * as ImagePicker from 'expo-image-picker';
-import * as Device from 'expo-device';
-import * as Localization from 'expo-localization';
-import AntDesign from '@expo/vector-icons/AntDesign';
-import axios from 'axios';
-import LabelInputComp from '@/component/LabelInputComp';
-import TextGreen from '@/component/TextComp/TextGreen';
-import CustomBotton from '@/component/CustomBotton';
-import Toast from 'react-native-toast-message';
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  SafeAreaView,
+} from "react-native";
+import { useRouter } from "expo-router";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import * as Device from "expo-device";
+import * as Localization from "expo-localization";
+import axios from "axios";
+import LabelInputComp from "@/component/LabelInputComp";
+import CustomBotton from "@/component/CustomBotton";
+import Toast from "react-native-toast-message";
+import * as ImagePicker from "expo-image-picker";
 
-const Registration =()=>{
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [profileImage, setProfileImage] = useState(null);
-  const [deviceType, setDeviceType] = useState('');
-  const [userCountry, setUserCountry] = useState('');
-  const [referral, setReferral] = useState('');
+
+
+const Registration: React.FC = () => {
+  const [username, setUsername] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [phoneNumber, setPhoneNumber] = useState<string>("");
+  const [profileImage, setProfileImage] = useState<string | null>(null);
+  const [deviceType, setDeviceType] = useState<string>("");
+  const [userCountry, setUserCountry] = useState<string>("");
+  const [referral, setReferral] = useState<string>("");
 
   const router = useRouter();
 
   useEffect(() => {
     const fetchDeviceInfo = async () => {
-      const deviceName = Device.modelName;
-      setDeviceType(deviceName || 'Unknown Device');
-
-      const country = Localization.getCountry() || 'Unknown Country';
-      setUserCountry(country);
-
+      setDeviceType(Device.modelName || "Unknown Device");
+  
       try {
-        const response = await axios.get('https://ipapi.co/json/');
-        setUserCountry(response.data.country_name || country);
+        const { data } = await axios.get("https://ipapi.co/json/");
+        setUserCountry(data.country_name || Localization.region || "Unknown Country");
       } catch (error) {
         console.log("Could not fetch country via IP, using device setting.");
+        setUserCountry(Localization.region || "Unknown Country");
       }
     };
+  
     fetchDeviceInfo();
   }, []);
-
+  
+ 
   const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 1,
-    });
-
-    if (!result.canceled) {
-      setProfileImage(result.assets[0].uri);
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images, // ✅ Corrected
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 1,
+        selectionLimit: 1, // ✅ Ensures only one image is selected
+      });
+  
+      if (!result.canceled) {
+        setProfileImage(result.assets?.[0]?.uri ?? null); // ✅ Safe handling
+      }
+    } catch (error) {
+      console.error("Image picking error:", error);
     }
   };
+  
+  
+  
 
-  const validatePassword = (password) => {
-    return /[A-Z]/.test(password) && /\d/.test(password) && /[!@#$%^&*(),.?":{}|<>]/.test(password);
-  };
+  const validateEmail = (email: string): boolean =>
+    /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email);
 
-  const validateEmail = (email) => {
-    return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email);
-  };
-
-  const validatePhoneNumber = (phoneNumber) => {
-    return /^\d{11}$/.test(phoneNumber);
-  };
+  const validatePhoneNumber = (phoneNumber: string): boolean => /^\d{11}$/.test(phoneNumber);
 
   const handleSubmit = async () => {
     if (!username || !email || !password || !phoneNumber) {
-      Toast.show({ type: 'error', text1: 'Error', text2: 'All fields are required' });
+      Toast.show({ type: "error", text1: "Error", text2: "All fields are required" });
       return;
     }
     if (!validateEmail(email)) {
-      Toast.show({ type: 'error', text1: 'Error', text2: 'Invalid email format' });
+      Toast.show({ type: "error", text1: "Error", text2: "Invalid email format" });
       return;
     }
     if (!validatePhoneNumber(phoneNumber)) {
-      Toast.show({ type: 'error', text1: 'Error', text2: 'Phone number must be exactly 11 digits' });
+      Toast.show({ type: "error", text1: "Error", text2: "Phone number must be exactly 11 digits" });
       return;
     }
-    
 
     const userData = {
       username,
@@ -93,26 +99,25 @@ const Registration =()=>{
     };
 
     try {
-      await axios.post('http://10.0.1.24:5001/register', userData);
-      Toast.show({ type: 'success', text1: 'Success', text2: 'Registration complete' });
-      setUsername('');
+      await axios.post("http://10.0.1.24:5001/register", userData);
+      Toast.show({ type: "success", text1: "Success", text2: "Registration complete" });
+
+      setUsername("");
       setProfileImage(null);
-      setEmail('');
-      setPassword('');
-      setPhoneNumber('');
-      setReferral('');
-      router.push('/registration/Login');
+      setEmail("");
+      setPassword("");
+      setPhoneNumber("");
+      setReferral("");
+
+      router.push("/registration/Login");
     } catch (error) {
-      Toast.show({ type: 'error', text1: 'Error', text2: 'Registration failed, try again.' });
+      Toast.show({ type: "error", text1: "Error", text2: "Registration failed, try again." });
     }
   };
 
   return (
     <KeyboardAwareScrollView contentContainerStyle={styles.container}>
-      {/* <SafeAreaView style={styles.header}>
-        <AntDesign name="arrowleft" size={24} color="black" onPress={() => router.back()} />
-   
-      </SafeAreaView> */}
+      <SafeAreaView>
 
       <Text style={styles.infoText}>Create your account</Text>
 
@@ -129,19 +134,34 @@ const Registration =()=>{
         <LabelInputComp label="Email" placeholder="Email" value={email} onChangeText={setEmail} />
         <LabelInputComp label="Phone Number" placeholder="Phone Number" value={phoneNumber} onChangeText={setPhoneNumber} />
         <LabelInputComp label="Password" placeholder="Password" value={password} onChangeText={setPassword} />
-        <LabelInputComp label="referral code" placeholder="referral" value={referral} onChangeText={setReferral} />
+        <LabelInputComp label="Referral Code" placeholder="Referral" value={referral} onChangeText={setReferral} />
 
-        <Text style={styles.deviceInfo}>
-          📍 Location: {userCountry || 'Detecting...'} {"\n"}
-          📱 Device: {deviceType || 'Detecting...'}
-        </Text>
+        <Text style={styles.deviceInfo}>📱 Device: {deviceType || "Detecting..."}</Text>
 
         <Text style={styles.termsText}>
-          By signing up, you agree to BON'S <TextGreen text="Terms of Use" /> and <TextGreen text="Privacy Policy" />.
+          By signing up, you agree to BON'S{" "}
+          <Text style={styles.linkText} onPress={() => router.push("/registration/Login")}>
+            Terms of Use
+          </Text>{" "}
+          and{" "}
+          <Text style={styles.linkText} onPress={() => router.push("/registration/Login")}>
+            Privacy Policy
+          </Text>
+          .
         </Text>
-<Text> Already have an account?      <Button color={'#000'} title="Login instead ?" onPress={() => router.push('/registration/Login')} /></Text>
+
+        <View style={styles.loginPrompt}>
+          <Text>
+            Already have an account?{" "}
+            <Text style={styles.linkText} onPress={() => router.push("/registration/Login")}>
+              Login
+            </Text>
+          </Text>
+        </View>
+
         <CustomBotton onPress={handleSubmit} button="Sign Up" />
       </View>
+</SafeAreaView>
     </KeyboardAwareScrollView>
   );
 };
@@ -149,43 +169,36 @@ const Registration =()=>{
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#a63932',
+    backgroundColor: "#a63932",
     paddingHorizontal: 10,
-    // paddingBottom: 30,
-    justifyContent: 'center',
-    paddingTop:30,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 25,
+    justifyContent: "center",
+    paddingTop: 30,
   },
   infoText: {
     fontSize: 18,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
     marginBottom: 20,
-    color: '#fff',
+    color: "#fff",
   },
   formContainer: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     padding: 20,
     borderRadius: 10,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 5,
     elevation: 3,
   },
   imagePicker: {
-    alignSelf: 'center',
+    alignSelf: "center",
     width: 100,
     height: 100,
     borderRadius: 50,
-    backgroundColor: '#eee',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "#eee",
+    justifyContent: "center",
+    alignItems: "center",
     marginBottom: 15,
   },
   profileImage: {
@@ -194,39 +207,30 @@ const styles = StyleSheet.create({
     borderRadius: 50,
   },
   imageText: {
-    color: '#666',
+    color: "#666",
   },
   deviceInfo: {
     fontSize: 15,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
     marginVertical: 10,
-    color: '#333',
+    color: "#333",
   },
   termsText: {
     fontSize: 14,
-    textAlign: 'center',
+    textAlign: "center",
     padding: 10,
   },
-  socialButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginTop: 15,
+  loginPrompt: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginVertical: 10,
   },
-  socialButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 10,
-    backgroundColor: '#f2f2f2',
-    borderRadius: 5,
+  linkText: {
+    fontSize: 16,
+    fontWeight: "500",
+    color: "#007BFF",
   },
 });
 
 export default Registration;
-
-
-
-
-
-
-
