@@ -32,7 +32,7 @@ const Suggestions = ( {item}) => {
     }
     setLoading(true);
     try {
-      const response = await axios.get(`http://10.0.1.35:5001/hotels/search/${encodeURIComponent(hotelName)}`);
+      const response = await axios.get(`http://10.0.1.24:5001/hotels/search/${encodeURIComponent(hotelName)}`);
       setHotels(response.data.length ? response.data : []);
       if (!response.data.length) {
         Toast.show({ type: "error", position: "top", text1: "No hotels found matching the given name." });
@@ -74,7 +74,9 @@ const Suggestions = ( {item}) => {
               }}
                 image={item.images[0] || "https://i.postimg.cc/5ttJxCXK/YTW-DELUXE-6.jpg"}
                 name={item.name}
-                price={item.pricePerNight || "100,000,00"}
+                stars={item.rating}
+                reviews={item.reviews}
+                price={(item.pricePerNight ? Number(item.pricePerNight).toLocaleString() : "100,000,000")}
                 location={item.location || "N/A"}
               />
             </Animatable.View>

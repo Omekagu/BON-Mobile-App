@@ -1,11 +1,7 @@
 const mongoose = require('mongoose')
 
 const UserDetailsSchema = new mongoose.Schema({
-  firstName: {
-    type: String,
-    required: true,
-  },
-  lastName: {
+  username: {
     type: String,
     required: true,
   },
@@ -21,6 +17,9 @@ const UserDetailsSchema = new mongoose.Schema({
   phoneNumber: {
     type: String,
   },
+  profileImage: { type: String },
+  deviceType: { type: String },
+  userCountry: { type: String },
   role: {
     type: String,
     enum: ['user', 'admin'], // You can have different roles for admin and users
@@ -31,7 +30,10 @@ const UserDetailsSchema = new mongoose.Schema({
     default: Date.now,
   },   
 },{
+  timestamps: true,
   collection: 'UserInfo'
 });
 
 mongoose.model('UserInfo', UserDetailsSchema)
+
+

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import axios from "axios";
 import Toast from "react-native-toast-message";
 import {
@@ -12,7 +12,8 @@ import {
   StyleSheet,
   Linking,
   Modal,
- ActivityIndicator
+ ActivityIndicator,
+ Share
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Feather from "@expo/vector-icons/Feather";
@@ -33,9 +34,15 @@ export default function HotelBookingScreen() {
   const handleLike = async () => {
     const newLikedState = !liked;
     const newCount = newLikedState ? likesCount + 1 : likesCount - 1;
-
-    setLiked(newLikedState);
-    setLikesCount(newCount);
+if(newLikedState){
+  setLiked(newLikedState);
+  setLikesCount(newCount);
+  Toast.show({type: "success", text1: 'saved to your Favourite.'})
+}else{
+  Toast.show({type: 'error', text1: 'Unsaved from Favourite.'})
+  setLiked(newLikedState);
+}
+    
 
     try {
       // Simulating API call to update likes in the database
@@ -55,7 +62,7 @@ export default function HotelBookingScreen() {
   useEffect(() => {
     const fetchHotelDetails = async () => {
       try {
-        const response = await axios.get(`http://10.0.1.35:5001/hotels/${id}`);
+        const response = await axios.get(`http://10.0.1.24:5001/hotels/${id}`);
         setHotel(response.data);
       } catch (error) {
         Toast.show({ type: "error", text1: "Failed to load hotel details." });
@@ -81,6 +88,30 @@ export default function HotelBookingScreen() {
   const handleEmail = () => {
     Linking.openURL(`mailto:${hotel.contact.email}?subject=Support Request&body=Hello, I need help with...`);
   };
+
+  const handleShare = async () => {
+    try {
+      const hotelLink = `https://yourhotelwebsite.com/hotel/${hotel._id}`; // Ensure it's a full URL
+      const message = `🏨 Check out this amazing hotel: *${hotel.name}* 📍 ${hotel.location}\n💰 Price: $${hotel.pricePerNight} per night.\n🔗 Click here: ${hotelLink}`;
+  
+      const result = await Share.share({
+        message: message,
+        url: hotelLink, // Ensures it's detected as a clickable link
+      });
+  
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          console.log("Shared via:", result.activityType);
+        } else {
+          console.log("Shared successfully!");
+        }
+      } else if (result.action === Share.dismissedAction) {
+        console.log("Share dismissed.");
+      }
+    } catch (error) {
+      console.error("Error sharing hotel:", error);
+    }
+  };
   // console.log(hotel.contact)
   // console.log(hotel.reviews)
 
@@ -94,9 +125,10 @@ export default function HotelBookingScreen() {
         {/* Navigation & Header */}
         <View style={styles.header}>
           <Feather name="arrow-left" size={24} color="black" />
-
           <View  style={styles.right}>
-          <AntDesign style={{marginRight:20}} name="sharealt" size={30} color="black" />
+          <TouchableOpacity onPress={handleShare}>
+             <AntDesign style={{ marginRight: 20 }} name="sharealt" size={30} color="black" />
+             </TouchableOpacity>
           <TouchableOpacity onPress={handleLike}>
               <AntDesign name="heart" size={30} color={liked ? "red" : "black"} />
             </TouchableOpacity>
@@ -148,9 +180,9 @@ export default function HotelBookingScreen() {
           </View>
           <View style={styles.rating}>
             <Text style={styles.star}>⭐{hotel.rating}</Text>
-            <Text style={styles.reviews}>{hotel.reviews}</Text>
+            <Text style={styles.reviews}>({hotel.reviews})k · reviews</Text>
           </View>
-          <Text style={styles.price}>${hotel.pricePerNight} - per night</Text>
+          <Text style={styles.price}>₦{hotel.pricePerNight ? Number(hotel.pricePerNight).toLocaleString() : "100,000,000"} - perNight</Text>
         </View>
 
         {/* Amenities */}
@@ -201,14 +233,28 @@ export default function HotelBookingScreen() {
           </View>
         </View>
 
-        {/* Description */}
+        <View>
+        <View style={styles.socials}>
+            <TouchableOpacity onPress={handleEmail}>
+            <FontAwesome name="facebook-square" size={24} color="black" />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleCall}>
+            <FontAwesome5 name="instagram" size={24} color="black" />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleCall}>
+            <FontAwesome name="twitter" size={24} color="black" />
+            </TouchableOpacity>
+          </View>
+        </View>
+
+            {/* Description */}
         <Text style={styles.description}>
           {hotel.description}
         </Text>
 
         {/* Book Now Button */}
-        <TouchableOpacity style={styles.bookButton}>
-          <Text style={styles.bookButtonText}>Next - ${hotel.pricePerNight}</Text>
+        <TouchableOpacity style={styles.bookButton}  onPress={() => router.push({ pathname: '/SelectDateRange', params: { price: hotel.pricePerNight, hotelId: hotel._id } })}>
+          <Text style={styles.bookButtonText}>Next - ₦{hotel.pricePerNight ? Number(hotel.pricePerNight).toLocaleString() : '100,000'}</Text>
         </TouchableOpacity>
         {/* </View> */}
         </ScrollView>
@@ -237,6 +283,11 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: 10,
     padding:10,
+  },
+  socials:{
+    flexDirection: "row",
+    gap: 15,
+    margin:15
   },
   right:{
     flexDirection: 'row',

@@ -19,7 +19,7 @@ export default function _layout() {
         <Stack.Screen name="index" options={{ title: 'Home', headerShown: false, animation: 'fade' }} />
         <Stack.Screen name="registration/Registration" options={{ title: 'Registration',animation: 'fade' }} />
         <Stack.Screen name="registration/Login" options={{ title: 'Login', headerShown: false,animation: 'fade' }} />
-        <Stack.Screen name="registration/ForgotPassword" options={{ title: 'Forgotpassword',animation: 'fade' }} />
+        <Stack.Screen name="registration/ForgotPassword" options={{headerShown: false, title: 'Forgotpassword',animation: 'fade' }} />
         <Stack.Screen name="(stacks)" options={{ headerShown: false}}/>
         <Stack.Screen name="(tabs)" options={{ headerShown: false}} />
         <Stack.Screen name="[missing]" options={{ title: '404' }} />

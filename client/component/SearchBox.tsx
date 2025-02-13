@@ -11,12 +11,12 @@ export default function SearchBox({
   hotelname,
   image,
   rating,
-  rate,
   review,
   landmark,
   distantFromLandmark,
   noBed,
   price,
+  onPress
 }) {
   const router = useRouter();
   const [iconColor, setIconColor] = useState('black');
@@ -26,17 +26,17 @@ export default function SearchBox({
   };
   return (
     <TouchableOpacity
-      onPress={() => {
-        router.push('/SearchPageInfo');
-      }}
+      onPress={onPress}
     >
       <View
         style={{
           flexDirection: 'row',
           backgroundColor: '#fff',
-          padding: 5,
+          padding: 8,
           borderRadius: 10,
           marginVertical: 5,
+          marginHorizontal:5,
+          
 
           ...Platform.select({
             ios: {
@@ -86,7 +86,8 @@ export default function SearchBox({
                 <Fontisto name="heart" size={24} color={iconColor} />
               </TouchableOpacity>
             </View>
-            <TextCaps text={`${rating} ${rate}・${review} reviews`} />
+            <TextCaps text={`⭐⭐⭐⭐`} />
+            <TextCaps text={`(${review})k reviews`} />
             <TextCaps text={landmark} />
             <TextCaps text={distantFromLandmark} />
           </View>

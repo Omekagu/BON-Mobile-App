@@ -19,7 +19,7 @@ const SearchSection = () => {
       }}
     >
       <Search
-        onPress={() => router.push('/Search')}
+        onPress={() => router.push('/')}
         icon={
           <MaterialIcons name="location-searching" size={24} color="black" />
         }

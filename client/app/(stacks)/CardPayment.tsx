@@ -1,31 +1,48 @@
 import React from 'react';
 import { Paystack } from 'react-native-paystack-webview';
 import { View, Text } from 'react-native';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
+import Toast from 'react-native-toast-message';
 
-export default function CardPayment(){
+export default function CardPayment() {
+  const { price, hotelId } = useLocalSearchParams(); 
+
+  console.log("Received price:", price); // Debugging line
+
+  if (!price) {
+    return <Text>Error: Price not received</Text>; // Handle missing price
+  }
+
+  const amount = Number(price.toString().replace(/,/g, '')); // Convert safely
+console.log(amount)
+  if (isNaN(amount)) {
+    return <Text>Error: Invalid price</Text>; // Handle invalid price
+  }
+
+  const handlePaymentSuccess = () => {
+    router.push({ pathname: "/Bookings", params: { amount, hotelId } });
+  };
 
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-    <Text>Payment with Paystack</Text>
-    
-    <Paystack  
-        paystackKey="pk_test_3e98f6bdd30173891907024c91b3b9293b4d0014" // Replace with your test public key
-        amount={'100000.00'} // The amount for the test transaction
-        billingEmail="reservationtion@booking.com"
+      <Text>Payment with Paystack</Text>
+      
+      <Paystack  
+        paystackKey="pk_test_3e98f6bdd30173891907024c91b3b9293b4d0014"
+        amount={amount * 1.0} // Ensure amount is converted correctly
+        billingEmail="reservation@booking.com"
         activityIndicatorColor="green"
         onCancel={(e) => {
-          console.log('Payment canceled', e);
-          // Handle payment cancellation (e.g., show a cancellation message)
+          Toast.show({ type: 'error', text1: 'Payment failed' });
+          router.push({ pathname: "/Payments", params: { price, hotelId } });
         }}
         onSuccess={(res) => {
-          console.log('Payment successful', res),
-          router.push('/Home')
-          // Handle payment success (e.g., validate the transaction on your backend)
+          Toast.show({ type: 'success', text1: 'Payment successful' });
+          router.push({ pathname: "/Payments", params: { price, hotelId } });
+          handlePaymentSuccess();
         }}
-        autoStart={true} // Automatically start the payment flow
+        autoStart={true} 
       />
     </View>
-
   );
 }

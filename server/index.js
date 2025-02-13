@@ -33,28 +33,25 @@ console.log(e)
 const User = mongoose.model('UserInfo');
 
 const transporter = nodemailer.createTransport({
-  host: 'smtp.office365.com',  // Outlook SMTP server
-  port: 587,                   // Use 587 for TLS
-  secure: false,               // false for TLS (must be true for SSL on port 465)
+  host: "smtp.office365.com",
+  port: 587,
+  secure: false, // Must be false for TLS (true for SSL)
   auth: {
-    user: 'ea@bonhotelsinternational.com',   // Your Outlook email
-    pass: process.env.EMAIL_PASSWORD  // App Password if 2FA is enabled
+    user: "ea@bonhotelsinternational.com",
+    pass: "0~q^NNVW",
   },
   tls: {
-    ciphers: 'SSLv3',
-    rejectUnauthorized: false}
-  })
+    rejectUnauthorized: false, // May help bypass SSL errors, but not recommended for production
+  },
+});
 
-
-// // Email Transporter Setup
-// const transporter = nodemailer.createTransport({
-//   service: 'gmail',
-//   auth: {
-//     user: 'bonhotels68@gmail.com', // Set in .env
-//     pass: 'Yzkvng@1999', // Set in .env
-//   }
-// });
-
+transporter.verify((error, success) => {
+  if (error) {
+    console.error("Error:", error);
+  } else {
+    console.log("Server is ready to take messages.");
+  }
+});
   
   // Function to send welcome email
   const sendWelcomeEmail = (email, firstName) => {
@@ -81,7 +78,15 @@ const transporter = nodemailer.createTransport({
 
 // Register User
 app.post("/register", async(req, res)=>{
-    const {firstName, lastName, email, password, phoneNumber} = req.body;
+    const {
+      username,
+      email,
+      password,
+      phoneNumber,
+      profileImage,
+      deviceType,
+      userCountry,
+    } = req.body;
 const oldUser= await User.findOne({email:email});
 if(oldUser){
     return res.send({data: "User already exist!!"})
@@ -90,13 +95,22 @@ if(oldUser){
 const encryptedPassword = await bcrypt.hash(password, 10)
     try{
         await User.create({
-            firstName,
-            lastName,
-            email, 
-            password:encryptedPassword,
-            phoneNumber 
+          username,
+          email,
+          password: encryptedPassword,
+          phoneNumber,
+          profileImage,
+          deviceType,
+          userCountry,
         });
-        sendWelcomeEmail(email, firstName);
+        // sendWelcomeEmail(email, firstName);
+        console.log( username,
+          email,
+          password,
+          phoneNumber,
+          profileImage,
+          deviceType,
+          userCountry,)
         res.send({status:"ok",data:  "User Created Successfully" })
     }catch(error){
         res.send({status: "error", data: error})
@@ -127,7 +141,7 @@ app.post('/login', async(req,res)=>{
           const token = jwt.sign({ email: user.email }, jwtSecret, { expiresIn: '1h' });
           return res.status(200).json({ status: 'ok', data: token })
         });
-        sendWelcomeEmail(user.email);
+        // sendWelcomeEmail(user.email);
       })
       .catch(err => {
         res.status(500).json({ status: 'error', message: 'Server error' });

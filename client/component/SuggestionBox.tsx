@@ -2,7 +2,7 @@ import React from 'react';
 import EvilIcons from '@expo/vector-icons/EvilIcons';
 import { Image, Platform, Text, TouchableOpacity, View } from 'react-native';
 
-const SuggestionBox = ({ name, price, location, image, onPress }) => {
+const SuggestionBox = ({ name, price, location, image,stars, reviews, onPress }) => {
   
   return (
     <TouchableOpacity
@@ -52,9 +52,23 @@ const SuggestionBox = ({ name, price, location, image, onPress }) => {
       >
         
         <Text style={{ fontWeight: '700' }}>{name}</Text>
+
+        <View style={{flexDirection: 'row', justifyContent:'space-between', alignItems:'center'}}>
+        <View style={{flexDirection:'row', alignItems:'center'}}>
+        <Text>⭐⭐⭐⭐</Text>
+        </View>
+        <Text
+          style={{
+            fontWeight: '700',
+            fontSize: 12,
+          }}
+          >
+          ({reviews})k · Reviews
+        </Text>
+        </View>
       <View style={{flexDirection: 'row', justifyContent:'space-between', alignItems:'center'}}>
         <View style={{flexDirection:'row', alignItems:'center'}}>
-        <EvilIcons name="location" size={24} color="black" /><Text  style={{fontWeight: '300'}}>{location}</Text>
+        <EvilIcons name="location" size={24} color="black" /><Text  style={{fontWeight: '700', fontSize:13}}>{location}</Text>
         </View>
         <Text
           style={{
@@ -62,7 +76,7 @@ const SuggestionBox = ({ name, price, location, image, onPress }) => {
             fontSize: 17,
           }}
           >
-          ${price}
+          ₦{price}
         </Text>
         </View>
       </View>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -6,14 +6,37 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LabelInputComp from '@/component/LabelInputComp';
 import CustomBotton from '@/component/CustomBotton';
-import Toast from 'react-native-toast-message'; // Import Toast
+import Toast from 'react-native-toast-message';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
 
-  const handleSubmit = () => {
+  // ✅ Check if User is Already Logged In
+  useEffect(() => {
+    const checkAuth = async () => {
+      const tokenData = await AsyncStorage.getItem("token");
+
+      if (tokenData) {
+        const { token, expiryTime } = JSON.parse(tokenData);
+        
+        if (Date.now() < expiryTime) {
+          // Token is valid, redirect to Home page
+          router.replace('/Home');
+          return;
+        } else {
+          // Token expired, remove it
+          await AsyncStorage.removeItem("token");
+        }
+      }
+    };
+
+    checkAuth();
+  }, []);
+
+  // ✅ Handle Login
+  const handleSubmit = async () => {
     if (!email.trim() || !password.trim()) {
       Toast.show({
         type: 'error',
@@ -27,50 +50,50 @@ const Login = () => {
 
     const userData = { email: email.trim().toLowerCase(), password };
 
-    axios.post('http://10.0.1.35:5001/login', userData)
-      .then(async (res) => {
-        if (res.data?.data) {
-          const token = res.data.data;
-          console.log('JWT Token:', token);
+    try {
+      const res = await axios.post('http://10.0.1.24:5001/login', userData);
+      if (res.data?.data) {
+        const token = res.data.data;
+        console.log('JWT Token:', token);
 
-          await AsyncStorage.setItem("token", JSON.stringify(token));
-          router.push('/Home');
-          
-          // Show success toast
-          Toast.show({
-            type: 'success',
-            position: 'top',
-            text1: 'Success',
-            text2: 'Welcome Back!',
-            visibilityTime: 4000,
-          });
-        } else {
-          // Show error toast for failed login
-          Toast.show({
-            type: 'error',
-            position: 'top',
-            text1: 'Error',
-            text2: 'Login failed! Token not received.',
-            visibilityTime: 4000,
-          });
-        }
-      })
-      .catch((error) => {
-        console.error('Login Error:', error);
-        // Show error toast for any other errors
+        // ✅ Set Expiry Time (30 minutes from now)
+        const expiryTime = Date.now() + 30 * 60 * 1000;
+
+        await AsyncStorage.setItem("token", JSON.stringify({ token, expiryTime }));
+
+        router.replace('/Home'); // ✅ Redirect to Home page after login
+
+        Toast.show({
+          type: 'success',
+          position: 'top',
+          text1: 'Success',
+          text2: 'Welcome Back!',
+          visibilityTime: 4000,
+        });
+      } else {
         Toast.show({
           type: 'error',
           position: 'top',
           text1: 'Error',
-          text2: 'Login failed! Please check your credentials.',
+          text2: 'Login failed! Token not received.',
           visibilityTime: 4000,
         });
+      }
+    } catch (error) {
+      console.error('Login Error:', error);
+      Toast.show({
+        type: 'error',
+        position: 'top',
+        text1: 'Error',
+        text2: 'Login failed! Please check your credentials.',
+        visibilityTime: 4000,
       });
+    }
   };
 
-  const FgPassword = ()=>{
-    router.push("registration/ForgotPassword")
-  }
+  const FgPassword = () => {
+    router.push("registration/ForgotPassword");
+  };
 
   return (
     <KeyboardAwareScrollView 
@@ -83,7 +106,7 @@ const Login = () => {
         <LabelInputComp label="Password" placeholder="Enter your password" value={password} onChangeText={setPassword} />
 
         <TouchableOpacity onPress={FgPassword}>
-        <Text style={styles.forgot}>forgot password?</Text>
+          <Text style={styles.forgot}>Forgot password?</Text>
         </TouchableOpacity>
         <CustomBotton onPress={handleSubmit} button="Sign In" />
       </View>
@@ -109,11 +132,11 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     elevation: 3,
   },
-  forgot:{
-    paddingVertical:10,
-    fontSize:20,
-    textTransform:'capitalize',
-  }
+  forgot: {
+    paddingVertical: 10,
+    fontSize: 20,
+    textTransform: 'capitalize',
+  },
 });
 
 export default Login;

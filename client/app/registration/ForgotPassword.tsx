@@ -20,7 +20,7 @@ const ForgotPassword = () => {
       return;
     }
 
-    axios.post('http://10.0.1.35:5001/send-otp', { email: email.trim().toLowerCase() })
+    axios.post('http://10.0.1.24:5001/send-otp', { email: email.trim().toLowerCase() })
       .then(() => {
         setStep(2);
         Toast.show({ type: 'success', text1: 'OTP Sent', text2: 'Check your email!' });
@@ -36,7 +36,7 @@ const ForgotPassword = () => {
       return;
     }
 
-    axios.post('http://10.0.1.35:5001/verify-otp', { email, otp })
+    axios.post('http://10.0.1.24:5001/verify-otp', { email, otp })
       .then(() => {
         setStep(3);
         Toast.show({ type: 'success', text1: 'OTP Verified', text2: 'Set your new password' });
@@ -52,7 +52,7 @@ const ForgotPassword = () => {
       return;
     }
 
-    axios.post('http://10.0.1.35:5001/reset-password', { email, newPassword })
+    axios.post('http://10.0.1.24:5001/reset-password', { email, newPassword })
       .then(() => {
         Toast.show({ type: 'success', text1: 'Success', text2: 'Password updated!' });
         router.push('/Login');

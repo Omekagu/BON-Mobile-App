@@ -25,6 +25,13 @@ export default function _layout() {
         }}
       />
       <Stack.Screen
+        name="SelectDateRange"
+        options={{
+          title: 'SelectDateRange',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
         name="SearchPage"
         options={{
           title: 'SearchPage',

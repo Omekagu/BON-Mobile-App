@@ -8,6 +8,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { useRouter } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function More() {
   const router = useRouter();
@@ -80,11 +81,18 @@ export default function More() {
           icon={<Ionicons name="settings-outline" size={24} color="#a63932" />}
         />
         <Text
-          style={{ textAlign: 'center', color: 'red', fontSize: 19 }}
-          onPress={() => router.push('/registration/Login')}
-        >
-          Log Out
-        </Text>
+        style={{ textAlign: 'center', color: 'red', fontSize: 19 }}
+        onPress={async () => {
+        try {
+          await AsyncStorage.removeItem("token"); // Clear the token
+          router.replace("/registration/Login"); // Redirect to login page
+        } catch (error) {
+          console.error("Logout Error:", error);
+        }
+      }}
+      >
+      Log Out
+      </Text>
       </ScrollView>
     </View>
   );

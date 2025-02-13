@@ -7,7 +7,9 @@ export default function TextCaps({ text }) {
       <Text
         style={{
           textTransform: 'capitalize',
-          fontSize: 16,
+          fontSize: 13,
+          lineHeight:25,
+          fontWeight:700,
           color: '#545351',
           textAlign: 'justify',
         }}
