@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   SafeAreaView,
+  Alert,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -46,12 +47,21 @@ const Registration: React.FC = () => {
   
     fetchDeviceInfo();
   }, []);
-  
  
+
   const pickImage = async () => {
+    
     try {
+        // 🔹 Request permission first
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== 'granted') {
+          Alert.alert('Permission Denied', 'Please allow access to the media library.');
+          return;
+        }
+
+
       const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images, // ✅ Corrected
+        mediaTypes: ['images'], // ✅ Use 'image' as a string
         allowsEditing: true,
         aspect: [1, 1],
         quality: 1,
@@ -65,7 +75,7 @@ const Registration: React.FC = () => {
       console.error("Image picking error:", error);
     }
   };
-  
+
   
   
 
@@ -126,7 +136,7 @@ const Registration: React.FC = () => {
           {profileImage ? (
             <Image source={{ uri: profileImage }} style={styles.profileImage} />
           ) : (
-            <Text style={styles.imageText}>Upload Profile Photo</Text>
+            <Text style={styles.imageText}>Upload Photo</Text>
           )}
         </TouchableOpacity>
 

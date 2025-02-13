@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity, BackHandler } from 'react-native';
 import { useRouter } from 'expo-router';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import axios from 'axios';
@@ -12,6 +12,22 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
+
+
+  useEffect(() => {
+    const backAction = () => {
+      // Prevent going back to previous screen
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, []);
+
 
   // ✅ Check if User is Already Logged In
   useEffect(() => {
@@ -101,7 +117,18 @@ const Login = () => {
       scrollEnabled={false} 
       contentContainerStyle={styles.container}
     >
+      
       <View style={styles.formContainer}>
+ <View style={styles.loginPrompt}>
+          <Text>
+            Create an account ?{" "}
+            <Text style={styles.linkText} onPress={() => router.push("/registration/Registration")}>
+              Register
+            </Text>
+          </Text>
+        </View>
+
+
         <LabelInputComp label="Email" placeholder="Enter your email" value={email} onChangeText={setEmail} />
         <LabelInputComp label="Password" placeholder="Enter your password" value={password} onChangeText={setPassword} />
 
@@ -131,6 +158,16 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 5,
     elevation: 3,
+  },
+  loginPrompt: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginVertical: 10,
+  },
+  linkText: {
+    fontSize: 16,
+    fontWeight: "500",
+    color: "#007BFF",
   },
   forgot: {
     paddingVertical: 10,
