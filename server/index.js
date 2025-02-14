@@ -8,6 +8,16 @@ const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const Hotel = require('./model/hotelModel');
 const Otp = require('./model/Otpmodel')
+const Admin = require('./model/Admin')
+const User = require('./model/UserDetails')
+const cors = require("cors");
+
+
+
+app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
+// ✅ Configure CORS properly
+const allowedOrigins = ["http://localhost:3000", "http://10.0.1.24:5001"];
+
 
 
 require('./model/UserDetails');
@@ -29,51 +39,49 @@ mongoose
 console.log(e)
 })
 
-// Fetching Userschema from Db
-const User = mongoose.model('UserInfo');
 
-const transporter = nodemailer.createTransport({
-  host: "smtp.office365.com",
-  port: 587,
-  secure: false, // Must be false for TLS (true for SSL)
-  auth: {
-    user: "ea@bonhotelsinternational.com",
-    pass: "0~q^NNVW",
-  },
-  tls: {
-    rejectUnauthorized: false, // May help bypass SSL errors, but not recommended for production
-  },
-});
+// const transporter = nodemailer.createTransport({
+//   host: "smtp.office365.com",
+//   port: 587,
+//   secure: false, // Must be false for TLS (true for SSL)
+//   auth: {
+//     user: "ea@bonhotelsinternational.com",
+//     pass: "0~q^NNVW",
+//   },
+//   tls: {
+//     rejectUnauthorized: false, // May help bypass SSL errors, but not recommended for production
+//   },
+// });
 
-transporter.verify((error, success) => {
-  if (error) {
-    console.error("Error:", error);
-  } else {
-    console.log("Server is ready to take messages.");
-  }
-});
+// transporter.verify((error, success) => {
+//   if (error) {
+//     console.error("Error:", error);
+//   } else {
+//     console.log("Server is ready to take messages.");
+//   }
+// });
   
-  // Function to send welcome email
-  const sendWelcomeEmail = (email, firstName) => {
-    const mailOptions = {
-      from: 'bonhotels68@gmail.com', // Sender address
-      to: email, // Recipient email
-      subject: 'Welcome to Our App!',
-      html: `<h1>Welcome, ${firstName}!</h1>
-             <p>Thank you for registering with Bon Hotels. We're excited to have you onboard.</p>
-             <p>If you have any questions, feel free to contact us at yellowtrumpethotels@gmail.com.</p>
-             <p>Best regards,<br>The Team</p>`,
-    };
+  // // Function to send welcome email
+  // const sendWelcomeEmail = (email, firstName) => {
+  //   const mailOptions = {
+  //     from: 'bonhotels68@gmail.com', // Sender address
+  //     to: email, // Recipient email
+  //     subject: 'Welcome to Our App!',
+  //     html: `<h1>Welcome, ${firstName}!</h1>
+  //            <p>Thank you for registering with Bon Hotels. We're excited to have you onboard.</p>
+  //            <p>If you have any questions, feel free to contact us at yellowtrumpethotels@gmail.com.</p>
+  //            <p>Best regards,<br>The Team</p>`,
+  //   };
   
-    // Send the email
-    transporter.sendMail(mailOptions, (err, info) => {
-      if (err) {
-        console.error('Error sending email:', err);
-      } else {
-        console.log('Email sent:', info.response);
-      }
-    });
-  };
+  //   // Send the email
+  //   transporter.sendMail(mailOptions, (err, info) => {
+  //     if (err) {
+  //       console.error('Error sending email:', err);
+  //     } else {
+  //       console.log('Email sent:', info.response);
+  //     }
+  //   });
+  // };
   
 
 // Register User
@@ -149,6 +157,49 @@ app.post('/login', async(req,res)=>{
     
 })
 
+// **📌 Admin Login Route**
+app.post("/admin/login", async (req, res) => {
+  console.log("Received login request:", req.body);
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return res.status(400).json({ error: "Missing email or password" });
+  }
+
+  try {
+    const admin = await Admin.findOne({ email });
+    if (!admin) {
+      console.log("Admin not found:", email);
+      return res.status(404).json({ error: "Admin not found" });
+    }
+
+    console.log("Admin found:", admin);
+
+    // const isMatch = await bcrypt.compare(password, admin.password);
+    // if (!isMatch) return res.status(400).json({ error: "Invalid credentials" });
+
+    const token = jwt.sign({ email: admin.email }, jwtSecret, { expiresIn: "1h" });
+    console.log("Token generated:", token);
+    res.json({ token });
+  } catch (err) {
+    console.error("Server error:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+// **📌 Protected Route (Example)**
+app.get("/api/protected", (req, res) => {
+  const token = req.headers["authorization"];
+  if (!token) return res.status(401).json({ error: "No token provided" });
+
+  try {
+    const decoded = jwt.verify(token.split(" ")[1], process.env.JWT_SECRET);
+    res.json({ message: "Authorized access", user: decoded });
+  } catch (error) {
+    res.status(403).json({ error: "Invalid token" });
+  }
+});
+
+
 
 // 📌 1️⃣ Send OTP
 app.post('/send-otp', async (req, res) => {
@@ -162,13 +213,13 @@ app.post('/send-otp', async (req, res) => {
     await Otp.create({ email, otp });
     console.log(email,otp)
 
-    // Send email
-    await transporter.sendMail({
-      from: 'bonhotels68@gmail.com',
-      to: email,
-      subject: 'Password Reset OTP',
-      text: `Your OTP is ${otp}. It expires in 5 minutes.`
-    });
+    // // Send email
+    // await transporter.sendMail({
+    //   from: 'bonhotels68@gmail.com',
+    //   to: email,
+    //   subject: 'Password Reset OTP',
+    //   text: `Your OTP is ${otp}. It expires in 5 minutes.`
+    // });
 
     res.json({ message: 'OTP sent to email' });
   } catch (error) {
