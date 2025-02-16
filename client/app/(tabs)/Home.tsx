@@ -12,31 +12,41 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Suggestions from "@/component/Suggestions"; // Ensure Suggestions uses FlatList inside
 
 export default function Home() {
-  useEffect(() => {
-    const getData = async () => {
-      try {
-        let token = await AsyncStorage.getItem("token");
-        if (!token) {
-          console.error("Token not found");
-          return;
-        }
-
-        token = token.replace(/^"|"$/g, ""); // Remove quotes if present
-        console.log("JWT Token:", token);
-
-        const response = await axios.post(
-          "http://10.0.1.24:5001/userData",
-          { token }
-        );
-        console.log("User Data:", response.data);
-      } catch (error) {
-        console.error("Error fetching user data:", error);
+  const getUserId = async () => {
+    try {
+      // Retrieve the stored token object
+      const userData = await AsyncStorage.getItem("token");
+  
+      if (!userData) {
+        console.log("No user data found in storage.");
+        return null;
       }
-    };
-
-    getData();
-  }, []);
-
+  
+      // Parse the JSON string
+      const parsedData = JSON.parse(userData);
+      let token = parsedData.token; // Extract token
+      console.log("Retrieved Token:", token);
+  
+      // Remove extra quotes if present
+      token = token.replace(/^"|"$/g, "");
+      console.log("Cleaned JWT Token:", token);
+  
+      // Fetch user data from backend
+      const response = await axios.get("http://172.20.10.3:5001/userData", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+  
+      console.log("User Data:", response.data);
+      return parsedData.userId; // Return userId after fetching data
+    } catch (error) {
+      console.error("Error retrieving user ID or fetching data:", error.response?.data || error);
+      return null;
+    }
+  };
+  
+  // Usage
+  getUserId().then((id) => console.log("Logged-in User ID:", id));
+  
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}

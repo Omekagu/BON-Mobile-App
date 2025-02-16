@@ -16,6 +16,7 @@ export default function CancellationBox({
   image,
   color,
   onDeletePressed,
+  onPress
 }) {
   const router = useRouter();
   const renderRightAction = () => {
@@ -25,9 +26,7 @@ export default function CancellationBox({
     <GestureHandlerRootView>
       <Swipeable renderRightActions={renderRightAction}>
         <TouchableOpacity
-          onPress={() => {
-            router.push('/SearchPageInfo');
-          }}
+          onPress={onPress}
         >
           <View
             style={{
@@ -39,15 +38,15 @@ export default function CancellationBox({
               gap: 5,
             }}
           >
-            <Text
+            {/* <Text
               style={{
                 fontSize: 20,
                 fontWeight: '500',
                 textTransform: 'capitalize',
               }}
             >
-              {city}
-            </Text>
+              {name}
+            </Text> */}
             <Text style={{ fontWeight: '500', fontSize: 12 }}>{date}</Text>
             <View
               style={{
@@ -69,7 +68,7 @@ export default function CancellationBox({
                 }}
               />
               <View style={{ gap: 5 }}>
-                <Text style={{ fontWeight: '700' }}>{name} Residence</Text>
+                <Text style={{ fontWeight: '700' }}>{name}</Text>
                 <Text>{datePrice}</Text>
                 <Text style={[{ color: color, fontWeight: '500' }]}>
                   {type}

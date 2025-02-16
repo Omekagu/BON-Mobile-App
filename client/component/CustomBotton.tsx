@@ -11,6 +11,7 @@ export default function CustomBotton({ button, onPress }) {
         backgroundColor: '#a63932',
         width: '100%',
         borderRadius: 10,
+        marginVertical:5
       }}
     >
       <Text

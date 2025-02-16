@@ -5,18 +5,19 @@ const mongoose = require('mongoose');
 const bcrypt =  require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
-const nodemailer = require('nodemailer');
+// const nodemailer = require('nodemailer');
 const Hotel = require('./model/hotelModel');
 const Otp = require('./model/Otpmodel')
 const Admin = require('./model/Admin')
 const User = require('./model/UserDetails')
+const Booking = require('./model/Booking')
 const cors = require("cors");
 
 
 
 app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 // ✅ Configure CORS properly
-const allowedOrigins = ["http://localhost:3000", "http://10.0.1.24:5001"];
+const allowedOrigins = ["http://localhost:3000", "http://172.20.10.3:5001"];
 
 
 
@@ -145,9 +146,13 @@ app.post('/login', async(req,res)=>{
             return res.status(401).json({ status: 'error', message: 'Invalid password' });
           }
     
-          // Generate JWT token
-          const token = jwt.sign({ email: user.email }, jwtSecret, { expiresIn: '1h' });
-          return res.status(200).json({ status: 'ok', data: token })
+          // ✅ Generate JWT Token with `userId`
+          const token = jwt.sign({ userId: user._id }, jwtSecret, { expiresIn: "30m" });
+          // ✅ Send userId along with token
+          res.status(200).json({
+            status: "ok",
+            data: { token, userId: user._id },
+          });
         });
         // sendWelcomeEmail(user.email);
       })
@@ -156,6 +161,22 @@ app.post('/login', async(req,res)=>{
       });
     
 })
+
+// ✅ Ensure your backend route is POST
+app.get("/userData", (req, res) => {
+  const token = req.headers.authorization?.split(" ")[1]; // Extract token
+
+  if (!token) {
+    return res.status(401).json({ error: "No token provided" });
+  }
+
+  try {
+    const decoded = jwt.verify(token, jwtSecret);
+    res.json({ message: "Token is valid", userId: decoded.userId });
+  } catch (error) {
+    res.status(401).json({ error: "Invalid token" });
+  }
+});
 
 // **📌 Admin Login Route**
 app.post("/admin/login", async (req, res) => {
@@ -309,6 +330,60 @@ app.get("/hotels/search/:name", async (req, res) => {
     }
   });
   
+  app.post('/book', async (req, res) => {
+    try {
+        const { userId, hotelId, checkInDate, checkOutDate, checkInTime, guests, rooms, totalPrice } = req.body;
+
+        console.log("Received Booking Data:", req.body);  // Log received data
+
+        // Convert totalPrice to a number (remove commas if present)
+        const formattedTotalPrice = typeof totalPrice === "string" ? Number(totalPrice.replace(/,/g, "")) : totalPrice;
+
+        if (isNaN(formattedTotalPrice)) {
+            return res.status(400).json({ error: 'Invalid totalPrice value' });
+        }
+
+        const hotel = await Hotel.findById(hotelId);
+        if (!hotel) return res.status(404).json({ error: 'Hotel not found' });
+
+        const newBooking = new Booking({
+            userId,
+            hotelId,
+            checkInDate,
+            checkOutDate,
+            checkInTime,
+            guests,
+            rooms,
+            totalPrice: formattedTotalPrice, // Save formatted number
+            status: "Completed",
+        });
+
+        await newBooking.save();
+        res.status(201).json({ status: "ok", message: "Booking successful", booking: newBooking });
+    } catch (error) {
+        console.error("Server Error:", error);  // Log the actual error
+        res.status(500).json({ error: 'Server error', details: error.message });
+    }
+});
+
+  
+app.get("/bookings/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    if (!userId) {
+      return res.status(400).json({ status: "error", message: "User ID is required" });
+    }
+
+    const bookings = await Booking.find({ userId }) // Fetch only the user's bookings
+      .populate("hotelId", "name");
+
+    res.status(200).json({ status: "ok", data: bookings });
+  } catch (error) {
+    console.error("🔥 Booking Fetch Error:", error);
+    res.status(500).json({ status: "error", message: error.message });
+  }
+});
 
   
 app.get('/', (req, res)=>{

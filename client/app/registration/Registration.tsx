@@ -109,7 +109,7 @@ const Registration: React.FC = () => {
     };
 
     try {
-      await axios.post("http://10.0.1.24:5001/register", userData);
+      await axios.post("http://172.20.10.3:5001/register", userData);
       Toast.show({ type: "success", text1: "Success", text2: "Registration complete" });
 
       setUsername("");
@@ -132,13 +132,13 @@ const Registration: React.FC = () => {
       <Text style={styles.infoText}>Create your account</Text>
 
       <View style={styles.formContainer}>
-        <TouchableOpacity onPress={pickImage} style={styles.imagePicker}>
+        {/* <TouchableOpacity onPress={pickImage} style={styles.imagePicker}>
           {profileImage ? (
             <Image source={{ uri: profileImage }} style={styles.profileImage} />
           ) : (
             <Text style={styles.imageText}>Upload Photo</Text>
           )}
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         <LabelInputComp label="Username" placeholder="Enter username" value={username} onChangeText={setUsername} />
         <LabelInputComp label="Email" placeholder="Email" value={email} onChangeText={setEmail} />

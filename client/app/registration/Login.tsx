@@ -67,18 +67,17 @@ const Login = () => {
     const userData = { email: email.trim().toLowerCase(), password };
 
     try {
-      const res = await axios.post('http://10.0.1.24:5001/login', userData);
+      const res = await axios.post('http://172.20.10.3:5001/login', userData);
       if (res.data?.data) {
-        const token = res.data.data;
+        const {token, userId }= res.data.data;
         console.log('JWT Token:', token);
-
+        console.log('User ID:', userId);
         // ✅ Set Expiry Time (30 minutes from now)
         const expiryTime = Date.now() + 30 * 60 * 1000;
-
-        await AsyncStorage.setItem("token", JSON.stringify({ token, expiryTime }));
-
+        await AsyncStorage.setItem("token", JSON.stringify({ token, expiryTime, userId }));
+        console.log(`User data saved successfully ${userId}`)
+        // console.log(token, expiryTime, userId)
         router.replace('/Home'); // ✅ Redirect to Home page after login
-
         Toast.show({
           type: 'success',
           position: 'top',

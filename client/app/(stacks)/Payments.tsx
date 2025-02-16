@@ -12,73 +12,54 @@ export default function Payments() {
     setModalVisible(false); // Close the modal
     if (paymentMethod === 'card') {
       router.push({ pathname: "/CardPayment", params: { price: String(price), hotelId } });
+      console.log([price, hotelId])
     } else if (paymentMethod === 'crypto') {
       router.push('/CryptoPayment');
     } else if (paymentMethod === 'wallet') {
       router.push('/ConnectWallet');
     }
   };
+
+  const paymentOptions = [
+    { name: "Paystack", icon: "credit-card", color: "black", type: "card" },
+    { name: "PayPal", icon: "paypal", color: "blue", type: "crypto" },
+    { name: "Mastercard", icon: "cc-mastercard", color: "red", type: "wallet" },
+    { name: "Klarna", icon: "credit-card-alt", color: "pink", type: "wallet" },
+    { name: "Samsung Pay", icon: "phone-android", color: "black", type: "wallet", isMaterial: true },
+    { name: "Chipper Cash", icon: "money-bill-wave", color: "green", type: "wallet", isFontAwesome5: true },
+  ];
+
   return (
-    <SafeAreaView>
-        <Text style={{margin: 10}}>
-        <CustomBotton button={'pay with card '} onPress={() => setModalVisible(true)}/>
-        </Text>
-
-        <Modal
-        visible={modalVisible}
-        transparent={true}
-        animationType="slide"
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.5)' }}>
-          <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 10, width: 300 }}>
-            <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 10 }}>Choose Payment Method</Text>
-            
-            <TouchableOpacity onPress={() => handlePaymentSelection('card')} style={{ padding: 10, flexDirection:"row", alignItems:'center', justifyContent:"space-between" }}>
-        <FontAwesome name="credit-card" size={24} color="black" />
-        <Text> Pay Paystack</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity onPress={() => handlePaymentSelection('crypto')} style={{ padding: 10, flexDirection:"row", alignItems:'center', justifyContent:'space-between' }}>
-        <FontAwesome name="paypal" size={24} color="blue" />
-        <Text> Pay PayPal</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity onPress={() => handlePaymentSelection('wallet')} style={{ padding: 10, flexDirection:"row", alignItems:'center', justifyContent:'space-between' }}>
-        <FontAwesome name="cc-mastercard" size={24} color="red" />
-        <Text> Pay Mastercard</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity onPress={() => handlePaymentSelection('wallet')} style={{ padding: 10, flexDirection:"row", alignItems:'center', justifyContent:'space-between' }}>
-        <FontAwesome name="credit-card-alt" size={24} color="pink" />
-        <Text> Pay Klarna</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity onPress={() => handlePaymentSelection('wallet')} style={{ padding: 10, flexDirection:"row", alignItems:'center', justifyContent:'space-between' }}>
-        <MaterialIcons name="phone-android" size={24} color="black" />
-        <Text> Pay Samsung Pay</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity onPress={() => handlePaymentSelection('wallet')} style={{ padding: 10, flexDirection:"row", alignItems:'center', justifyContent:'space-between' }}>
-        <FontAwesome5 name="money-bill-wave" size={24} color="green" />
-        <Text> Pay Chipper Cash</Text>
-      </TouchableOpacity>
+    <SafeAreaView style={{ padding: 20, backgroundColor: '#f4f4f4', flex: 1, marginHorizontal:10 }}>
+      <CustomBotton button={'Pay with Card'} onPress={() => setModalVisible(true)} />
       
-      <TouchableOpacity onPress={() => setModalVisible(false)} style={{ marginTop: 20 }}>
-              <Text style={{ color: 'red', textAlign: 'center' }}>Cancel</Text>
+      <Modal visible={modalVisible} transparent animationType="slide" onRequestClose={() => setModalVisible(false)}>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.5)' }}>
+          <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 15, width: 320, alignItems: 'center', shadowColor: '#000', shadowOpacity: 0.2, shadowRadius: 5, elevation: 5 }}>
+            <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 15, textAlign: 'center' }}>Choose Payment Method</Text>
+            
+            {paymentOptions.map(({ name, icon, color, type, isMaterial, isFontAwesome5 }, index) => (
+              <TouchableOpacity key={index} onPress={() => handlePaymentSelection(type)} style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: '#f9f9f9', padding: 12, borderRadius: 10, width: '100%', marginBottom: 10, shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 3, elevation: 2 }}>
+                {isMaterial ? (
+                  <MaterialIcons name={icon} size={24} color={color} />
+                ) : isFontAwesome5 ? (
+                  <FontAwesome5 name={icon} size={24} color={color} />
+                ) : (
+                  <FontAwesome name={icon} size={24} color={color} />
+                )}
+                <Text style={{ fontSize: 16, fontWeight: '500', marginLeft: 10 }}>Pay {name}</Text>
+              </TouchableOpacity>
+            ))}
+
+            <TouchableOpacity onPress={() => setModalVisible(false)} style={{ marginTop: 20, padding: 12, backgroundColor: '#FF3B30', borderRadius: 10, width: '100%', alignItems: 'center' }}>
+              <Text style={{ color: 'white', fontSize: 16, fontWeight: 'bold' }}>Cancel</Text>
             </TouchableOpacity>
           </View>
-
-          
         </View>
       </Modal>
       
-        <Text style={{margin: 10}}>
-          <CustomBotton button={'pay with crypto currency '} onPress={() => router.push('/CryptoPayment')}/>
-          </Text>
-      <Text style={{margin: 10}}>
-      <CustomBotton button={'connect a cryptocurrency wallet '} onPress={() => router.push('/ConnectWallet')}/>
-      </Text>
+      <CustomBotton button={'Pay with Cryptocurrency'} onPress={() => router.push('/CryptoPayment')} />
+      <CustomBotton button={'Connect a Cryptocurrency Wallet'} onPress={() => router.push('/ConnectWallet')} />
     </SafeAreaView>
-  )
+  );
 }
