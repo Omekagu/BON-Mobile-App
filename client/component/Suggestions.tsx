@@ -63,7 +63,7 @@ const Suggestions = () => {
 
     setLoading(true);
     try {
-      const response = await axios.get(`http://172.20.10.3:5001/hotels/search/${encodeURIComponent(query)}`);
+      const response = await axios.get(`http://10.0.1.24:5001/hotels/search/${encodeURIComponent(query)}`);
       setHotels(response.data.length ? response.data : []);
       
       if (!response.data.length) {

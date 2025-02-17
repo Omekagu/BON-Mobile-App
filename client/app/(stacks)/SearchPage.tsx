@@ -35,7 +35,7 @@ const SearchPage = ({item}) => {
     }
     setLoading(true);
     try {
-      const response = await axios.get(`http://172.20.10.3:5001/hotels/search/${encodeURIComponent(hotelName)}`);
+      const response = await axios.get(`http://10.0.1.24:5001/hotels/search/${encodeURIComponent(hotelName)}`);
       setHotels(response.data.length ? response.data : []);
       if (!response.data.length) {
         Toast.show({ type: "error", position: "top", text1: "No hotels found matching the given name." });

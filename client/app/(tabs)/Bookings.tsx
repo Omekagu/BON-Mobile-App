@@ -22,7 +22,7 @@ const Bookings = () => {
       const parsedData = JSON.parse(userData);
       let token = parsedData.token.replace(/^"|"$/g, ""); // Remove quotes
 
-      const response = await axios.get("http://172.20.10.3:5001/userData", {
+      const response = await axios.get("http://10.0.1.24:5001/userData", {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -41,7 +41,7 @@ const Bookings = () => {
         const userId = await getUserId();
         if (!userId) return;
 
-        const response = await axios.get(`http://172.20.10.3:5001/bookings/${userId}`);
+        const response = await axios.get(`http://10.0.1.24:5001/bookings/${userId}`);
         setBookings(Array.isArray(response.data.data) ? response.data.data : []);
 
         if (!response.data.data.length) {
