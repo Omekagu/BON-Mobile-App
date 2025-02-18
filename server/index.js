@@ -83,47 +83,40 @@ console.log(e)
   //     }
   //   });
   // };
-  
+
+
+
+
+
+
+
 
 // Register User
-app.post("/register", async(req, res)=>{
-    const {
+app.post("/register", async (req, res) => {
+  const { username, email, password, phoneNumber, profileImage, deviceType, userCountry } = req.body;
+
+  try {
+    const oldUser = await User.findOne({ email });
+    if (oldUser) return res.status(400).json({ message: "User already exists" });
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = new User({
       username,
       email,
-      password,
+      password: hashedPassword,
       phoneNumber,
       profileImage,
       deviceType,
       userCountry,
-    } = req.body;
-const oldUser= await User.findOne({email:email});
-if(oldUser){
-    return res.send({data: "User already exist!!"})
-}
+    });
 
-const encryptedPassword = await bcrypt.hash(password, 10)
-    try{
-        await User.create({
-          username,
-          email,
-          password: encryptedPassword,
-          phoneNumber,
-          profileImage,
-          deviceType,
-          userCountry,
-        });
-        // sendWelcomeEmail(email, firstName);
-        console.log( username,
-          email,
-          password,
-          phoneNumber,
-          profileImage,
-          deviceType,
-          userCountry,)
-        res.send({status:"ok",data:  "User Created Successfully" })
-    }catch(error){
-        res.send({status: "error", data: error})
-    }
+    await newUser.save();
+    sendWelcomeEmail(email, username);
+    res.status(201).json({ message: "User registered successfully" });
+
+  } catch (error) {
+    res.status(500).json({ message: "Server Error", error });
+  }
 });
 
 
@@ -221,6 +214,15 @@ app.get("/api/protected", (req, res) => {
 });
 
 
+app.get('/users', async ( req, res) => {
+  try {
+    const users = await User.find({}, "-password");
+    res.json(users) 
+  } catch (error) {
+    res.status(500).json({message: 'error', error})
+  }
+})
+
 
 // 📌 1️⃣ Send OTP
 app.post('/send-otp', async (req, res) => {
@@ -289,8 +291,6 @@ app.post('/userData', async(req, res)=>{
     } catch (error) {
         return res.send({error: error})
     }
-
-
 })
 
 
@@ -317,7 +317,6 @@ app.get('/hotels/:id', async(req, res) => {
 })
 
 // Hotel search by name
-// Search hotels by name or related name
 app.get("/hotels/search/:name", async (req, res) => {
     try {
       const { name } = req.params; // Get the name from the URL parameter
@@ -330,6 +329,8 @@ app.get("/hotels/search/:name", async (req, res) => {
     }
   });
   
+
+  // booking completed
   app.post('/book', async (req, res) => {
     try {
         const { userId, hotelId, checkInDate, checkOutDate, checkInTime, guests, rooms, totalPrice } = req.body;
@@ -366,7 +367,7 @@ app.get("/hotels/search/:name", async (req, res) => {
     }
 });
 
-  
+  // fetch booked room based on userid
 app.get("/bookings/:userId", async (req, res) => {
   try {
     const { userId } = req.params;
