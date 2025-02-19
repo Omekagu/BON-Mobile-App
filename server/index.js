@@ -94,11 +94,12 @@ console.log(e)
 // Register User
 app.post("/register", async (req, res) => {
   const { username, email, password, phoneNumber, profileImage, deviceType, userCountry } = req.body;
-
+  
   try {
     const oldUser = await User.findOne({ email });
     if (oldUser) return res.status(400).json({ message: "User already exists" });
-
+    
+    console.log(username, email,password,phoneNumber)
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = new User({
       username,
@@ -109,9 +110,9 @@ app.post("/register", async (req, res) => {
       deviceType,
       userCountry,
     });
-
+console.log(newUser)
     await newUser.save();
-    sendWelcomeEmail(email, username);
+    // sendWelcomeEmail(email, username);
     res.status(201).json({ message: "User registered successfully" });
 
   } catch (error) {

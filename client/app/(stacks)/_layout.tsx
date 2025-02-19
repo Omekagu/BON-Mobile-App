@@ -63,6 +63,34 @@ export default function _layout() {
           ),
         }}
       />
+       <Stack.Screen
+        name="BookingDetails"
+        options={{
+          title: 'BookingDetails',
+          headerShown: false,
+        }}
+      />
+       <Stack.Screen
+        name="BookRide"
+        options={{
+          title: 'BookRide',
+          headerShown: false,
+        }}
+      />
+       <Stack.Screen
+        name="BookFlight"
+        options={{
+          title: 'BookFlight',
+          headerShown: false,
+        }}
+      />
+       <Stack.Screen
+        name="OrderFood"
+        options={{
+          title: 'OrderFood',
+          headerShown: false,
+        }}
+      />
       <Stack.Screen
         name="Deals"
         options={{

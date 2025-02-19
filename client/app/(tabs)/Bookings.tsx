@@ -64,7 +64,7 @@ const Bookings = () => {
       return;
     }
     router.push({
-      pathname: "/SearchPageInfo",
+      pathname: "/BookingDetails",
       params: { id: booking.hotelId._id, userId: booking.userId },
     });
   };

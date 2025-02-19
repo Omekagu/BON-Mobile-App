@@ -107,18 +107,18 @@ const Registration: React.FC = () => {
       deviceType,
       userCountry,
     };
+    
+    console.log(username, email,password,phoneNumber,referral)
 
     try {
       await axios.post("http://10.0.1.24:5001/register", userData);
       Toast.show({ type: "success", text1: "Success", text2: "Registration complete" });
-
       setUsername("");
       setProfileImage(null);
       setEmail("");
       setPassword("");
       setPhoneNumber("");
       setReferral("");
-
       router.push("/registration/Login");
     } catch (error) {
       Toast.show({ type: "error", text1: "Error", text2: "Registration failed, try again." });
