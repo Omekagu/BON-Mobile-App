@@ -8,6 +8,7 @@ import {
   BottomSheetModalProvider,
 } from '@gorhom/bottom-sheet';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import CustomBotton from '@/component/CustomBotton';
 
 const BookFlight = () => {
   const [departureDate, setDepartureDate] = useState(new Date());
@@ -123,24 +124,9 @@ const BookFlight = () => {
         <Switch value={useAvios} onValueChange={setUseAvios} />
       </View>
        {/* Book Now Button */}
-       <View style={{ marginTop: 30, alignItems: "center", marginHorizontal:10 }}>
-        <TouchableOpacity
-        //   onPress={handleBooking}
-          style={{
-            padding: 15,
-            backgroundColor: "#a63932",
-            borderRadius: 10,
-            width: "100%",
-            alignItems: "center",
-            elevation: 3,
-          }}
-        //   disabled={!startDate || !endDate}
-        >
-          <Text style={{ color: "white", fontSize: 18, fontWeight: "bold" }}>
-            Search flight
-          </Text>
-        </TouchableOpacity>
-      </View>
+        <View style={{ marginTop: 30, alignItems: "center", marginHorizontal:10 }}>
+        <CustomBotton button={'search flight'} onPress={''}/>
+        </View>
 
 
           <BottomSheetModal

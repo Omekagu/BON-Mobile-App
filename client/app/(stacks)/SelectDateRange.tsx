@@ -151,10 +151,10 @@ export default function SelectDateRange() {
             <Text style={{ fontSize: 16, color: "#333" }}>
               {type === "start"
                 ? startDate
-                  ? `Check-in: ${startDate.toDateString()}`
+                  ? `Check-in: ${startDate.toDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}`
                   : "Select Check-in Date"
                 : endDate
-                ? `Check-out: ${endDate.toDateString()}`
+                ? `Check-out: ${endDate.toDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}`
                 : "Select Check-out Date"}
             </Text>
           </TouchableOpacity>

@@ -22,6 +22,7 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import Entypo from "@expo/vector-icons/Entypo";
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
+import CustomBotton from "@/component/CustomBotton";
 
 export default function HotelBookingScreen() {
   const [liked, setLiked] = useState(false);
@@ -253,9 +254,10 @@ if(newLikedState){
         </Text>
 
         {/* Book Now Button */}
-        <TouchableOpacity style={styles.bookButton}  onPress={() => router.push({ pathname: '/SelectDateRange', params: { price: hotel.pricePerNight, hotelId: hotel._id } })}>
+        {/* <TouchableOpacity style={styles.bookButton}  onPress={() => router.push({ pathname: '/SelectDateRange', params: { price: hotel.pricePerNight, hotelId: hotel._id } })}>
           <Text style={styles.bookButtonText}>Next - ₦{hotel.pricePerNight ? Number(hotel.pricePerNight).toLocaleString() : '100,000'}</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
+        <CustomBotton button={`Next - ₦${hotel.pricePerNight ? Number(hotel.pricePerNight).toLocaleString() : '100,000'}`} onPress={() => router.push({ pathname: '/SelectDateRange', params: { price: hotel.pricePerNight, hotelId: hotel._id } })}/>
         {/* </View> */}
         </ScrollView>
       </SafeAreaView>

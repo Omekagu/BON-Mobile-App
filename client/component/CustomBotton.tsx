@@ -6,12 +6,12 @@ export default function CustomBotton({ button, onPress }) {
     <TouchableOpacity
       onPress={onPress}
       style={{
-        padding: 20,
-        alignItems: 'center',
-        backgroundColor: '#a63932',
-        width: '100%',
-        borderRadius: 10,
-        marginVertical:5
+            padding: 20,
+            backgroundColor: "#a63932",
+            borderRadius: 30,
+            width: "100%",
+            alignItems: "center",
+            elevation: 3,
       }}
     >
       <Text
