@@ -1,7 +1,13 @@
-import React, { useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, Switch, SafeAreaView } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { RadioButton } from 'react-native-paper';
+import {
+  BottomSheetModal,
+  BottomSheetView,
+  BottomSheetModalProvider,
+} from '@gorhom/bottom-sheet';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const BookFlight = () => {
   const [departureDate, setDepartureDate] = useState(new Date());
@@ -10,6 +16,8 @@ const BookFlight = () => {
   const [showReturn, setShowReturn] = useState(false);
   const [tripType, setTripType] = useState('return');
   const [useAvios, setUseAvios] = useState(false);
+  const [flightClass, setFlightClass] = useState('Economy');
+  // const bottomSheetModalRef = useRef(null);
 
   const onChangeDeparture = (event, selectedDate) => {
     setShowDeparture(false);
@@ -21,10 +29,26 @@ const BookFlight = () => {
     if (selectedDate) setReturnDate(selectedDate);
   };
 
+  // const openBottomSheet = () => {
+  //   bottomSheetModalRef.current?.present();
+  // };
+  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+
+  // callbacks
+  const handlePresentModalPress = useCallback(() => {
+    bottomSheetModalRef.current?.present();
+  }, []);
+  const handleSheetChanges = useCallback((index: number) => {
+    console.log('handleSheetChanges', index);
+  }, []);
+
+
   return (
 //   <SafeAreaView>
+<GestureHandlerRootView style={{ flex: 1 }}>
+      <BottomSheetModalProvider>
     <View style={styles.container}>
-      <Text style={styles.header}>Booking</Text>
+      <Text style={styles.header}>Booking Your Flight</Text>
       <Text style={styles.subHeader}>Let’s start your trip</Text>
       
       <View style={styles.tripTypeContainer}>
@@ -48,16 +72,18 @@ const BookFlight = () => {
       </View>
       </View>
 
+    <View style={{flexDirection:'row', justifyContent:'space-between'}}>
       <View style={styles.dateContainer}>
         <TouchableOpacity onPress={() => setShowDeparture(true)}>
-          <Text style={styles.dateText}>Departure: {departureDate.toLocaleDateString()}</Text>
+          <Text style={styles.dateText}>Departure:</Text>
+            <Text style={styles.dateSubtext}>{departureDate.toLocaleDateString()}</Text>
         </TouchableOpacity>
         {showDeparture && (
           <DateTimePicker
-            value={departureDate}
-            mode="date"
-            display="default"
-            onChange={onChangeDeparture}
+          value={departureDate}
+          mode="date"
+          display="default"
+          onChange={onChangeDeparture}
           />
         )}
       </View>
@@ -65,22 +91,26 @@ const BookFlight = () => {
       {tripType === 'return' && (
         <View style={styles.dateContainer}>
           <TouchableOpacity onPress={() => setShowReturn(true)}>
-            <Text style={styles.dateText}>Return: {returnDate.toLocaleDateString()}</Text>
+            <Text style={styles.dateText}>Return: </Text>
+             <Text style={styles.dateSubtext}>{returnDate.toLocaleDateString()}</Text>
           </TouchableOpacity>
           {showReturn && (
             <DateTimePicker
-              value={returnDate}
-              mode="date"
-              display="default"
-              onChange={onChangeReturn}
+            value={returnDate}
+            mode="date"
+            display="default"
+            onChange={onChangeReturn}
             />
           )}
         </View>
       )}
+      </View>
 
       <View style={styles.passengerContainer}>
         <Text>1 passenger</Text>
-        <Text>Economy</Text>
+        <TouchableOpacity onPress={handlePresentModalPress}>
+              <Text>{flightClass}</Text>
+              </TouchableOpacity>
       </View>
 
       <View style={styles.promoContainer}>
@@ -111,27 +141,53 @@ const BookFlight = () => {
           </Text>
         </TouchableOpacity>
       </View>
+
+
+          <BottomSheetModal
+            ref={bottomSheetModalRef}
+            onChange={handleSheetChanges}
+            index={0} snapPoints={['25%', '50%']}
+            >
+            <BottomSheetView style={styles.modalContent}>
+              <Text style={styles.modalTitle}>Select Flight Class</Text>
+              {['Economy', 'Business', 'First Class'].map((item) => (
+                <TouchableOpacity key={item} onPress={() => { setFlightClass(item); bottomSheetModalRef.current?.dismiss(); }} style={styles.modalOption}>
+                  <Text>{item}</Text>
+                </TouchableOpacity>
+              ))}
+            </BottomSheetView>
+        </BottomSheetModal>
     </View>
+    </BottomSheetModalProvider>
+    </GestureHandlerRootView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    // width:'100%',
     flex: 1,
     justifyContent:'space-evenly',
     paddingHorizontal: 20,
     paddingVertical:30,
     backgroundColor: '#F8F8F8',
+    // alignItems:'center'
+  },
+  contentContainer: {
+    flex: 1,
+    alignItems: 'center',
   },
   header: {
-    fontSize: 24,
+    fontSize: 15,
     fontWeight: 'bold',
     marginBottom: 5,
+    alignSelf:'center'
   },
   subHeader: {
-    fontSize: 16,
+    fontSize: 18,
     color: '#666',
     marginBottom: 20,
+    alignSelf:'center'
   },
   tripTypeContainer: {
     flexDirection: 'row',
@@ -157,23 +213,31 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   inputText: {
-    fontSize: 16,
+    fontSize: 19,
     fontWeight: 'bold',
   },
   subText: {
     fontSize: 12,
     color: '#888',
   },
+  
   input: {
     borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    borderBottomColor: '#000',
     paddingVertical: 5,
   },
   dateContainer: {
     marginBottom: 15,
+    alignItems:'center'
   },
   dateText: {
-    fontSize: 16,
+    alignSelf:"center",
+    fontSize: 13,
+    marginBottom:10,
+    fontWeight:'bold',
+  },
+  dateSubtext:{
+    fontSize:15,
     fontWeight: 'bold',
   },
   passengerContainer: {
@@ -201,6 +265,32 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     padding: 10,
     borderRadius: 5,
+  },
+  button: {
+    backgroundColor: '#a63932',
+    padding: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginTop: 30,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  modalContent: {
+    padding: 20,
+    alignItems: 'center',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  modalOption: {
+    padding: 10,
+    width: '100%',
+    alignItems: 'center',
   },
 });
 
