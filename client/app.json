@@ -22,7 +22,8 @@
           "fetch",
           "remote-notification"
         ],
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSLocationWhenInUseUsageDescription": "This app needs access to your location."
       },
       "bundleIdentifier": "com.anonymous.Bonhotel"
     },

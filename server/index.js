@@ -12,10 +12,49 @@ const Admin = require('./model/Admin')
 const User = require('./model/UserDetails')
 const Booking = require('./model/Booking')
 const cors = require("cors");
-
+const { Server } = require("socket.io");
+const http = require("http");
 
 
 app.use(cors({ origin: 'http://localhost:3002', credentials: true }));
+
+
+
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+  },
+});
+
+// Middleware
+// app.use(cors());
+
+// Handle Socket.IO connections
+io.on("connection", (socket) => {
+  console.log("New client connected: ", socket.id);
+
+  // Listen for user location updates
+  socket.on("userLocation", (location) => {
+    console.log("User location updated: ", location);
+    // Broadcast the user's location to all connected clients
+    io.emit("updateUserLocation", location);
+  });
+
+  // Listen for delivery person's location updates
+  socket.on("deliveryLocation", (location) => {
+    console.log("Delivery location updated: ", location);
+    // Broadcast the delivery person's location to all connected clients
+    io.emit("updateDeliveryLocation", location);
+  });
+
+  // Handle disconnection
+  socket.on("disconnect", () => {
+    console.log("Client disconnected: ", socket.id);
+  });
+});
+
+
 // ✅ Configure CORS properly
 // const allowedOrigins = ["http://localhost:3002", "http://10.0.1.24:5001"];
 
