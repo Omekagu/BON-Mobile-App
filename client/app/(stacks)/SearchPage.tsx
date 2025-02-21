@@ -79,7 +79,7 @@ const SearchPage = ({item}) => {
                 hotelname={item.name}
                 // rating={item.rating}
                 review={item.reviews}
-                price={(item.pricePerNight ? Number(item.pricePerNight).toLocaleString() : "100,000,000")}
+                price={(item.pricePerNight ? item.pricePerNight: "100,000,000")}
                 // location={item.location || "N/A"}
                 noBed={'29'}
                 landmark={'sinete roundabout'}

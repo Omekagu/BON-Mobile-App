@@ -157,10 +157,10 @@ const styles = StyleSheet.create({
 
   // Modal Styles
   modalOverlay: { flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "rgba(0,0,0,0.5)" },
-  modalContainer: { backgroundColor: "#fff", padding: 20, borderRadius: 10, width: "80%", alignItems: "center" },
+  modalContainer: { backgroundColor: "#fff", padding: 20, borderRadius: 30, width: "80%", alignItems: "center" },
   modalTitle: { fontSize: 18, fontWeight: "bold", marginBottom: 10 },
-  modalButton: { backgroundColor: "#993d3d", padding: 10, borderRadius: 8, width: "100%", alignItems: "center", marginVertical: 5 },
-  buttonText: { color: "#fff", fontSize: 16 },
+  modalButton: { backgroundColor: "#993d3d", padding: 10, borderRadius: 15, width: "100%", alignItems: "center", marginVertical: 5 },
+  buttonText: { color: "#fff", fontSize: 20, fontWeight:900  },
   cancelButton: { marginTop: 10 },
   cancelButtonText: { color: "red", fontSize: 16 },
 });
