@@ -1,4 +1,4 @@
-import { View, Image, TouchableOpacity, Platform, Text } from 'react-native';
+import { View, Image, TouchableOpacity, Platform, Text, StyleSheet } from 'react-native';
 import React, { useState } from 'react';
 import TextGreen from './TextComp/TextGreen';
 import TextCaps from './TextComp/TextCaps';
@@ -12,20 +12,18 @@ interface SearchBoxProps {
   hotelname: string;
   image: string;
   review: number;
-  landmark: string;
-  distantFromLandmark: string;
-  noBed: number;
+ foodname: string;
   price: number;
+  time: string;
   onPress?: () => void;
 }
 
-const SearchBox: React.FC<SearchBoxProps> = ({
+const FoodList: React.FC<SearchBoxProps> = ({
   hotelname,
   image,
   review,
-  landmark,
-  distantFromLandmark,
-  noBed,
+ foodname,
+  time,
   price,
   onPress,
 }) => {
@@ -69,6 +67,7 @@ const SearchBox: React.FC<SearchBoxProps> = ({
           borderRadius: 10,
           marginVertical: 5,
           marginHorizontal: 5,
+          gap:5,
           ...Platform.select({
             ios: {
               shadowColor: '#000',
@@ -90,7 +89,7 @@ const SearchBox: React.FC<SearchBoxProps> = ({
           source={{ uri: image }}
         />
 
-        <View style={{ justifyContent: 'space-between', width: '65%', padding: 5 }}>
+        <View style={{ justifyContent: 'space-between', width: '65%', padding: 5, }}>
           <View>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
               <BoldText13 text={hotelname} />
@@ -98,15 +97,20 @@ const SearchBox: React.FC<SearchBoxProps> = ({
                 <Fontisto name="heart" size={24} color={liked ? 'red' : 'black'} />
               </TouchableOpacity>
             </View>
-            <TextCaps text="⭐⭐⭐⭐" />
-            <TextCaps text={`${review}k+ reviews`} />
+                     <Text style={styles.foodname}>{foodname}</Text>
+            <TextCaps text="⭐⭐⭐" />
+           <View style={styles.infoBox}>
+                     <Ionicons name="chatbubbles-outline" size={16} />
+                     <Text style={styles.infoText}>{review}k+ reviews</Text>
+                   </View>
             {/* <Text><Ionicons name="chatbubbles-outline" size={16} />{review}k+ reviews</Text> */}
-            <TextCaps text={landmark} />
-            <TextCaps text={distantFromLandmark} />
+            <View style={styles.infoBox}>
+                      <Ionicons name="time-outline" size={16} />
+                      <Text style={styles.infoText}>{time}</Text>
+                      </View>
           </View>
 
           <View style={{ alignItems: 'flex-end' }}>
-            <TextCaps text={`HOTEL ROOM : ${noBed} bed`} />
             <TextGreen text={`₦${Number(price).toLocaleString()}`} />
             <TextCaps text="includes taxes and charges" />
           </View>
@@ -116,4 +120,22 @@ const SearchBox: React.FC<SearchBoxProps> = ({
   );
 };
 
-export default SearchBox;
+export default FoodList;
+
+const styles = StyleSheet.create({
+    infoBox: {
+        flexDirection: "row",
+        alignItems: "center",
+      },
+      infoText: {
+        marginLeft: 5,
+        fontSize: 12,
+        fontWeight: 900
+      },
+      foodname: {
+        marginTop:10,
+        fontSize:17,
+        fontWeight: 500,
+        textDecorationLine:'underline'
+      }
+})
