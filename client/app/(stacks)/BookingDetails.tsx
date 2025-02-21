@@ -117,7 +117,7 @@ if(newLikedState){
 
   return (
     <GestureHandlerRootView>
-      <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
         <ScrollView>
 
         {/* <View> */}
@@ -266,7 +266,7 @@ if(newLikedState){
           </View>
         {/* </View> */}
         </ScrollView>
-      </SafeAreaView>
+      </View>
     </GestureHandlerRootView>
   );
 }
@@ -275,6 +275,7 @@ if(newLikedState){
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingTop:30
   },
   loader: { 
     flex: 1, 
