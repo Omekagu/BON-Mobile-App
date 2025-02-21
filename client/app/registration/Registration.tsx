@@ -17,6 +17,7 @@ import LabelInputComp from "@/component/LabelInputComp";
 import CustomBotton from "@/component/CustomBotton";
 import Toast from "react-native-toast-message";
 import * as ImagePicker from "expo-image-picker";
+import { useAuth } from "../hooks/useAuth";
 
 
 
@@ -47,7 +48,17 @@ const Registration: React.FC = () => {
   
     fetchDeviceInfo();
   }, []);
- 
+
+      const { isAuthenticated, loading } = useAuth();
+
+      useEffect(() => {
+        if (!loading && isAuthenticated) {
+          router.replace("/Home"); // Redirect logged-in users
+        }
+      }, [isAuthenticated, loading]);
+
+      if (loading) return <Text>Loading...</Text>;
+    
 
   const pickImage = async () => {
     

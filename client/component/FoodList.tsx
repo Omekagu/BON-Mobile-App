@@ -22,7 +22,7 @@ const FoodList: React.FC<SearchBoxProps> = ({
   hotelname,
   image,
   review,
- foodname,
+  foodname,
   time,
   price,
   onPress,
@@ -63,10 +63,10 @@ const FoodList: React.FC<SearchBoxProps> = ({
         style={{
           flexDirection: 'row',
           backgroundColor: '#fff',
-          padding: 8,
+          padding: 5,
           borderRadius: 10,
           marginVertical: 5,
-          marginHorizontal: 5,
+          // marginHorizontal: 5,
           gap:5,
           ...Platform.select({
             ios: {
@@ -99,6 +99,10 @@ const FoodList: React.FC<SearchBoxProps> = ({
             </View>
                      <Text style={styles.foodname}>{foodname}</Text>
             <TextCaps text="⭐⭐⭐" />
+             <View style={styles.infoBox}>
+                         <Ionicons name="star-outline" size={16} />
+                         <Text style={styles.infoText}>4.6 Rating</Text>
+                       </View>
            <View style={styles.infoBox}>
                      <Ionicons name="chatbubbles-outline" size={16} />
                      <Text style={styles.infoText}>{review}k+ reviews</Text>
@@ -126,11 +130,12 @@ const styles = StyleSheet.create({
     infoBox: {
         flexDirection: "row",
         alignItems: "center",
+        marginVertical:3
       },
       infoText: {
         marginLeft: 5,
         fontSize: 12,
-        fontWeight: 900
+        fontWeight: 700
       },
       foodname: {
         marginTop:10,

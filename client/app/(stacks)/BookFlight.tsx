@@ -9,6 +9,7 @@ import {
 } from '@gorhom/bottom-sheet';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import CustomBotton from '@/component/CustomBotton';
+import { router } from 'expo-router';
 
 const BookFlight = () => {
   const [departureDate, setDepartureDate] = useState(new Date());
@@ -125,7 +126,9 @@ const BookFlight = () => {
       </View>
        {/* Book Now Button */}
         <View style={{ marginTop: 30, alignItems: "center", marginHorizontal:10 }}>
-        <CustomBotton button={'search flight'} onPress={''}/>
+        <CustomBotton button={'search flight'} onPress={()=>{
+          router.push('/SearchFlightScreen')
+        }}/>
         </View>
 
 

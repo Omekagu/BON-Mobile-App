@@ -77,6 +77,7 @@ export default function _layout() {
           headerShown: false,
         }}
       />
+       
        <Stack.Screen
         name="BookFlight"
         options={{
@@ -88,6 +89,20 @@ export default function _layout() {
         name="OrderFood"
         options={{
           title: 'OrderFood',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="OrderFoodDetails"
+        options={{
+          title: 'OrderFoodDetails',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="SearchFlightScreen"
+        options={{
+          title: 'SearchFlightScreen',
           headerShown: false,
         }}
       />
