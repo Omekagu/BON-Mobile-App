@@ -369,6 +369,21 @@ app.get("/hotels/search/:name", async (req, res) => {
     }
   });
   
+  app.get("/menu/:hotelId", async (req, res) => {
+    try {
+      const { hotelId } = req.params;
+      const hotel = await Hotel.findById(hotelId).populate("menu");
+  
+      if (!hotel) {
+        return res.status(404).json({ message: "Hotel not found" });
+      }
+  
+      res.status(200).json(hotel.menu);
+    } catch (error) {
+      res.status(500).json({ message: "Error fetching menu", error });
+    }
+  });
+  
 
   // booking completed
   app.post('/book', async (req, res) => {
@@ -406,6 +421,8 @@ app.get("/hotels/search/:name", async (req, res) => {
         res.status(500).json({ error: 'Server error', details: error.message });
     }
 });
+
+
 
   // fetch booked room based on userid
 app.get("/bookings/:userId", async (req, res) => {

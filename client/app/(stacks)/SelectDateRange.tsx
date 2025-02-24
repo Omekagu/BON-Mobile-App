@@ -6,7 +6,7 @@ import {
   SafeAreaView,
   FlatList,
 } from "react-native";
-import DateTimePicker from "@react-native-community/datetimepicker";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -25,14 +25,21 @@ export default function SelectDateRange() {
 
   const timeSlots = ["08:00 AM", "11:00 AM", "12:00 PM", "02:00 PM"];
   const guests = [1, 2, 3];
-  const rooms = [1, 2, 3, 4, 5,6,7,8,9,10];
+  const rooms = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
-  const handleDateChange = (event, date, type) => {
-    setShowPicker({ type: null, visible: false });
-    if (date) {
-      type === "start" ? setStartDate(date) : setEndDate(date);
+  const handleDateConfirm = (date) => {
+    if (showPicker.type === "start") {
+      setStartDate(date);
+    } else {
+      setEndDate(date);
     }
+    setShowPicker({ type: null, visible: false });
   };
+
+  const handleCancel = () => {
+    setShowPicker({ type: null, visible: false });
+  };
+ 
 
   const calculateTotal = () => {
     if (!startDate || !endDate) return nightlyPrice.toLocaleString();
@@ -151,23 +158,20 @@ export default function SelectDateRange() {
             <Text style={{ fontSize: 16, color: "#333" }}>
               {type === "start"
                 ? startDate
-                  ? `Check-in: ${startDate.toDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}`
+                  ? `Check-in: ${startDate.toDateString()}`
                   : "Select Check-in Date"
                 : endDate
-                ? `Check-out: ${endDate.toDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}`
+                ? `Check-out: ${endDate.toDateString()}`
                 : "Select Check-out Date"}
             </Text>
           </TouchableOpacity>
         ))}
-
-        {showPicker.visible && (
-          <DateTimePicker
-            value={showPicker.type === "start" ? startDate || new Date() : endDate || new Date()}
-            mode="date"
-            display="default"
-            onChange={(event, date) => handleDateChange(event, date, showPicker.type)}
-          />
-        )}
+        <DateTimePickerModal
+          isVisible={showPicker.visible}
+          mode="date"
+          onConfirm={handleDateConfirm}
+          onCancel={handleCancel}
+        />
       </View>
 
       {/* Time Slot Selection */}

@@ -1,6 +1,6 @@
 import React, { useCallback, useRef, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, Switch, SafeAreaView } from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, Switch } from 'react-native';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { RadioButton } from 'react-native-paper';
 import {
   BottomSheetModal,
@@ -14,129 +14,115 @@ import { router } from 'expo-router';
 const BookFlight = () => {
   const [departureDate, setDepartureDate] = useState(new Date());
   const [returnDate, setReturnDate] = useState(new Date());
-  const [showDeparture, setShowDeparture] = useState(false);
-  const [showReturn, setShowReturn] = useState(false);
+  const [isDeparturePickerVisible, setDeparturePickerVisibility] = useState(false);
+  const [isReturnPickerVisible, setReturnPickerVisibility] = useState(false);
   const [tripType, setTripType] = useState('return');
   const [useAvios, setUseAvios] = useState(false);
   const [flightClass, setFlightClass] = useState('Economy');
-  // const bottomSheetModalRef = useRef(null);
-
-  const onChangeDeparture = (event, selectedDate) => {
-    setShowDeparture(false);
-    if (selectedDate) setDepartureDate(selectedDate);
-  };
-
-  const onChangeReturn = (event, selectedDate) => {
-    setShowReturn(false);
-    if (selectedDate) setReturnDate(selectedDate);
-  };
-
-  // const openBottomSheet = () => {
-  //   bottomSheetModalRef.current?.present();
-  // };
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
-  // callbacks
+  const showDeparturePicker = () => setDeparturePickerVisibility(true);
+  const hideDeparturePicker = () => setDeparturePickerVisibility(false);
+  const handleDepartureConfirm = (date) => {
+    setDepartureDate(date);
+    hideDeparturePicker();
+  };
+
+  const showReturnPicker = () => setReturnPickerVisibility(true);
+  const hideReturnPicker = () => setReturnPickerVisibility(false);
+  const handleReturnConfirm = (date) => {
+    setReturnDate(date);
+    hideReturnPicker();
+  };
+
   const handlePresentModalPress = useCallback(() => {
     bottomSheetModalRef.current?.present();
   }, []);
-  const handleSheetChanges = useCallback((index: number) => {
-    console.log('handleSheetChanges', index);
-  }, []);
-
 
   return (
-//   <SafeAreaView>
-<GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView style={{ flex: 1 }}>
       <BottomSheetModalProvider>
-    <View style={styles.container}>
-      <Text style={styles.header}>Booking Your Flight</Text>
-      <Text style={styles.subHeader}>Let’s start your trip</Text>
-      
-      <View style={styles.tripTypeContainer}>
-        <RadioButton.Group onValueChange={newValue => setTripType(newValue)} value={tripType}>
-          <View style={styles.radioButton}><RadioButton value="return" /><Text>Return</Text></View>
-          <View style={styles.radioButton}><RadioButton value="one-way" /><Text>One-way</Text></View>
-          <View style={styles.radioButton}><RadioButton value="multi-city" /><Text>Multi-city</Text></View>
-        </RadioButton.Group>
-      </View>
-        
-        <View style={styles.destination}><View style={styles.inputContainer}>
-        <Text style={styles.label}>From</Text>
-        <TextInput style={styles.input} placeholder="Select destination" />
-        <Text style={styles.subText}>Murtala Muhammed Airport</Text>
-      </View>
-      
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>To</Text>
-        <TextInput style={styles.input} placeholder="Select destination" />
-        <Text style={styles.subText}>Murtala Muhammed Airport</Text>
-      </View>
-      </View>
+        <View style={styles.container}>
+          <Text style={styles.header}>Booking Your Flight</Text>
+          <Text style={styles.subHeader}>Let’s start your trip</Text>
 
-    <View style={{flexDirection:'row', justifyContent:'space-between'}}>
-      <View style={styles.dateContainer}>
-        <TouchableOpacity onPress={() => setShowDeparture(true)}>
-          <Text style={styles.dateText}>Departure:</Text>
-            <Text style={styles.dateSubtext}>{departureDate.toLocaleDateString()}</Text>
-        </TouchableOpacity>
-        {showDeparture && (
-          <DateTimePicker
-          value={departureDate}
-          mode="date"
-          display="default"
-          onChange={onChangeDeparture}
-          />
-        )}
-      </View>
-      
-      {tripType === 'return' && (
-        <View style={styles.dateContainer}>
-          <TouchableOpacity onPress={() => setShowReturn(true)}>
-            <Text style={styles.dateText}>Return: </Text>
-             <Text style={styles.dateSubtext}>{returnDate.toLocaleDateString()}</Text>
-          </TouchableOpacity>
-          {showReturn && (
-            <DateTimePicker
-            value={returnDate}
-            mode="date"
-            display="default"
-            onChange={onChangeReturn}
-            />
-          )}
-        </View>
-      )}
-      </View>
+          <View style={styles.tripTypeContainer}>
+            <RadioButton.Group onValueChange={setTripType} value={tripType}>
+              <View style={styles.radioButton}><RadioButton value="return" /><Text>Return</Text></View>
+              <View style={styles.radioButton}><RadioButton value="one-way" /><Text>One-way</Text></View>
+              <View style={styles.radioButton}><RadioButton value="multi-city" /><Text>Multi-city</Text></View>
+            </RadioButton.Group>
+          </View>
 
-      <View style={styles.passengerContainer}>
-        <Text>1 passenger</Text>
-        <TouchableOpacity onPress={handlePresentModalPress}>
-              <Text>{flightClass}</Text>
+          <View style={styles.destination}>
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>From</Text>
+              <TextInput style={styles.input} placeholder="Select destination" />
+              <Text style={styles.subText}>Murtala Muhammed Airport</Text>
+            </View>
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>To</Text>
+              <TextInput style={styles.input} placeholder="Select destination" />
+              <Text style={styles.subText}>Murtala Muhammed Airport</Text>
+            </View>
+          </View>
+
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            <View style={styles.dateContainer}>
+              <TouchableOpacity onPress={showDeparturePicker}>
+                <Text style={styles.dateText}>Departure:</Text>
+                <Text style={styles.dateSubtext}>{departureDate.toLocaleDateString()}</Text>
               </TouchableOpacity>
-      </View>
+              <DateTimePickerModal
+                isVisible={isDeparturePickerVisible}
+                mode="date"
+                onConfirm={handleDepartureConfirm}
+                onCancel={hideDeparturePicker}
+              />
+            </View>
 
-      <View style={styles.promoContainer}>
-        <TextInput style={styles.input} placeholder="Promo code" />
-        <Text style={styles.plusIcon}>+</Text>
-      </View>
-      
-      <View style={styles.switchContainer}>
-        <Text>Book using Avios</Text>
-        <Switch value={useAvios} onValueChange={setUseAvios} />
-      </View>
-       {/* Book Now Button */}
-        <View style={{ marginTop: 30, alignItems: "center", marginHorizontal:10 }}>
-        <CustomBotton button={'search flight'} onPress={()=>{
-          router.push('/SearchFlightScreen')
-        }}/>
-        </View>
+            {tripType === 'return' && (
+              <View style={styles.dateContainer}>
+                <TouchableOpacity onPress={showReturnPicker}>
+                  <Text style={styles.dateText}>Return:</Text>
+                  <Text style={styles.dateSubtext}>{returnDate.toLocaleDateString()}</Text>
+                </TouchableOpacity>
+                <DateTimePickerModal
+                  isVisible={isReturnPickerVisible}
+                  mode="date"
+                  onConfirm={handleReturnConfirm}
+                  onCancel={hideReturnPicker}
+                />
+              </View>
+            )}
+          </View>
 
+          <View style={styles.passengerContainer}>
+            <Text>1 passenger</Text>
+            <TouchableOpacity onPress={handlePresentModalPress}>
+              <Text>{flightClass}</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.promoContainer}>
+            <TextInput style={styles.input} placeholder="Promo code" />
+            <Text style={styles.plusIcon}>+</Text>
+          </View>
+
+          <View style={styles.switchContainer}>
+            <Text>Book using Avios</Text>
+            <Switch value={useAvios} onValueChange={setUseAvios} />
+          </View>
+
+          <View style={{ marginTop: 30, alignItems: 'center', marginHorizontal: 10 }}>
+            <CustomBotton button={'search flight'} onPress={() => router.push('/SearchFlightScreen')} />
+          </View>
 
           <BottomSheetModal
             ref={bottomSheetModalRef}
-            onChange={handleSheetChanges}
-            index={0} snapPoints={['25%', '50%']}
-            >
+            index={0}
+            snapPoints={['25%', '50%']}
+          >
             <BottomSheetView style={styles.modalContent}>
               <Text style={styles.modalTitle}>Select Flight Class</Text>
               {['Economy', 'Business', 'First Class'].map((item) => (
@@ -145,12 +131,13 @@ const BookFlight = () => {
                 </TouchableOpacity>
               ))}
             </BottomSheetView>
-        </BottomSheetModal>
-    </View>
-    </BottomSheetModalProvider>
+          </BottomSheetModal>
+        </View>
+      </BottomSheetModalProvider>
     </GestureHandlerRootView>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
@@ -223,10 +210,9 @@ const styles = StyleSheet.create({
     alignSelf:"center",
     fontSize: 13,
     marginBottom:10,
-    fontWeight:'bold',
   },
   dateSubtext:{
-    fontSize:15,
+    fontSize:12,
     fontWeight: 'bold',
   },
   passengerContainer: {

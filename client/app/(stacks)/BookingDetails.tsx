@@ -260,7 +260,7 @@ if(newLikedState){
             <TouchableOpacity style={styles.actionButton} onPress={() => router.push('/OrderFood')}>
               <Text style={styles.buttonText}>Order Food</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.actionButton} onPress={() => router.push('/BookRide')}>
+            <TouchableOpacity style={styles.actionButton} onPress={() => router.push('/PlanYourRide')}>
               <Text style={styles.buttonText}>Order Ride</Text>
             </TouchableOpacity>
           </View>

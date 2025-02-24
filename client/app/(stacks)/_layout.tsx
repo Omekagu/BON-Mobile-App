@@ -39,6 +39,13 @@ export default function _layout() {
         }}
       />
       <Stack.Screen
+        name="PlanYourRide"
+        options={{
+          title: 'PlanYourRide',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
         name="SearchPageInfo"
         
         options={{
