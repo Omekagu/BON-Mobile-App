@@ -1,6 +1,137 @@
+[
+{
+  "hotel": { "$oid": "679b9855098cfcce832797a6" },
+  "category": "Main Course",
+  "items": [
+    {
+      "foodname": "Spicy Jollof",
+      "name": "Jollof Rice",
+      "price": 1500,
+      "description": "Classic Nigerian jollof rice served with fried plantains.",
+      "image": ["https://example.com/jollof.jpg"],
+      "reviews": 10,
+      "rating": 4.5,
+      "Liked": 150,
+      "time": "30 mins",
+      "remaining": 20,
+      "available": true
+    },
+    {
+      "foodname": "Grilled Chicken",
+      "name": "Chicken BBQ",
+      "price": 2000,
+      "description": "Juicy grilled chicken seasoned to perfection.",
+      "image": ["https://example.com/chicken.jpg"],
+      "reviews": 5,
+      "rating": 4.8,
+      "Liked": 200,
+      "time": "25 mins",
+      "remaining": 15,
+      "available": true
+    }
+  ]
+},{
+  "hotel": { "$oid": "65d99a3c0a69df1b3c8e4f1a" },
+  "category": "Main Course",
+  "items": [
+    {
+      "foodname": "Spicy Jollof",
+      "name": "Jollof Rice",
+      "price": 1500,
+      "description": "Classic Nigerian jollof rice served with fried plantains.",
+      "image": ["https://example.com/jollof.jpg"],
+      "reviews": 10,
+      "rating": 4.5,
+      "Liked": 150,
+      "time": "30 mins",
+      "remaining": 20,
+      "available": true
+    },
+    {
+      "foodname": "Grilled Chicken",
+      "name": "Chicken BBQ",
+      "price": 2000,
+      "description": "Juicy grilled chicken seasoned to perfection.",
+      "image": ["https://example.com/chicken.jpg"],
+      "reviews": 5,
+      "rating": 4.8,
+      "Liked": 200,
+      "time": "25 mins",
+      "remaining": 15,
+      "available": true
+    }
+  ]
+},{
+  "hotel": { "$oid": "65d99a3c0a69df1b3c8e4f1a" },
+  "category": "Main Course",
+  "items": [
+    {
+      "foodname": "Spicy Jollof",
+      "name": "Jollof Rice",
+      "price": 1500,
+      "description": "Classic Nigerian jollof rice served with fried plantains.",
+      "image": ["https://example.com/jollof.jpg"],
+      "reviews": 10,
+      "rating": 4.5,
+      "Liked": 150,
+      "time": "30 mins",
+      "remaining": 20,
+      "available": true
+    },
+    {
+      "foodname": "Grilled Chicken",
+      "name": "Chicken BBQ",
+      "price": 2000,
+      "description": "Juicy grilled chicken seasoned to perfection.",
+      "image": ["https://example.com/chicken.jpg"],
+      "reviews": 5,
+      "rating": 4.8,
+      "Liked": 200,
+      "time": "25 mins",
+      "remaining": 15,
+      "available": true
+    }
+  ]
+},{
+  "hotel": { "$oid": "65d99a3c0a69df1b3c8e4f1a" },
+  "category": "Main Course",
+  "items": [
+    {
+      "foodname": "Spicy Jollof",
+      "name": "Jollof Rice",
+      "price": 1500,
+      "description": "Classic Nigerian jollof rice served with fried plantains.",
+      "image": ["https://example.com/jollof.jpg"],
+      "reviews": 10,
+      "rating": 4.5,
+      "Liked": 150,
+      "time": "30 mins",
+      "remaining": 20,
+      "available": true
+    },
+    {
+      "foodname": "Grilled Chicken",
+      "name": "Chicken BBQ",
+      "price": 2000,
+      "description": "Juicy grilled chicken seasoned to perfection.",
+      "image": ["https://example.com/chicken.jpg"],
+      "reviews": 5,
+      "rating": 4.8,
+      "Liked": 200,
+      "time": "25 mins",
+      "remaining": 15,
+      "available": true
+    }
+  ]
+}]
+
+
+
+
+
 [{
   "_id": {
-    "$oid": "679b9524098cfcce832797a0"
+    "$oid": "679b9855098cfcce832797aa"
   },
   "name": "Yellow Trumpet Hotel",
   "location": "Wuse, Abuja",

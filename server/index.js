@@ -14,6 +14,7 @@ const Booking = require('./model/Booking')
 const cors = require("cors");
 const { Server } = require("socket.io");
 const http = require("http");
+const Menu = require('./model/FoodModel');
 
 
 app.use(cors({ origin: 'http://localhost:3002', credentials: true }));
@@ -369,6 +370,8 @@ app.get("/hotels/search/:name", async (req, res) => {
     }
   });
   
+
+  //Get Menu
   app.get("/menu/:hotelId", async (req, res) => {
     try {
       const { hotelId } = req.params;
@@ -381,6 +384,35 @@ app.get("/hotels/search/:name", async (req, res) => {
       res.status(200).json(hotel.menu);
     } catch (error) {
       res.status(500).json({ message: "Error fetching menu", error });
+    }
+  });
+
+
+  //post a menu
+  app.post('/create-menu/:hotelId', async (req, res) => {
+    try {
+      const { hotelId } = req.params;
+      
+      // First, check if the hotel exists
+      const hotel = await Hotel.findById(hotelId);
+      if (!hotel) {
+        return res.status(404).json({ message: "Hotel not found" });
+      }
+  
+      // Create and save the menu
+      const newMenu = new Menu({
+        hotel: hotelId,
+        ...req.body
+      });
+      const savedMenu = await newMenu.save();
+  
+      // Add the menu reference to the hotel document
+      hotel.menu.push(savedMenu._id);
+      await hotel.save();
+  
+      res.status(201).json({ message: "Menu created and linked to hotel", menu: savedMenu });
+    } catch (error) {
+      res.status(500).json({ message: "Error creating menu", error });
     }
   });
   
