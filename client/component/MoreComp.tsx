@@ -18,7 +18,7 @@ export default function MoreComp({ name, icon, onPress }) {
       <View style={{ marginRight: 15 }}>{icon}</View>
 
       <View>
-        <Text style={{ fontSize: 15, fontWeight: '700', color: '#a63932' }}>
+        <Text style={{ fontSize: 15, fontWeight: '400', color: '#a63932' }}>
           {name}
         </Text>
       </View>

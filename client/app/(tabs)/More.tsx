@@ -1,28 +1,68 @@
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import React from 'react';
 import AntDesign from '@expo/vector-icons/AntDesign';
-import ProfileBox from '@/component/ProfileBox';
-import MoreComp from '@/component/MoreComp';
 import Fontisto from '@expo/vector-icons/Fontisto';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import MoreComp from '@/component/MoreComp';
 
 export default function More() {
   const router = useRouter();
   return (
-    <View>
-      <ProfileBox />
+    <View style={styles.container}>
+      {/* Profile Section */}
+      <View style={styles.profileSection}>
+        <View>
+          <Text style={styles.profileName}>Omekagu Chukwuebuka</Text>
+          <View style={styles.ratingContainer}>
+            <AntDesign name="star" size={16} color="#a63932" />
+            <Text style={styles.ratingText}>5.00</Text>
+          </View>
+        </View>
+        <View style={styles.avatar}>
+          <Ionicons name="person-circle" size={64} color="#ccc" />
+        </View>
+      </View>
 
-      <ScrollView style={{ height: '100%' }}>
+      {/* Quick Access Buttons */}
+      <View style={styles.quickAccess}>
+        <TouchableOpacity style={styles.accessButton}>
+          <Ionicons name="help-circle" size={30} color="#a63932" />
+          <Text style={styles.cardText}>Help</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.accessButton}>
+          <Fontisto name="wallet" size={30} color="#a63932" />
+          <Text style={styles.cardText}>Wallet</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.accessButton}>
+          <Ionicons name="time-outline" size={30} color="#a63932" />
+          <Text style={styles.cardText}>Activity</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Checkups Section */}
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>Safety Checkup</Text>
+          <Text style={styles.cardText}>Learn ways to make rides safer</Text>
+        </View>
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>Privacy Checkup</Text>
+          <Text style={styles.cardText}>Take an interactive tour of your privacy settings</Text>
+        </View>
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>Estimated CO₂ Saved</Text>
+          <Text style={styles.cardText}>0g</Text>
+        </View>
+
+        {/* Settings Section */}
         <MoreComp
           onPress={() => router.push('/Profile')}
           name={'Manage Profile details'}
-          icon={
-            <Ionicons name="person-circle-sharp" size={24} color="#a63932" />
-          }
+          icon={<Ionicons name="person-circle-sharp" size={24} color="#a63932" />}
         />
         <MoreComp
           onPress={() => router.push('/Reward')}
@@ -36,7 +76,7 @@ export default function More() {
         />
         <MoreComp
           onPress={() => router.push('/Saved')}
-          name={'saved'}
+          name={'Saved'}
           icon={<AntDesign name="hearto" size={24} color="#a63932" />}
         />
         <MoreComp
@@ -49,54 +89,125 @@ export default function More() {
           name={'Questions to property'}
           icon={<FontAwesome6 name="question" size={24} color="#a63932" />}
         />
-
-        {/* <Text>Help and Support</Text> */}
         <MoreComp
           onPress={() => router.push('/CustomerService')}
           name={'Contact Customer Service'}
-          icon={
-            <MaterialCommunityIcons
-              name="account-question-outline"
-              size={24}
-              color="#a63932"
-            />
-          }
+          icon={<MaterialCommunityIcons name="account-question-outline" size={24} color="#a63932" />}
         />
         <MoreComp
           onPress={() => router.push('/ResourceCentre')}
-          name={'Safety resource centre'}
+          name={'Safety Resource Centre'}
           icon={<AntDesign name="Safety" size={24} color="#a63932" />}
         />
-        {/* <Text>Discover</Text> */}
         <MoreComp
           onPress={() => router.push('/Deals')}
           name={'Deals'}
           icon={<Ionicons name="contract" size={24} color="#a63932" />}
         />
-
-        {/* <Text>settings and legal</Text> */}
         <MoreComp
           onPress={() => router.push('/Settings')}
           name={'Settings'}
           icon={<Ionicons name="settings-outline" size={24} color="#a63932" />}
         />
-        <Text
-  style={{ textAlign: 'center', color: 'red', fontSize: 19 }}
-  onPress={async () => {
-    try {
-      await AsyncStorage.removeItem("token"); // Clear the token
-      router.replace("/registration/Login"); // Redirect to login page
 
-      // Prevent user from going back
-      router.setParams({});
-    } catch (error) {
-      console.error("Logout Error:", error);
-    }
-  }}
->
-  Log Out
-</Text>
+        {/* Logout */}
+        <View style={styles.bottom}>
+
+        <Text style={styles.logoutText} onPress={async () => {
+          try {
+            await AsyncStorage.removeItem("token");
+            router.replace("/registration/Login");
+          } catch (error) {
+            console.error("Logout Error:", error);
+          }
+        }}>
+          Log Out
+        </Text>
+        <Text> V 1.0.0</Text>
+          </View>
       </ScrollView>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    padding: 20
+  },
+  profileSection: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  profileName: {
+    fontSize: 24,
+    color:'#a63932',
+    fontWeight: 'bold',
+  },
+  ratingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 5,
+  },
+  ratingText: {
+    marginLeft: 5,
+    color:'#a63932',
+    fontSize: 16,
+  },
+  avatar: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    backgroundColor: '#eee',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  quickAccess: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 20,
+  },
+  accessButton: {
+    alignItems: 'center',
+    color:'#a63932',
+  },
+  scrollContent: {
+    paddingBottom: 40,
+  },
+  card: {
+    backgroundColor: '#f5f5f5',
+    borderRadius: 10,
+    padding: 20,
+    marginBottom: 15,
+  },
+  cardTitle: {
+    fontSize: 15,
+    color: '#a63932',
+    fontWeight: 'bold',
+  },
+  cardText: {
+    marginTop: 5,
+    color: '#a63932',
+  },
+  settingOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 15,
+  },
+  settingText: {
+    marginLeft: 15,
+    fontSize: 16,
+  },
+  logoutText: {
+    textAlign: 'center',
+    color: 'red',
+    fontSize: 19,
+    marginVertical: 20,
+  },
+  bottom:{
+    paddingBottom:100
+  }
+});

@@ -28,7 +28,7 @@ const io = new Server(server, {
 });
 
 // Middleware
-// app.use(cors());
+app.use(cors());
 
 // Handle Socket.IO connections
 io.on("connection", (socket) => {
