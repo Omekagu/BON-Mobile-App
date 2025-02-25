@@ -15,7 +15,7 @@ export default function PlanYourRide() {
     const [suggestions, setSuggestions] = useState([]);
     const [userLocation, setUserLocation] = useState(null);
 
-    const GOOGLE_PLACES_API_KEY = 'AIzaSyA1W2eEkotPgnYpBFujl5A9iB2AsrmI134';
+    // const GOOGLE_PLACES_API_KEY = 'AIzaSyA1W2eEkotPgnYpBFujl5A9iB2AsrmI134';
   
     useEffect(() => {
       (async () => {
@@ -32,21 +32,48 @@ export default function PlanYourRide() {
       })();
     }, []);
 
+    // const fetchLocationSuggestions = async (input) => {
+    //   if (!input) {
+    //     setSuggestions([]);
+    //     return;
+    //   }
+    //   try {
+    //     const response = await axios.get(
+    //       `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${input}&key=${GOOGLE_PLACES_API_KEY}&location=${userLocation.latitude},${userLocation.longitude}&radius=50000`
+    //     );
+    //     setSuggestions(response.data.predictions);
+    //   } catch (error) {
+    //     console.error('Error fetching suggestions:', error);
+    //   }
+    // };
+  
+
     const fetchLocationSuggestions = async (input) => {
       if (!input) {
         setSuggestions([]);
         return;
       }
-      try {
-        const response = await axios.get(
-          `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${input}&key=${GOOGLE_PLACES_API_KEY}&location=${userLocation.latitude},${userLocation.longitude}&radius=50000`
-        );
-        setSuggestions(response.data.predictions);
-      } catch (error) {
-        console.error('Error fetching suggestions:', error);
-      }
+    
+      // Mock response for testing
+      const mockSuggestions = [
+        {
+          place_id: '1',
+          structured_formatting: {
+            main_text: 'Mock Place 1',
+            secondary_text: 'Mock City, Country',
+          },
+        },
+        {
+          place_id: '2',
+          structured_formatting: {
+            main_text: 'Mock Place 2',
+            secondary_text: 'Another City, Country',
+          },
+        },
+      ];
+      setSuggestions(mockSuggestions);
     };
-  
+    
     const showDatePicker = () => setDatePickerVisibility(true);
     const hideDatePicker = () => setDatePickerVisibility(false);
     const handleConfirm = (date) => {

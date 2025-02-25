@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Alert, TouchableOpacity, Text } from 'react-native';
+import { View, StyleSheet, Alert, TouchableOpacity, Text, FlatList, Image } from 'react-native';
 import MapView, { Marker, Polyline } from 'react-native-maps';
 import io from 'socket.io-client';
 import * as Location from 'expo-location';
@@ -11,8 +11,10 @@ const socket = io('http://10.0.1.24:5001');
 
 export default function BookRide() {
   const [userLocation, setUserLocation] = useState(null);
-  const [deliveryLocation, setDeliveryLocation] = useState({ latitude: 6.5244, longitude: 3.3792 }); // Lagos coordinates as example
+  const [deliveryLocation, setDeliveryLocation] = useState({ latitude: 6.5244, longitude: 3.3792 });
   const [routeCoords, setRouteCoords] = useState([]);
+  const [rideOptions, setRideOptions] = useState([]);
+  const [selectedRide, setSelectedRide] = useState(null);
 
   useEffect(() => {
     (async () => {
@@ -22,7 +24,6 @@ export default function BookRide() {
         return;
       }
 
-      // Get real-time location updates
       Location.watchPositionAsync(
         { accuracy: Location.Accuracy.High, distanceInterval: 10 },
         (currentLocation) => {
@@ -33,15 +34,26 @@ export default function BookRide() {
       );
     })();
 
-    // Listen for delivery person's location updates
     socket.on('deliveryLocation', (location) => {
       setDeliveryLocation(location);
     });
+
+    // Dummy fetch for ride options
+    fetchRideOptions();
 
     return () => {
       socket.off('deliveryLocation');
     };
   }, []);
+
+  const fetchRideOptions = () => {
+    const dummyOptions = [
+      { type: 'Comfort', price: '₦16,770', eta: '10:06 AM', arrivalIn: '16 min', icon: '🚗' },
+      { type: 'VVIP', price: '₦12,830', eta: '9:57 AM', arrivalIn: '6 min', icon: '🚕' },
+      { type: 'Priority', price: '₦13,540', eta: '9:56 AM', arrivalIn: '3 min', faster: true, icon: '🚙' }
+    ];
+    setRideOptions(dummyOptions);
+  };
 
   return (
     <View style={styles.container}>
@@ -61,32 +73,44 @@ export default function BookRide() {
           longitudeDelta: 0.1,
         }}
       >
-        {userLocation && (
-          <Marker coordinate={userLocation} title="You" pinColor="blue" />
-        )}
-        {deliveryLocation && (
-          <Marker coordinate={deliveryLocation} title="Destination" pinColor="red" />
-        )}
-
-        {/* Route Path */}
+        {userLocation && <Marker coordinate={userLocation} title="You" pinColor="blue" />}
+        {deliveryLocation && <Marker coordinate={deliveryLocation} title="Destination" pinColor="red" />}
         {userLocation && deliveryLocation && (
-          <Polyline
-            coordinates={[userLocation, deliveryLocation]}
-            strokeColor="#1E90FF"
-            strokeWidth={4}
-          />
+          <Polyline coordinates={[userLocation, deliveryLocation]} strokeColor="#1E90FF" strokeWidth={4} />
         )}
       </MapView>
 
-      {/* Ride Info Section */}
+      {/* Ride Options Section */}
       <View style={styles.infoContainer}>
-        <Text style={styles.infoText}>48 min (28 km) - Fastest route, despite traffic</Text>
-        <View style={styles.actionButtons}>
-          <TouchableOpacity style={styles.actionButton}><Text style={styles.actionText}>Start</Text></TouchableOpacity>
-          <TouchableOpacity style={styles.actionButton}><Text style={styles.actionText}>Add Stops</Text></TouchableOpacity>
-          <TouchableOpacity style={styles.actionButton}><Text style={styles.actionText}>Steps</Text></TouchableOpacity>
-          <TouchableOpacity style={styles.actionButton}><Text style={styles.actionText}>Save</Text></TouchableOpacity>
-        </View>
+        <Text style={styles.infoText}>Choose a trip</Text>
+        <FlatList
+          data={rideOptions}
+          keyExtractor={(item) => item.type}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              style={[styles.rideOption, selectedRide === item.type && styles.selectedRide]}
+              onPress={() => setSelectedRide(item.type)}
+            >
+              <Text style={styles.rideIcon}>{item.icon}</Text>
+              <View style={styles.rideInfo}>
+                <Text style={styles.rideType}>{item.type}</Text>
+                <Text style={styles.rideDetails}>{item.eta} · {item.arrivalIn} · </Text>
+              </View>
+              <Text style={styles.price}>{item.price}</Text>
+            </TouchableOpacity>
+          )}
+        />
+
+        {/* Payment Method Section */}
+        <TouchableOpacity style={styles.paymentMethod}>
+          <Icon name="wallet" size={20} color="black" />
+          <Text style={styles.paymentText}>Personal - Cash</Text>
+        </TouchableOpacity>
+
+        {/* Book Button */}
+        <TouchableOpacity style={styles.bookButton} disabled={!selectedRide}>
+          <Text style={styles.bookText}>{selectedRide ? `Choose ${selectedRide}` : 'Select a Ride'}</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -107,10 +131,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#6A5ACD',
     padding: 10,
     borderRadius: 50,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
   },
   infoContainer: {
     position: 'absolute',
@@ -120,28 +140,67 @@ const styles = StyleSheet.create({
     padding: 20,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: -3 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
   },
   infoText: {
-    fontSize: 16,
+    fontSize: 18,
+    fontWeight: 'bold',
     marginBottom: 10,
     textAlign: 'center',
   },
-  actionButtons: {
+  rideOption: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-  },
-  actionButton: {
-    backgroundColor: '#a63932',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+    alignItems: 'center',
+    padding: 15,
+    backgroundColor: '#f0f0f0',
+    marginVertical: 5,
     borderRadius: 10,
   },
-  actionText: {
-    color: 'white',
+  selectedRide: {
+    borderWidth: 2,
+    borderColor: '#6A5ACD',
+  },
+  rideIcon: {
+    fontSize: 30,
+    marginRight: 15,
+  },
+  rideInfo: {
+    flex: 1,
+  },
+  rideType: {
+    fontSize: 16,
     fontWeight: 'bold',
   },
+  rideDetails: {
+    fontSize: 14,
+    marginTop: 5,
+  },
+  fasterTag: {
+    fontSize: 12,
+    color: '#1E90FF',
+  },
+  paymentMethod: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
+    marginTop: 10,
+  },
+  paymentText: {
+    marginLeft: 10,
+    fontSize: 16,
+  },
+  bookButton: {
+    backgroundColor: '#6A5ACD',
+    paddingVertical: 15,
+    borderRadius: 10,
+    marginTop: 15,
+  },
+  bookText: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  price: {
+    fontSize: 18,
+    fontWeight: '700'
+  }
 });
