@@ -5,7 +5,6 @@ const mongoose = require('mongoose');
 const bcrypt =  require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
-// const nodemailer = require('nodemailer');
 const Hotel = require('./model/hotelModel');
 const Otp = require('./model/Otpmodel')
 const Admin = require('./model/Admin')
@@ -15,8 +14,10 @@ const cors = require("cors");
 const { Server } = require("socket.io");
 const http = require("http");
 const Menu = require('./model/FoodModel');
+const mysql  = require("mysql2");
+const dotenv  = require("dotenv");
 
-
+dotenv.config();
 app.use(cors({ origin: 'http://localhost:3002', credentials: true }));
 
 
@@ -75,11 +76,40 @@ const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString()
 const mongoUrl = "mongodb+srv://mikecheq5:GMxS40xnuCn8Jwp0@cluster0.sz9xp.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 mongoose
 .connect(mongoUrl)
-.then(()=>{console.log("Database Connected successfully")})
+.then(()=>{console.log("MongoDB Connected successfully")})
 .catch((e)=>{
 console.log(e)
 })
 
+app.get("/rooms", (req, res) => {
+  connection.query("SELECT * FROM wp_vikbooking_rooms", (err, results) => {
+    if (err) {
+      res.status(500).send(err);
+    } else {
+      res.json(results);
+    }
+  });
+});
+
+
+
+// Mysql
+const connection = mysql.createConnection({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+});
+
+
+connection.connect((err) => {
+  if (err) {
+    console.error("❌ Database connection failed:", err.message);
+  } else {
+    console.log("✅ Connected to the Mysql database successfully!");
+  }
+  connection.end();
+});
 
 // const transporter = nodemailer.createTransport({
 //   host: "smtp.office365.com",
