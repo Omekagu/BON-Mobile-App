@@ -81,34 +81,44 @@ mongoose
 console.log(e)
 })
 
-app.get("/rooms", (req, res) => {
-  connection.query("SELECT * FROM wp_vikbooking_rooms", (err, results) => {
-    if (err) {
-      res.status(500).send(err);
-    } else {
-      res.json(results);
-    }
-  });
-});
-
-
-
 // Mysql
-const connection = mysql.createConnection({
+const pool = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
 });
 
-
-connection.connect((err) => {
+// Test database connection
+pool.getConnection((err, connection) => {
   if (err) {
-    console.error("❌ Database connection failed:", err.message);
+    console.error("❌ Database connection failed:", err);
   } else {
-    console.log("✅ Connected to the Mysql database successfully!");
+    console.log("✅ Connected to MySQL database successfully!");
+    connection.release(); // Release connection back to the pool
   }
-  connection.end();
+});
+
+app.get("/rooms", (req, res) => {
+  pool.query("SELECT * FROM wp_vikbooking_rooms", (err, results) => {
+    if (err) {
+      console.error("Database Query Error:", err);
+      return res.status(500).send(err);
+    }
+    res.json(results);
+  });
+});
+app.get("/dispcost", (req, res) => {
+  pool.query("SELECT * FROM wp_vikbooking_dispcost", (err, results) => {
+    if (err) {
+      console.error("Database Query Error:", err);
+      return res.status(500).send(err);
+    }
+    res.json(results);
+  });
 });
 
 // const transporter = nodemailer.createTransport({
