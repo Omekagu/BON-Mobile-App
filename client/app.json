@@ -6,7 +6,7 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "Bon-hotel",
+    "scheme": "bonhotel",
     "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/images/splash.png",
@@ -20,19 +20,27 @@
           "fetch",
           "remote-notification",
           "fetch",
+          "remote-notification",
+          "fetch",
+          "remote-notification",
+          "fetch",
           "remote-notification"
         ],
         "ITSAppUsesNonExemptEncryption": false,
         "NSLocationWhenInUseUsageDescription": "This app needs access to your location."
       },
-      "bundleIdentifier": "com.anonymous.Bonhotel"
+      "bundleIdentifier": "com.anonymous.Bonhotel",
+      "runtimeVersion": {
+        "policy": "appVersion"
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.anonymous.Bonhotel"
+      "package": "com.anonymous.Bonhotel",
+      "runtimeVersion": "1.0.0"
     },
     "web": {
       "bundler": "metro",
@@ -52,6 +60,9 @@
       "eas": {
         "projectId": "115b8bc4-0a3a-48f6-be84-bdd6bce26316"
       }
+    },
+    "updates": {
+      "url": "https://u.expo.dev/115b8bc4-0a3a-48f6-be84-bdd6bce26316"
     }
   }
 }
