@@ -16,9 +16,11 @@ const http = require('http')
 const Menu = require('./model/FoodModel')
 const mysql = require('mysql2')
 const dotenv = require('dotenv')
+const nodemailer = require('nodemailer')
+const { rmSync } = require('fs')
 
 dotenv.config()
-app.use(cors({ origin: 'http://localhost:3002', credentials: true }))
+app.use(cors({ origin: 'http://localhost:3000', credentials: true }))
 
 const server = http.createServer(app)
 const io = new Server(server, {
@@ -118,48 +120,48 @@ app.get('/dispcost', (req, res) => {
   })
 })
 
-// const transporter = nodemailer.createTransport({
-//   host: "smtp.office365.com",
-//   port: 587,
-//   secure: false, // Must be false for TLS (true for SSL)
-//   auth: {
-//     user: "ea@bonhotelsinternational.com",
-//     pass: "0~q^NNVW",
-//   },
-//   tls: {
-//     rejectUnauthorized: false, // May help bypass SSL errors, but not recommended for production
-//   },
-// });
+const transporter = nodemailer.createTransport({
+  host: 'smtp.office365.com',
+  port: 587,
+  secure: false, // Must be false for TLS (true for SSL)
+  auth: {
+    user: 'ea@bonhotelsinternational.com',
+    pass: '0~q^NNVW'
+  },
+  tls: {
+    rejectUnauthorized: false // May help bypass SSL errors, but not recommended for production
+  }
+})
 
-// transporter.verify((error, success) => {
-//   if (error) {
-//     console.error("Error:", error);
-//   } else {
-//     console.log("Server is ready to take messages.");
-//   }
-// });
+transporter.verify((error, success) => {
+  if (error) {
+    console.error('Error:', error)
+  } else {
+    console.log('Server is ready to take messages.')
+  }
+})
 
-// // Function to send welcome email
-// const sendWelcomeEmail = (email, firstName) => {
-//   const mailOptions = {
-//     from: 'bonhotels68@gmail.com', // Sender address
-//     to: email, // Recipient email
-//     subject: 'Welcome to Our App!',
-//     html: `<h1>Welcome, ${firstName}!</h1>
-//            <p>Thank you for registering with Bon Hotels. We're excited to have you onboard.</p>
-//            <p>If you have any questions, feel free to contact us at yellowtrumpethotels@gmail.com.</p>
-//            <p>Best regards,<br>The Team</p>`,
-//   };
+// Function to send welcome email
+const sendWelcomeEmail = (email, firstName) => {
+  const mailOptions = {
+    from: 'bonhotels68@gmail.com', // Sender address
+    to: email, // Recipient email
+    subject: 'Welcome to Our App!',
+    html: `<h1>Welcome, ${firstName}!</h1>
+           <p>Thank you for registering with Bon Hotels. We're excited to have you onboard.</p>
+           <p>If you have any questions, feel free to contact us at yellowtrumpethotels@gmail.com.</p>
+           <p>Best regards,<br>The Team</p>`
+  }
 
-//   // Send the email
-//   transporter.sendMail(mailOptions, (err, info) => {
-//     if (err) {
-//       console.error('Error sending email:', err);
-//     } else {
-//       console.log('Email sent:', info.response);
-//     }
-//   });
-// };
+  // Send the email
+  transporter.sendMail(mailOptions, (err, info) => {
+    if (err) {
+      console.error('Error sending email:', err)
+    } else {
+      console.log('Email sent:', info.response)
+    }
+  })
+}
 
 // Register User
 app.post('/register', async (req, res) => {
@@ -320,13 +322,13 @@ app.post('/send-otp', async (req, res) => {
     await Otp.create({ email, otp })
     console.log(email, otp)
 
-    // // Send email
-    // await transporter.sendMail({
-    //   from: 'bonhotels68@gmail.com',
-    //   to: email,
-    //   subject: 'Password Reset OTP',
-    //   text: `Your OTP is ${otp}. It expires in 5 minutes.`
-    // });
+    // Send email
+    await transporter.sendMail({
+      from: 'ea@bonhotelsinternational.com',
+      to: email,
+      subject: 'Password Reset OTP',
+      text: `Your OTP is ${otp}. It expires in 5 minutes.`
+    })
 
     res.json({ message: 'OTP sent to email' })
   } catch (error) {
@@ -500,13 +502,11 @@ app.post('/book', async (req, res) => {
     })
 
     await newBooking.save()
-    res
-      .status(201)
-      .json({
-        status: 'ok',
-        message: 'Booking successful',
-        booking: newBooking
-      })
+    res.status(201).json({
+      status: 'ok',
+      message: 'Booking successful',
+      booking: newBooking
+    })
   } catch (error) {
     console.error('Server Error:', error) // Log the actual error
     res.status(500).json({ error: 'Server error', details: error.message })
