@@ -1,10 +1,19 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import {
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Animated
+} from 'react-native'
 import React from 'react'
 import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 import { useRouter } from 'expo-router'
 import { GestureHandlerRootView, Swipeable } from 'react-native-gesture-handler'
+import axios from 'axios'
 
 export default function CancellationBox ({
+  id, // Added ID to track the booking
   city,
   date,
   name,
@@ -12,17 +21,36 @@ export default function CancellationBox ({
   datePrice,
   image,
   color,
-  onDeletePressed,
+  onDelete, // Function to remove item from state after deletion
   onPress,
   onPrintReceipt // Function to print the receipt
 }) {
   const router = useRouter()
 
-  const renderRightAction = () => (
-    <TouchableOpacity onPress={onDeletePressed}>
-      <Text style={{ color: 'red', padding: 10 }}>Cancel</Text>
-    </TouchableOpacity>
-  )
+  const handleDelete = async () => {
+    try {
+      await axios.delete(`http://10.0.1.20:5001/bookings/${id}`)
+      onDelete(id) // Remove item from state after successful deletion
+    } catch (error) {
+      console.error('Failed to delete booking:', error)
+    }
+  }
+
+  const renderRightAction = (progress, dragX) => {
+    const scale = dragX.interpolate({
+      inputRange: [-100, 0],
+      outputRange: [1, 0],
+      extrapolate: 'clamp'
+    })
+
+    return (
+      <TouchableOpacity onPress={handleDelete} style={styles.deleteButton}>
+        <Animated.Text style={[styles.deleteText, { transform: [{ scale }] }]}>
+          Delete
+        </Animated.Text>
+      </TouchableOpacity>
+    )
+  }
 
   return (
     <GestureHandlerRootView>
@@ -104,5 +132,18 @@ const styles = StyleSheet.create({
   },
   arrowIcon: {
     marginLeft: 'auto'
+  },
+  deleteButton: {
+    backgroundColor: 'red',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 100,
+    borderRadius: 5,
+    marginVertical: 5
+  },
+  deleteText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold'
   }
 })

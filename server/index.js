@@ -120,19 +120,21 @@ app.get('/dispcost', (req, res) => {
   })
 })
 
+// Create a transporter using Hostinger's SMTP server
 const transporter = nodemailer.createTransport({
-  host: 'smtp.office365.com',
-  port: 587,
-  secure: false, // Must be false for TLS (true for SSL)
+  host: 'smtp.hostinger.com',
+  port: 587, // or use 465 for SSL
+  secure: false, // Set to true if using SSL (port 465)
   auth: {
-    user: 'ea@bonhotelsinternational.com',
-    pass: '0~q^NNVW'
+    user: 'ea@bonhotelsinternational.com', // Your email address
+    pass: '0~q^NNVW' // Your email password
   },
   tls: {
-    ciphers: 'SSLv3' // Optional,   },
+    rejectUnauthorized: false // Optional but can help in some environments
   }
 })
 
+// Verify the transporter is ready
 transporter.verify((error, success) => {
   if (error) {
     console.error('Error:', error)
@@ -140,6 +142,29 @@ transporter.verify((error, success) => {
     console.log('Server is ready to take messages.')
   }
 })
+
+// Function to send a welcome email
+const sendLoginEmail = (email, firstName) => {
+  const mailOptions = {
+    from: 'ea@bonhotelsinternational.com', // Sender address
+    to: email, // Recipient email
+    subject: 'Welcome to Our App!',
+    html: `<h1>Welcome, ${firstName}!</h1>
+           <p>Thank you for registering with Bon Hotels. We're excited to have you onboard.</p>
+           <p>If you have any questions, feel free to contact us at support@bonhotels.com.</p>
+           <p>Best regards,<br>The Team</p>`
+  }
+
+  // Send the email
+  transporter.sendMail(mailOptions, (err, info) => {
+    if (err) {
+      console.error('Error sending email:', err)
+    } else {
+      console.log('Email sent:', info.response)
+    }
+  })
+}
+// sendWelcomeEmail('testedeye@gmail.com', 'Israel Adeyeye');
 
 // Function to send welcome email
 const sendWelcomeEmail = (email, firstName) => {
@@ -192,7 +217,7 @@ app.post('/register', async (req, res) => {
     })
     console.log(newUser)
     await newUser.save()
-    // sendWelcomeEmail(email, username);
+    sendWelcomeEmail(email, username)
     res.status(201).json({ message: 'User registered successfully' })
   } catch (error) {
     res.status(500).json({ message: 'Server Error', error })
@@ -234,7 +259,7 @@ app.post('/login', async (req, res) => {
           data: { token, userId: user._id }
         })
       })
-      // sendWelcomeEmail(user.email);
+      sendLoginEmail(user.email, user.username)
     })
     .catch(err => {
       res.status(500).json({ status: 'error', message: 'Server error' })
@@ -313,6 +338,7 @@ app.get('/users', async (req, res) => {
 // 📌 1️⃣ Send OTP
 app.post('/send-otp', async (req, res) => {
   const { email } = req.body
+  console.log('Received email:', email)
 
   try {
     const user = await User.findOne({ email })
@@ -320,7 +346,7 @@ app.post('/send-otp', async (req, res) => {
 
     const otp = generateOTP()
     await Otp.create({ email, otp })
-    console.log(email, otp)
+    // console.log(email, otp)
 
     // Send email
     await transporter.sendMail({
@@ -339,7 +365,9 @@ app.post('/send-otp', async (req, res) => {
 
 // 📌 2️⃣ Verify OTP
 app.post('/verify-otp', async (req, res) => {
-  const { email, otp } = req.body
+  const email = req.body.email.toLowerCase() // Convert to lowercase
+  const otp = req.body.otp
+  console.log('Received OTP:', otp, 'for email:', email)
 
   try {
     const otpRecord = await Otp.findOne({ email, otp })
@@ -354,7 +382,8 @@ app.post('/verify-otp', async (req, res) => {
 
 // 📌 3️⃣ Reset Password
 app.post('/reset-password', async (req, res) => {
-  const { email, newPassword } = req.body
+  const email = req.body.email.toLowerCase() // Convert to lowercase
+  const newPassword = req.body.newPassword
 
   try {
     const hashedPassword = await bcrypt.hash(newPassword, 10)
@@ -531,6 +560,30 @@ app.get('/bookings/:userId', async (req, res) => {
   } catch (error) {
     console.error('🔥 Booking Fetch Error:', error)
     res.status(500).json({ status: 'error', message: error.message })
+  }
+})
+
+// Delete a booking
+app.delete('/bookings/:id', async (req, res) => {
+  try {
+    const { id } = req.params
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: 'Invalid booking ID' })
+    }
+
+    const deletedBooking = await Booking.findByIdAndDelete(id)
+
+    if (!deletedBooking) {
+      return res.status(404).json({ message: 'Booking not found' })
+    }
+
+    res.json({ message: 'Booking deleted successfully' })
+  } catch (error) {
+    console.error('Error deleting booking:', error)
+    res
+      .status(500)
+      .json({ message: 'Error deleting booking', error: error.message })
   }
 })
 

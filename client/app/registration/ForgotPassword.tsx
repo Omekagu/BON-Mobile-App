@@ -84,7 +84,11 @@ const ForgotPassword = () => {
           text1: 'Success',
           text2: 'Password updated!'
         })
-        router.push('/Login')
+
+        // Redirect to login after success
+        setTimeout(() => {
+          router.replace('/registration/Login')
+        }, 2000) // Optional delay for better UX
       })
       .catch(() => {
         Toast.show({
