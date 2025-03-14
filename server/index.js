@@ -129,7 +129,7 @@ const transporter = nodemailer.createTransport({
     pass: '0~q^NNVW'
   },
   tls: {
-    rejectUnauthorized: false // May help bypass SSL errors, but not recommended for production
+    ciphers: 'SSLv3' // Optional,   },
   }
 })
 
