@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from 'mongoose'
 
 const hotelSchema = new mongoose.Schema({
   name: { type: String, required: true },
@@ -15,12 +15,12 @@ const hotelSchema = new mongoose.Schema({
   rating: { type: Number, required: true, min: 0, max: 5 },
   contact: {
     phone: { type: String, required: true },
-    email: { type: String, required: true },
+    email: { type: String, required: true }
   },
-  menu: [{ type: mongoose.Schema.Types.ObjectId, ref: "Menu" }], // Reference to Menu Items
-  createdAt: { type: Date, default: Date.now },
-});
+  menu: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Menu' }], // Reference to Menu Items
+  createdAt: { type: Date, default: Date.now }
+})
 
-const Hotel = mongoose.model("Hotel", hotelSchema);
+const Hotel = mongoose.model('Hotel', hotelSchema)
 
-module.exports = Hotel;
+export default Hotel

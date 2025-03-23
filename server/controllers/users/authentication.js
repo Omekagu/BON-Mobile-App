@@ -1,4 +1,4 @@
-import User from '../../model/UserDetails'
+import User from '../../model/UserDetails.js'
 import bcrypt from 'bcryptjs'
 import { sendWelcomeEmail } from '../../utilities/email.js'
 

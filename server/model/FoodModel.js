@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+import mongoose from 'mongoose'
 
 const menuSchema = new mongoose.Schema({
     hotel: { type: mongoose.Schema.Types.ObjectId, ref: "Hotel", required: true },
@@ -22,5 +22,5 @@ const menuSchema = new mongoose.Schema({
   
   const Menu = mongoose.model("Menu", menuSchema);
   
-  module.exports = Menu;
+ export default Menu;
   

@@ -1,6 +1,5 @@
 import nodemailer from 'nodemailer'
 import dotenv from 'dotenv'
-require('dotenv').config()
 
 dotenv.config()
 
@@ -28,7 +27,7 @@ transporter.verify((error, success) => {
 })
 
 // Function to send a welcome email
-const sendLoginEmail = (email, firstName) => {
+export const sendLoginEmail = (email, firstName) => {
   const mailOptions = {
     from: 'ea@bonhotelsinternational.com', // Sender address
     to: email, // Recipient email
@@ -51,7 +50,7 @@ const sendLoginEmail = (email, firstName) => {
 // sendWelcomeEmail('testedeye@gmail.com', 'Omekagu Chukwuebuka');
 
 // Function to send welcome email
-const sendWelcomeEmail = (email, firstName) => {
+export const sendWelcomeEmail = (email, firstName) => {
   const mailOptions = {
     from: 'bonhotels68@gmail.com', // Sender address
     to: email, // Recipient email
@@ -71,5 +70,3 @@ const sendWelcomeEmail = (email, firstName) => {
     }
   })
 }
-
-export default { sendLoginEmail, sendWelcomeEmail }
