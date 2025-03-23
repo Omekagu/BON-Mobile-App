@@ -5,15 +5,20 @@ import { Server } from 'socket.io'
 import http from 'http'
 import mysql from 'mysql2'
 import dotenv from 'dotenv'
-import usersRoutes from './routes/users/authentication.js'
+import authRoutes from './routes/users/authentication.js'
+import usersRoutes from './routes/users/user.js'
 const app = express()
-dotenv.config()
-app.use(cors({ origin: 'http://localhost:3000', credentials: true }))
 const server = http.createServer(app)
 
 // Middleware
+dotenv.config()
 app.use(cors())
+app.use(cors({ origin: 'http://localhost:3000', credentials: true }))
 app.use(express.json())
+
+// Register User
+app.use('/auth', authRoutes)
+app.use('/user', usersRoutes)
 
 const io = new Server(server, {
   cors: {
@@ -76,8 +81,5 @@ pool.getConnection((err, connection) => {
     connection.release() // Release connection back to the pool
   }
 })
-
-// Register User
-app.use('user', usersRoutes)
 
 app.listen(5001, console.log('server is up and running '))

@@ -1,6 +1,3 @@
-// Json webtoken
-const jwtSecret = crypto.randomBytes(64).toString('hex')
-
 // Generate OTP
 const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString()
 
@@ -26,117 +23,6 @@ app.get('/dispcost', (req, res) => {
 // ROUTES
 app.use('/room')
 
-// // Create a transporter using Hostinger's SMTP server
-// const transporter = nodemailer.createTransport({
-//   host: 'smtp.hostinger.com',
-//   port: 587, // or use 465 for SSL
-//   secure: false, // Set to true if using SSL (port 465)
-//   auth: {
-//     user: 'ea@bonhotelsinternational.com', // Your email address
-//     pass: '0~q^NNVW' // Your email password
-//   },
-//   tls: {
-//     rejectUnauthorized: false // Optional but can help in some environments
-//   }
-// })
-
-// // Verify the transporter is ready
-// transporter.verify((error, success) => {
-//   if (error) {
-//     console.error('Error:', error)
-//   } else {
-//     console.log('Server is ready to take messages.')
-//   }
-// })
-
-// // Function to send a welcome email
-// const sendLoginEmail = (email, firstName) => {
-//   const mailOptions = {
-//     from: 'ea@bonhotelsinternational.com', // Sender address
-//     to: email, // Recipient email
-//     subject: 'Welcome to Our App!',
-//     html: `<h1>Welcome, ${firstName}!</h1>
-//            <p>Thank you for registering with Bon Hotels. We're excited to have you onboard.</p>
-//            <p>If you have any questions, feel free to contact us at support@bonhotels.com.</p>
-//            <p>Best regards,<br>The Team</p>`
-//   }
-
-//   // Send the email
-//   transporter.sendMail(mailOptions, (err, info) => {
-//     if (err) {
-//       console.error('Error sending email:', err)
-//     } else {
-//       console.log('Email sent:', info.response)
-//     }
-//   })
-// }
-// // sendWelcomeEmail('testedeye@gmail.com', 'Israel Adeyeye');
-
-// // Function to send welcome email
-// const sendWelcomeEmail = (email, firstName) => {
-//   const mailOptions = {
-//     from: 'bonhotels68@gmail.com', // Sender address
-//     to: email, // Recipient email
-//     subject: 'Welcome to Our App!',
-//     html: `<h1>Welcome, ${firstName}!</h1>
-//            <p>Thank you for registering with Bon Hotels. We're excited to have you onboard.</p>
-//            <p>If you have any questions, feel free to contact us at yellowtrumpethotels@gmail.com.</p>
-//            <p>Best regards,<br>The Team</p>`
-//   }
-
-//   // Send the email
-//   transporter.sendMail(mailOptions, (err, info) => {
-//     if (err) {
-//       console.error('Error sending email:', err)
-//     } else {
-//       console.log('Email sent:', info.response)
-//     }
-//   })
-// }
-
-// Login User
-app.post('/login', async (req, res) => {
-  const { email, password } = req.body
-  User.findOne({ email: email })
-    .then(user => {
-      if (!user) {
-        return res
-          .status(404)
-          .json({ status: 'error', message: 'No record found' })
-      }
-
-      // Compare password with hashed password
-      bcrypt.compare(password, user.password, (err, isMatch) => {
-        if (err) {
-          return res
-            .status(500)
-            .json({ status: 'error', message: 'Server error' })
-        }
-
-        if (!isMatch) {
-          return res
-            .status(401)
-            .json({ status: 'error', message: 'Invalid password' })
-        }
-
-        // ✅ Generate JWT Token with `userId`
-        const token = jwt.sign({ userId: user._id }, jwtSecret, {
-          expiresIn: '30m'
-        })
-        // ✅ Send userId along with token
-        res.status(200).json({
-          status: 'ok',
-          data: { token, userId: user._id }
-        })
-      })
-      sendLoginEmail(user.email, user.username)
-    })
-    .catch(err => {
-      res.status(500).json({ status: 'error', message: 'Server error' })
-    })
-})
-
-// ✅ Ensure your backend route is POST
 app.get('/userData', (req, res) => {
   const token = req.headers.authorization?.split(' ')[1] // Extract token
 
@@ -195,16 +81,6 @@ app.get('/api/protected', (req, res) => {
     res.status(403).json({ error: 'Invalid token' })
   }
 })
-
-app.get('/users', async (req, res) => {
-  try {
-    const users = await User.find({}, '-password')
-    res.json(users)
-  } catch (error) {
-    res.status(500).json({ message: 'error', error })
-  }
-})
-
 // 📌 1️⃣ Send OTP
 app.post('/send-otp', async (req, res) => {
   const { email } = req.body
