@@ -1,23 +1,23 @@
-const express = require('express')
-const app = express()
+import express from 'express'
+import app from  express()
+import mongoose from 'mongoose'
+import bcrypt from 'bcryptjs'
+import jwt from 'jsonwebtoken'
+import crypto from 'crypto'
+import Hotel from './model/hotelModel'
+import Otp from './model/Otpmodel'
+import Admin from './model/Admin'
+import User from './model/UserDetails'
+import Booking from './model/Booking'
+import cors from 'cors'
+import { Server } from 'socket.io'
+import http from 'http'
+import Menu from './model/FoodModel'
+import mysql from 'mysql2'
+import dotenv from 'dotenv'
 require('dotenv').config()
-const mongoose = require('mongoose')
-const bcrypt = require('bcryptjs')
-const jwt = require('jsonwebtoken')
-const crypto = require('crypto')
-const Hotel = require('./model/hotelModel')
-const Otp = require('./model/Otpmodel')
-const Admin = require('./model/Admin')
-const User = require('./model/UserDetails')
-const Booking = require('./model/Booking')
-const cors = require('cors')
-const { Server } = require('socket.io')
-const http = require('http')
-const Menu = require('./model/FoodModel')
-const mysql = require('mysql2')
-const dotenv = require('dotenv')
-const nodemailer = require('nodemailer')
-const { rmSync } = require('fs')
+import { rmSync } from 'fs'
+import usersRoutes from './routes/users/authentication'
 
 dotenv.config()
 app.use(cors({ origin: 'http://localhost:3000', credentials: true }))
@@ -120,109 +120,81 @@ app.get('/dispcost', (req, res) => {
   })
 })
 
-// Create a transporter using Hostinger's SMTP server
-const transporter = nodemailer.createTransport({
-  host: 'smtp.hostinger.com',
-  port: 587, // or use 465 for SSL
-  secure: false, // Set to true if using SSL (port 465)
-  auth: {
-    user: 'ea@bonhotelsinternational.com', // Your email address
-    pass: '0~q^NNVW' // Your email password
-  },
-  tls: {
-    rejectUnauthorized: false // Optional but can help in some environments
-  }
-})
+// ROUTES 
+app.use('/room', )
 
-// Verify the transporter is ready
-transporter.verify((error, success) => {
-  if (error) {
-    console.error('Error:', error)
-  } else {
-    console.log('Server is ready to take messages.')
-  }
-})
+// // Create a transporter using Hostinger's SMTP server
+// const transporter = nodemailer.createTransport({
+//   host: 'smtp.hostinger.com',
+//   port: 587, // or use 465 for SSL
+//   secure: false, // Set to true if using SSL (port 465)
+//   auth: {
+//     user: 'ea@bonhotelsinternational.com', // Your email address
+//     pass: '0~q^NNVW' // Your email password
+//   },
+//   tls: {
+//     rejectUnauthorized: false // Optional but can help in some environments
+//   }
+// })
 
-// Function to send a welcome email
-const sendLoginEmail = (email, firstName) => {
-  const mailOptions = {
-    from: 'ea@bonhotelsinternational.com', // Sender address
-    to: email, // Recipient email
-    subject: 'Welcome to Our App!',
-    html: `<h1>Welcome, ${firstName}!</h1>
-           <p>Thank you for registering with Bon Hotels. We're excited to have you onboard.</p>
-           <p>If you have any questions, feel free to contact us at support@bonhotels.com.</p>
-           <p>Best regards,<br>The Team</p>`
-  }
+// // Verify the transporter is ready
+// transporter.verify((error, success) => {
+//   if (error) {
+//     console.error('Error:', error)
+//   } else {
+//     console.log('Server is ready to take messages.')
+//   }
+// })
 
-  // Send the email
-  transporter.sendMail(mailOptions, (err, info) => {
-    if (err) {
-      console.error('Error sending email:', err)
-    } else {
-      console.log('Email sent:', info.response)
-    }
-  })
-}
-// sendWelcomeEmail('testedeye@gmail.com', 'Israel Adeyeye');
+// // Function to send a welcome email
+// const sendLoginEmail = (email, firstName) => {
+//   const mailOptions = {
+//     from: 'ea@bonhotelsinternational.com', // Sender address
+//     to: email, // Recipient email
+//     subject: 'Welcome to Our App!',
+//     html: `<h1>Welcome, ${firstName}!</h1>
+//            <p>Thank you for registering with Bon Hotels. We're excited to have you onboard.</p>
+//            <p>If you have any questions, feel free to contact us at support@bonhotels.com.</p>
+//            <p>Best regards,<br>The Team</p>`
+//   }
 
-// Function to send welcome email
-const sendWelcomeEmail = (email, firstName) => {
-  const mailOptions = {
-    from: 'bonhotels68@gmail.com', // Sender address
-    to: email, // Recipient email
-    subject: 'Welcome to Our App!',
-    html: `<h1>Welcome, ${firstName}!</h1>
-           <p>Thank you for registering with Bon Hotels. We're excited to have you onboard.</p>
-           <p>If you have any questions, feel free to contact us at yellowtrumpethotels@gmail.com.</p>
-           <p>Best regards,<br>The Team</p>`
-  }
+//   // Send the email
+//   transporter.sendMail(mailOptions, (err, info) => {
+//     if (err) {
+//       console.error('Error sending email:', err)
+//     } else {
+//       console.log('Email sent:', info.response)
+//     }
+//   })
+// }
+// // sendWelcomeEmail('testedeye@gmail.com', 'Israel Adeyeye');
 
-  // Send the email
-  transporter.sendMail(mailOptions, (err, info) => {
-    if (err) {
-      console.error('Error sending email:', err)
-    } else {
-      console.log('Email sent:', info.response)
-    }
-  })
-}
+// // Function to send welcome email
+// const sendWelcomeEmail = (email, firstName) => {
+//   const mailOptions = {
+//     from: 'bonhotels68@gmail.com', // Sender address
+//     to: email, // Recipient email
+//     subject: 'Welcome to Our App!',
+//     html: `<h1>Welcome, ${firstName}!</h1>
+//            <p>Thank you for registering with Bon Hotels. We're excited to have you onboard.</p>
+//            <p>If you have any questions, feel free to contact us at yellowtrumpethotels@gmail.com.</p>
+//            <p>Best regards,<br>The Team</p>`
+//   }
+
+//   // Send the email
+//   transporter.sendMail(mailOptions, (err, info) => {
+//     if (err) {
+//       console.error('Error sending email:', err)
+//     } else {
+//       console.log('Email sent:', info.response)
+//     }
+//   })
+// }
 
 // Register User
-app.post('/register', async (req, res) => {
-  const {
-    username,
-    email,
-    password,
-    phoneNumber,
-    profileImage,
-    deviceType,
-    userCountry
-  } = req.body
+app.use('user', usersRoutes)
 
-  try {
-    const oldUser = await User.findOne({ email })
-    if (oldUser) return res.status(400).json({ message: 'User already exists' })
 
-    console.log(username, email, password, phoneNumber)
-    const hashedPassword = await bcrypt.hash(password, 10)
-    const newUser = new User({
-      username,
-      email,
-      password: hashedPassword,
-      phoneNumber,
-      profileImage,
-      deviceType,
-      userCountry
-    })
-    console.log(newUser)
-    await newUser.save()
-    sendWelcomeEmail(email, username)
-    res.status(201).json({ message: 'User registered successfully' })
-  } catch (error) {
-    res.status(500).json({ message: 'Server Error', error })
-  }
-})
 
 // Login User
 app.post('/login', async (req, res) => {
