@@ -1,6 +1,6 @@
 import User from '../../model/UserDetails.js'
 
-export const userdata = async (req, res) => {
+export const Users = async (req, res) => {
   try {
     const users = await User.find({}, '-password')
     res.json(users)

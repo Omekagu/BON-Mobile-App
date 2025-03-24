@@ -7,6 +7,8 @@ import mysql from 'mysql2'
 import dotenv from 'dotenv'
 import authRoutes from './routes/users/authentication.js'
 import usersRoutes from './routes/users/user.js'
+import adminRoutes from './routes/admin/adminAuth.js'
+import hotelRoutes from './routes/hotel/hotel.js'
 const app = express()
 const server = http.createServer(app)
 
@@ -19,6 +21,8 @@ app.use(express.json())
 // Register User
 app.use('/auth', authRoutes)
 app.use('/user', usersRoutes)
+app.use('/admin', adminRoutes)
+app.use('/hotel', hotelRoutes)
 
 const io = new Server(server, {
   cors: {

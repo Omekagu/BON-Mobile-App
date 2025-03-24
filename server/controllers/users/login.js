@@ -1,11 +1,8 @@
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
-import crypto from 'crypto'
 import User from '../../model/UserDetails.js'
 import { sendLoginEmail } from '../../utilities/email.js'
-
-// Json webtoken
-const jwtSecret = crypto.randomBytes(64).toString('hex')
+import { jwtSecret } from '../../utilities/jwtSecret.js'
 
 // Login User
 export const Login = async (req, res) => {
