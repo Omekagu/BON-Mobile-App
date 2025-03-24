@@ -15,7 +15,7 @@ router.post('/login', Login)
 router.post('/reset-password', resetUserPassword)
 router.post('/protected', protectedApi)
 router.post('/usertoken', Usertoken)
-router.post('/userdata', userdata)
+router.get('/userdata', userdata)
 router.post('/send-otp', sendOtp)
 router.post('/verify-otp', verifyOtp)
 

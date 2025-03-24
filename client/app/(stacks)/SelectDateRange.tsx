@@ -66,7 +66,7 @@ export default function SelectDateRange () {
       console.log('Cleaned JWT Token:', token)
 
       // Fetch user data from backend
-      const response = await axios.get('http://10.0.1.20:5001/userData', {
+      const response = await axios.get('http://10.0.1.20:5001/user/userData', {
         headers: { Authorization: `Bearer ${token}` }
       })
 

@@ -60,7 +60,7 @@ export default function BookingDetails () {
   useEffect(() => {
     const fetchHotelDetails = async () => {
       try {
-        const response = await axios.get(`http://10.0.1.20:5001/hotels/${id}`)
+        const response = await axios.get(`http://10.0.1.20:5001/hotel/${id}`)
         setHotel(response.data)
       } catch (error) {
         Toast.show({ type: 'error', text1: 'Failed to load hotel details.' })

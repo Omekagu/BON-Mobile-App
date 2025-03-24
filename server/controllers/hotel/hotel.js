@@ -12,7 +12,7 @@ export const hotels = async (req, res) => {
 }
 
 // Get hotel by ID
-app.get('/hotels/:id', async (req, res) => {
+export const hotelId = async (req, res) => {
   try {
     const hotel = await Hotel.findById(req.params.id)
     if (!hotel) return res.status(404).json({ error: 'Hotel not found' })
@@ -20,10 +20,10 @@ app.get('/hotels/:id', async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch hotel' })
   }
-})
+}
 
 // Hotel search by name
-app.get('/hotels/search/:name', async (req, res) => {
+export const SearchHotelsName = async (req, res) => {
   try {
     const { name } = req.params // Get the name from the URL parameter
     if (!name) return res.status(400).json({ error: 'Hotel name is required' })
@@ -33,10 +33,10 @@ app.get('/hotels/search/:name', async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: 'Failed to search hotels' })
   }
-})
+}
 
 //Get Menu
-app.get('/menu/:hotelId', async (req, res) => {
+export const getMenuId = async (req, res) => {
   try {
     const { hotelId } = req.params
     const hotel = await Hotel.findById(hotelId).populate('menu')
@@ -49,10 +49,10 @@ app.get('/menu/:hotelId', async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: 'Error fetching menu', error })
   }
-})
+}
 
 //post a menu
-app.post('/create-menu/:hotelId', async (req, res) => {
+export const createMenuHotelId = async (req, res) => {
   try {
     const { hotelId } = req.params
 
@@ -79,10 +79,10 @@ app.post('/create-menu/:hotelId', async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: 'Error creating menu', error })
   }
-})
+}
 
 // booking completed
-app.post('/book', async (req, res) => {
+export const bookingCompleted = async (req, res) => {
   try {
     const {
       userId,
@@ -132,10 +132,10 @@ app.post('/book', async (req, res) => {
     console.error('Server Error:', error) // Log the actual error
     res.status(500).json({ error: 'Server error', details: error.message })
   }
-})
+}
 
 // fetch booked room based on userid
-app.get('/bookings/:userId', async (req, res) => {
+export const bookedUserId = async (req, res) => {
   try {
     const { userId } = req.params
 
@@ -153,10 +153,10 @@ app.get('/bookings/:userId', async (req, res) => {
     console.error('🔥 Booking Fetch Error:', error)
     res.status(500).json({ status: 'error', message: error.message })
   }
-})
+}
 
 // Delete a booking
-app.delete('/bookings/:id', async (req, res) => {
+export const deletebooked = async (req, res) => {
   try {
     const { id } = req.params
 
@@ -177,4 +177,4 @@ app.delete('/bookings/:id', async (req, res) => {
       .status(500)
       .json({ message: 'Error deleting booking', error: error.message })
   }
-})
+}
