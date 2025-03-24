@@ -34,10 +34,10 @@ const Bookings = () => {
       const parsedData = JSON.parse(userData)
       let token = parsedData.token.replace(/^"|"$/g, '')
 
-      const response = await axios.get('http://10.0.1.14:5001/auth/userData', {
+      const response = await axios.get('http://10.0.1.14:5001/auth/usertoken', {
         headers: { Authorization: `Bearer ${token}` }
       })
-
+      console.log(token)
       return parsedData.userId
     } catch (error) {
       console.error('Error retrieving user ID:', error)
