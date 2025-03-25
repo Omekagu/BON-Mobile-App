@@ -8,7 +8,7 @@ import {
   Alert,
   ActivityIndicator
 } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import AntDesign from '@expo/vector-icons/AntDesign'
 import Fontisto from '@expo/vector-icons/Fontisto'
 import Ionicons from '@expo/vector-icons/Ionicons'
@@ -24,6 +24,13 @@ export default function More () {
   const router = useRouter()
   const [imageUri, setImageUri] = useState(null)
   const [upLoading, setUploading] = useState(false)
+  const [user, setUser] = useState(null)
+  const [loading, setLoading] = useState(true)
+
+  // Replace with your Cloudinary upload endpoint and preset
+  const CLOUDINARY_UPLOAD_URL =
+    'https://api.cloudinary.com/v1_1/da26wgev2/image/upload'
+  const UPLOAD_PRESET = 'chataap' // replace with your actual preset
 
   const pickImage = async () => {
     try {
@@ -42,16 +49,32 @@ export default function More () {
         mediaTypes: ['images'],
         allowsEditing: true,
         aspect: [1, 1],
-        quality: 1,
-        base64: true, // Enable base64 encoding
+        quality: 0.5, // lower quality to reduce file size
+        base64: true,
         selectionLimit: 1
       })
 
       if (!result.canceled) {
-        // Set the image URI for display
+        // Set the image URI for display (optional)
         setImageUri(result.assets?.[0]?.uri ?? null)
-        // Update the profile image on the server using the base64 string
-        await updateProfileImage(result.assets?.[0]?.base64)
+        // Prepare the base64 image for upload
+        const base64Img = `data:image/jpg;base64,${result.assets[0].base64}`
+        let formData = new FormData()
+        formData.append('file', base64Img)
+        formData.append('upload_preset', UPLOAD_PRESET)
+
+        // Upload the image to Cloudinary
+        const uploadResponse = await axios.post(
+          CLOUDINARY_UPLOAD_URL,
+          formData,
+          {
+            headers: { 'Content-Type': 'multipart/form-data' }
+          }
+        )
+        const imageUrl = uploadResponse.data.secure_url
+        console.log('Uploaded image URL:', imageUrl)
+        // Update the profile image on your backend using the short URL from Cloudinary
+        await updateProfileImage(imageUrl)
       }
     } catch (error) {
       console.error('Image picking error:', error)
@@ -63,15 +86,11 @@ export default function More () {
     try {
       const userData = await AsyncStorage.getItem('token')
       if (!userData) return null
-
       const parsedData = JSON.parse(userData)
       let token = parsedData.token.replace(/^"|"$/g, '')
-
       const response = await axios.get('http://10.0.1.14:5001/auth/usertoken', {
         headers: { Authorization: `Bearer ${token}` }
       })
-      // console.log('Token:', token)
-      // console.log(parsedData.userId)
       return parsedData.userId
     } catch (error) {
       console.error('Error retrieving user ID:', error)
@@ -79,7 +98,7 @@ export default function More () {
     }
   }
 
-  const updateProfileImage = async base64Image => {
+  const updateProfileImage = async imageUrl => {
     try {
       setUploading(true)
       // Retrieve the logged-in user ID properly
@@ -88,16 +107,15 @@ export default function More () {
         Alert.alert('Error', 'User not found')
         return
       }
-      // Create a data URL from the base64 string
-      const profileImage = `data:image/jpeg;base64,${base64Image}`
-
+      // imageUrl is the short URL returned from Cloudinary
       const response = await axios.post(
         'http://10.0.1.14:5001/auth/update-profile-image',
-        { userId, profileImage }
+        { userId, profileImage: imageUrl }
       )
-
       Alert.alert('Success', 'Profile image updated successfully')
       console.log(response.data)
+      // Update local user state so that further uploads are disabled
+      setUser(prev => ({ ...prev, profileImage: imageUrl }))
     } catch (error) {
       console.error('Error updating profile image:', error)
       Alert.alert('Error', 'Failed to update profile image')
@@ -106,19 +124,59 @@ export default function More () {
     }
   }
 
+  useEffect(() => {
+    // Fetch user data from backend
+    const fetchUser = async () => {
+      try {
+        const userId = await getUserId()
+        const response = await axios.get(
+          `http://10.0.1.14:5001/user/user/${userId}`
+        )
+        setUser(response.data.user)
+      } catch (error) {
+        console.error('Error fetching user:', error)
+      }
+      setLoading(false)
+    }
+    fetchUser()
+  }, [])
+
+  if (loading) {
+    return (
+      <View style={styles.loader}>
+        <ActivityIndicator size='large' color='#a63932' />
+      </View>
+    )
+  }
+
   return (
     <View style={styles.container}>
       {/* Profile Section */}
       <View style={styles.profileSection}>
         <View>
-          <Text style={styles.profileName}>Omekagu Chukwuebuka</Text>
+          <Text style={styles.profileName}>{user?.username || 'User'}</Text>
           <View style={styles.ratingContainer}>
             <AntDesign name='star' size={16} color='#a63932' />
             <Text style={styles.ratingText}>5.00</Text>
           </View>
         </View>
-        <TouchableOpacity onPress={pickImage} style={styles.imagePicker}>
-          {imageUri ? (
+        <TouchableOpacity
+          // If there's already an image in the database, disable uploading
+          onPress={() => {
+            if (user?.profileImage) {
+              Alert.alert('Image Set', 'Your profile image is already set.')
+            } else {
+              pickImage()
+            }
+          }}
+          style={styles.imagePicker}
+        >
+          {user?.profileImage ? (
+            <Image
+              source={{ uri: user.profileImage }}
+              style={styles.profileImage}
+            />
+          ) : imageUri ? (
             <Image source={{ uri: imageUri }} style={styles.profileImage} />
           ) : (
             <Text style={styles.imageText}>Upload Photo</Text>
@@ -252,6 +310,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     padding: 20
   },
+  loader: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
   profileSection: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -278,7 +341,7 @@ const styles = StyleSheet.create({
     color: '#666'
   },
   profileName: {
-    fontSize: 19,
+    fontSize: 28,
     color: '#a63932',
     fontWeight: 'bold'
   },
