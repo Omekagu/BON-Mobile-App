@@ -160,14 +160,6 @@ const Registration: React.FC = () => {
         <Text style={styles.infoText}>Create your account</Text>
 
         <View style={styles.formContainer}>
-          {/* <TouchableOpacity onPress={pickImage} style={styles.imagePicker}>
-          {profileImage ? (
-            <Image source={{ uri: profileImage }} style={styles.profileImage} />
-          ) : (
-            <Text style={styles.imageText}>Upload Photo</Text>
-          )}
-        </TouchableOpacity> */}
-
           <LabelInputComp
             label='Username'
             placeholder='Enter username'

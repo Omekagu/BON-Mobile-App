@@ -4,7 +4,9 @@ import {
   ScrollView,
   StyleSheet,
   TouchableOpacity,
-  Image
+  Image,
+  Alert,
+  ActivityIndicator
 } from 'react-native'
 import React, { useState } from 'react'
 import AntDesign from '@expo/vector-icons/AntDesign'
@@ -16,33 +18,91 @@ import { useRouter } from 'expo-router'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import MoreComp from '@/component/MoreComp'
 import * as ImagePicker from 'expo-image-picker'
+import axios from 'axios'
 
 export default function More () {
   const router = useRouter()
-
   const [imageUri, setImageUri] = useState(null)
+  const [upLoading, setUploading] = useState(false)
+
   const pickImage = async () => {
     try {
+      // Request permission first
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync()
-      console.log('Media Library Permission Status:', status)
       if (status !== 'granted') {
-        alert('Sorry, we need camera roll permissions to make this work!')
+        Alert.alert(
+          'Permission Denied',
+          'Please allow access to the media library.'
+        )
         return
       }
 
-      let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      // Launch the image picker with base64 enabled
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ['images'],
         allowsEditing: true,
         aspect: [1, 1],
-        quality: 1
+        quality: 1,
+        base64: true, // Enable base64 encoding
+        selectionLimit: 1
       })
 
-      if (!result.cancelled) {
-        setImageUri(result.uri)
+      if (!result.canceled) {
+        // Set the image URI for display
+        setImageUri(result.assets?.[0]?.uri ?? null)
+        // Update the profile image on the server using the base64 string
+        await updateProfileImage(result.assets?.[0]?.base64)
       }
     } catch (error) {
-      console.error('Error picking an image: ', error)
-      alert('An error occurred while picking the image.')
+      console.error('Image picking error:', error)
+      Alert.alert('Error', 'An error occurred while picking the image.')
+    }
+  }
+
+  const getUserId = async () => {
+    try {
+      const userData = await AsyncStorage.getItem('token')
+      if (!userData) return null
+
+      const parsedData = JSON.parse(userData)
+      let token = parsedData.token.replace(/^"|"$/g, '')
+
+      const response = await axios.get('http://10.0.1.14:5001/auth/usertoken', {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      // console.log('Token:', token)
+      // console.log(parsedData.userId)
+      return parsedData.userId
+    } catch (error) {
+      console.error('Error retrieving user ID:', error)
+      return null
+    }
+  }
+
+  const updateProfileImage = async base64Image => {
+    try {
+      setUploading(true)
+      // Retrieve the logged-in user ID properly
+      const userId = await getUserId()
+      if (!userId) {
+        Alert.alert('Error', 'User not found')
+        return
+      }
+      // Create a data URL from the base64 string
+      const profileImage = `data:image/jpeg;base64,${base64Image}`
+
+      const response = await axios.post(
+        'http://10.0.1.14:5001/auth/update-profile-image',
+        { userId, profileImage }
+      )
+
+      Alert.alert('Success', 'Profile image updated successfully')
+      console.log(response.data)
+    } catch (error) {
+      console.error('Error updating profile image:', error)
+      Alert.alert('Error', 'Failed to update profile image')
+    } finally {
+      setUploading(false)
     }
   }
 
@@ -57,17 +117,18 @@ export default function More () {
             <Text style={styles.ratingText}>5.00</Text>
           </View>
         </View>
-        <View style={styles.avatar}>
-          <TouchableOpacity onPress={pickImage}>
-            <View style={styles.avatar}>
-              {imageUri ? (
-                <Image source={{ uri: imageUri }} style={styles.image} />
-              ) : (
-                <Ionicons name='person-circle' size={64} color='#ccc' />
-              )}
+        <TouchableOpacity onPress={pickImage} style={styles.imagePicker}>
+          {imageUri ? (
+            <Image source={{ uri: imageUri }} style={styles.profileImage} />
+          ) : (
+            <Text style={styles.imageText}>Upload Photo</Text>
+          )}
+          {upLoading && (
+            <View style={styles.loadingOverlay}>
+              <ActivityIndicator size='large' color='#a63932' />
             </View>
-          </TouchableOpacity>
-        </View>
+          )}
+        </TouchableOpacity>
       </View>
 
       {/* Quick Access Buttons */}
@@ -197,8 +258,27 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20
   },
+  imagePicker: {
+    alignSelf: 'center',
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: '#eee',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 15,
+    position: 'relative'
+  },
+  profileImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 50
+  },
+  imageText: {
+    color: '#666'
+  },
   profileName: {
-    fontSize: 24,
+    fontSize: 19,
     color: '#a63932',
     fontWeight: 'bold'
   },
@@ -212,27 +292,16 @@ const styles = StyleSheet.create({
     color: '#a63932',
     fontSize: 16
   },
-
-  avatar: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    overflow: 'hidden',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f0f0f0'
-  },
-  image: {
-    width: '100%',
-    height: '100%'
-  },
   quickAccess: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     marginBottom: 20
   },
   accessButton: {
-    alignItems: 'center',
+    alignItems: 'center'
+  },
+  cardText: {
+    marginTop: 5,
     color: '#a63932'
   },
   scrollContent: {
@@ -248,10 +317,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: '#a63932',
     fontWeight: 'bold'
-  },
-  cardText: {
-    marginTop: 5,
-    color: '#a63932'
   },
   settingOption: {
     flexDirection: 'row',
@@ -270,5 +335,16 @@ const styles = StyleSheet.create({
   },
   bottom: {
     paddingBottom: 100
+  },
+  loadingOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: 100,
+    height: 100,
+    backgroundColor: 'rgba(255,255,255,0.6)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 50
   }
 })
