@@ -5,6 +5,7 @@ import { router, useLocalSearchParams } from 'expo-router'
 import Toast from 'react-native-toast-message'
 import * as Notifications from 'expo-notifications'
 import * as Device from 'expo-device'
+import axios from 'axios'
 
 // Set notification handler
 Notifications.setNotificationHandler({
@@ -16,26 +17,31 @@ Notifications.setNotificationHandler({
 })
 
 export default function CardPayment () {
-  const { price, hotelId } = useLocalSearchParams<{
+  // Now we expect a bookingData parameter in addition to price and hotelId.
+  const { price, hotelId, bookingData } = useLocalSearchParams<{
     price: string
     hotelId: string
+    bookingData?: string
   }>()
+
+  console.log(bookingData, hotelId, price)
 
   const [expoPushToken, setExpoPushToken] = useState<string | null>(null)
   const notificationListener = useRef<Notifications.Subscription | null>(null)
   const responseListener = useRef<Notifications.Subscription | null>(null)
 
-  console.log('Received price:', price) // Debugging line
+  console.log('Received price:', price)
+  console.log('Received bookingData:', bookingData)
 
   if (!price) {
-    return <Text>Error: Price not received</Text> // Handle missing price
+    return <Text>Error: Price not received</Text>
   }
 
-  const amount = Number(price.toString().replace(/,/g, '')) // Convert safely
+  const amount = Number(price.toString().replace(/,/g, ''))
   console.log(amount)
 
   if (isNaN(amount)) {
-    return <Text>Error: Invalid price</Text> // Handle invalid price
+    return <Text>Error: Invalid price</Text>
   }
 
   // 🔔 Function to schedule push notification
@@ -101,12 +107,35 @@ export default function CardPayment () {
     }
   }, [])
 
-  const handlePaymentSuccess = () => {
-    sendPushNotification(
-      'Payment Successful',
-      `Your payment of ₦${amount.toLocaleString()} was successful,your room  has been successfully reserved. Thank you Bonamine.`
-    )
-    router.replace({ pathname: '/Bookings', params: { amount, hotelId } })
+  // Handle payment success: send bookingData to backend if available, then navigate.
+  const handlePaymentSuccess = async () => {
+    try {
+      // If bookingData was passed from the previous page, parse it and post to DB.
+      if (bookingData) {
+        let parsedBookingData = JSON.parse(bookingData)
+        // If the result is still a string, parse it again.
+        if (typeof parsedBookingData === 'string') {
+          parsedBookingData = JSON.parse(parsedBookingData)
+        }
+        // Now convert totalPrice to a number
+        parsedBookingData.totalPrice = Number(parsedBookingData.totalPrice)
+        console.log('Parsed Booking Data:', parsedBookingData)
+
+        const response = await axios.post(
+          'http://10.0.1.14:5001/hotel/bookingCompleted',
+          parsedBookingData
+        )
+      }
+
+      await sendPushNotification(
+        'Payment Successful',
+        `Your payment of ₦${amount.toLocaleString()} was successful, your room has been reserved. Thank you.`
+      )
+      router.replace({ pathname: '/Bookings', params: { amount, hotelId } })
+    } catch (error) {
+      console.error('Error completing booking after payment:', error)
+      Toast.show({ type: 'error', text1: 'Error saving booking after payment' })
+    }
   }
 
   const handlePaymentFailure = () => {
@@ -120,7 +149,6 @@ export default function CardPayment () {
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <Text>Payment with Paystack</Text>
-
       <Paystack
         paystackKey='pk_test_3e98f6bdd30173891907024c91b3b9293b4d0014'
         amount={amount * 1.0} // Ensure amount is converted correctly
@@ -131,7 +159,6 @@ export default function CardPayment () {
           handlePaymentFailure()
         }}
         onSuccess={res => {
-          Toast.show({ type: 'success', text1: 'Payment successful' })
           handlePaymentSuccess()
         }}
         autoStart={true}

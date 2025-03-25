@@ -43,50 +43,42 @@ export default function SelectDateRange () {
     setShowPicker({ type: null, visible: false })
   }
 
-  const calculateTotal = () => {
-    if (!startDate || !endDate) return nightlyPrice.toLocaleString()
-
-    // Ensure dates are valid objects
+  // Helper function to calculate the number of nights
+  const calculateNights = () => {
+    if (!startDate || !endDate) return 0
     const checkIn = new Date(startDate)
     const checkOut = new Date(endDate)
-
-    // Calculate the difference in full days
-    const nights = Math.max(
+    return Math.max(
       Math.ceil(
         (checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24)
       ),
       1
     )
+  }
 
+  // Calculate total price based on nights, nightlyPrice, and number of rooms
+  const calculateTotal = () => {
+    const nights = calculateNights()
     return (nights * nightlyPrice * selectedRooms).toLocaleString()
   }
 
   const getUserId = async () => {
     try {
-      // Retrieve the stored token object
       const userData = await AsyncStorage.getItem('token')
-
       if (!userData) {
         console.log('No user data found in storage.')
         return null
       }
-
-      // Parse the JSON string
       const parsedData = JSON.parse(userData)
-      let token = parsedData.token // Extract token
+      let token = parsedData.token
       console.log('Retrieved Token:', token)
-
-      // Remove extra quotes if present
       token = token.replace(/^"|"$/g, '')
       console.log('Cleaned JWT Token:', token)
-
-      // Fetch user data from backend
       const response = await axios.get('http://10.0.1.14:5001/auth/usertoken', {
         headers: { Authorization: `Bearer ${token}` }
       })
-
       console.log('User Data:', response.data)
-      return parsedData.userId // Return userId after fetching data
+      return parsedData.userId
     } catch (error) {
       console.error(
         'Error retrieving user ID or fetching data:',
@@ -104,6 +96,9 @@ export default function SelectDateRange () {
         return
       }
 
+      const nights = calculateNights()
+      console.log(nights)
+
       const bookingData = {
         userId,
         hotelId,
@@ -112,36 +107,29 @@ export default function SelectDateRange () {
         checkInTime: selectedTime,
         guests: selectedGuests,
         rooms: selectedRooms,
-        totalPrice: calculateTotal().replace(/,/g, ''),
+        nights, // Include the calculated nights
+        totalPrice: calculateTotal().replace(/,/g, ''), // Remove commas
         status
       }
 
-      const response = await axios.post(
-        'http://10.0.1.14:5001/hotel/bookingCompleted',
-        bookingData
-      )
-
-      if (response.data.status === 'ok') {
-        if (status === 'Completed') {
-          setIsModalVisible(false)
-          router.push({
-            pathname: '/Payments',
-            params: {
-              price: calculateTotal(),
-              hotelId,
-              guests: selectedGuests,
-              rooms: selectedRooms
-            }
-          })
-        } else if (status === 'Pending') {
-          setIsModalVisible(false)
-          router.replace({ pathname: '/Bookings', params: { hotelId } })
-          Toast.show({
-            type: 'success',
-            text1: 'Saved for later!',
-            position: 'bottom'
-          })
-        }
+      if (status === 'Completed') {
+        setIsModalVisible(false)
+        router.push({
+          pathname: '/Payments',
+          params: {
+            price: String(calculateTotal()),
+            hotelId,
+            bookingData: JSON.stringify(bookingData)
+          }
+        })
+      } else if (status === 'Pending') {
+        setIsModalVisible(false)
+        router.replace({ pathname: '/Bookings', params: { hotelId } })
+        Toast.show({
+          type: 'success',
+          text1: 'Saved for later!',
+          position: 'bottom'
+        })
       } else {
         Toast.show({
           type: 'error',
@@ -299,88 +287,83 @@ export default function SelectDateRange () {
         <View
           style={{ marginTop: 30, alignItems: 'center', marginHorizontal: 10 }}
         >
-          {/* Book Now Button */}
-          <View style={{ marginTop: 30, alignItems: 'center' }}>
-            <TouchableOpacity
-              onPress={() => setIsModalVisible(true)}
-              style={{
-                padding: 15,
-                backgroundColor: '#a63932',
-                borderRadius: 10,
-                width: '100%',
-                alignItems: 'center',
-                elevation: 3
-              }}
-              disabled={!startDate || !endDate}
-            >
-              <Text
-                style={{ color: 'white', fontSize: 18, fontWeight: 'bold' }}
-              >
-                Proceed · ₦{calculateTotal()}
-              </Text>
-            </TouchableOpacity>
-          </View>
+          <TouchableOpacity
+            onPress={() => setIsModalVisible(true)}
+            style={{
+              padding: 15,
+              backgroundColor: '#a63932',
+              borderRadius: 10,
+              width: '100%',
+              alignItems: 'center',
+              elevation: 3
+            }}
+            disabled={!startDate || !endDate}
+          >
+            <Text style={{ color: 'white', fontSize: 18, fontWeight: 'bold' }}>
+              Proceed · ₦{calculateTotal()}
+            </Text>
+          </TouchableOpacity>
+        </View>
 
-          {/* Bottom Sheet */}
-          <Modal visible={isModalVisible} transparent animationType='slide'>
+        {/* Bottom Sheet */}
+        <Modal visible={isModalVisible} transparent animationType='slide'>
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: 'rgba(0,0,0,0.5)'
+            }}
+          >
             <View
               style={{
-                flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
-                backgroundColor: 'rgba(0,0,0,0.5)'
+                backgroundColor: '#fff',
+                padding: 20,
+                borderRadius: 10,
+                width: '80%',
+                alignItems: 'center'
               }}
             >
-              <View
+              <TouchableOpacity
+                onPress={() => handleBooking('Completed')}
                 style={{
-                  backgroundColor: '#fff',
-                  padding: 20,
+                  padding: 15,
+                  backgroundColor: '#a63932',
                   borderRadius: 10,
-                  width: '80%',
-                  alignItems: 'center'
+                  marginBottom: 10,
+                  alignItems: 'center',
+                  width: '100%'
                 }}
               >
-                <TouchableOpacity
-                  onPress={() => handleBooking('Completed')}
-                  style={{
-                    padding: 15,
-                    backgroundColor: '#a63932',
-                    borderRadius: 10,
-                    marginBottom: 10,
-                    alignItems: 'center',
-                    width: '100%'
-                  }}
-                >
-                  <Text style={{ color: '#fff', fontSize: 16 }}>
-                    Book Now · ₦{calculateTotal()}
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => handleBooking('Pending')}
-                  style={{
-                    padding: 15,
-                    backgroundColor: '#f8f9fa',
-                    borderRadius: 10,
-                    alignItems: 'center',
-                    borderWidth: 1,
-                    borderColor: '#a63932',
-                    width: '100%'
-                  }}
-                >
-                  <Text style={{ color: '#a63932', fontSize: 16 }}>
-                    Save for Later
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => setIsModalVisible(false)}
-                  style={{ marginTop: 10 }}
-                >
-                  <Text style={{ color: '#555', fontSize: 16 }}>Cancel</Text>
-                </TouchableOpacity>
-              </View>
+                <Text style={{ color: '#fff', fontSize: 16 }}>
+                  Book Now · ₦{calculateTotal()}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => handleBooking('Pending')}
+                style={{
+                  padding: 15,
+                  backgroundColor: '#f8f9fa',
+                  borderRadius: 10,
+                  alignItems: 'center',
+                  borderWidth: 1,
+                  borderColor: '#a63932',
+                  width: '100%'
+                }}
+              >
+                <Text style={{ color: '#a63932', fontSize: 16 }}>
+                  Save for Later
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setIsModalVisible(false)}
+                style={{ marginTop: 10 }}
+              >
+                <Text style={{ color: '#555', fontSize: 16 }}>Cancel</Text>
+              </TouchableOpacity>
             </View>
-          </Modal>
-        </View>
+          </View>
+        </Modal>
       </SafeAreaView>
     </GestureHandlerRootView>
   )

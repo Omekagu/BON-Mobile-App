@@ -92,6 +92,7 @@ export const bookingCompleted = async (req, res) => {
       checkOutDate,
       checkInTime,
       guests,
+      nights,
       rooms,
       totalPrice,
       status
@@ -117,6 +118,7 @@ export const bookingCompleted = async (req, res) => {
       checkInTime,
       guests,
       rooms,
+      nights,
       totalPrice: formattedTotalPrice,
       status // Accept 'Completed' or 'Pending'
     })
@@ -132,66 +134,6 @@ export const bookingCompleted = async (req, res) => {
     res.status(500).json({ error: 'Server error', details: error.message })
   }
 }
-
-// export const saveForLater = async (req, res) => {
-//   try {
-//     const {
-//       userId,
-//       hotelId,
-//       checkInDate,
-//       checkOutDate,
-//       checkInTime,
-//       guests,
-//       rooms,
-//       totalPrice
-//     } = req.body
-
-//     // Validate required fields
-//     if (!userId || !hotelId || !checkInDate || !checkOutDate || !totalPrice) {
-//       return res.status(400).json({ error: 'Missing required fields' })
-//     }
-
-//     const formattedTotalPrice =
-//       typeof totalPrice === 'string'
-//         ? Number(totalPrice.replace(/,/g, ''))
-//         : totalPrice
-
-//     if (isNaN(formattedTotalPrice)) {
-//       return res.status(400).json({ error: 'Invalid totalPrice value' })
-//     }
-
-//     // Check if hotel exists
-//     const hotel = await Hotel.findById(hotelId)
-//     if (!hotel) {
-//       return res.status(404).json({ error: 'Hotel not found' })
-//     }
-
-//     // Save booking with status "Pending"
-//     const newBooking = new Booking({
-//       userId,
-//       hotelId,
-//       checkInDate,
-//       checkOutDate,
-//       checkInTime,
-//       guests,
-//       rooms,
-//       totalPrice: formattedTotalPrice,
-//       status: 'Pending' // Mark as saved for later
-//     })
-
-//     await newBooking.save()
-
-//     res.status(201).json({
-//       status: 'ok',
-//       message: 'Booking saved for later successfully',
-//       booking: newBooking
-//     })
-//   } catch (error) {
-//     console.error('Server Error:', error)
-//     res.status(500).json({ error: 'Server error', details: error.message })
-//   }
-// }
-
 // fetch booked room based on userid
 export const bookedUserId = async (req, res) => {
   try {
@@ -204,7 +146,7 @@ export const bookedUserId = async (req, res) => {
     }
 
     const bookings = await Booking.find({ userId }) // Fetch only the user's bookings
-      .populate('hotelId', 'name')
+      .populate('hotelId')
 
     res.status(200).json({ status: 'ok', data: bookings })
   } catch (error) {

@@ -1,16 +1,51 @@
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image } from 'react-native';
-import React from 'react';
-import AntDesign from '@expo/vector-icons/AntDesign';
-import Fontisto from '@expo/vector-icons/Fontisto';
-import Ionicons from '@expo/vector-icons/Ionicons';
-import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import { useRouter } from 'expo-router';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import MoreComp from '@/component/MoreComp';
+import {
+  View,
+  Text,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  Image
+} from 'react-native'
+import React, { useState } from 'react'
+import AntDesign from '@expo/vector-icons/AntDesign'
+import Fontisto from '@expo/vector-icons/Fontisto'
+import Ionicons from '@expo/vector-icons/Ionicons'
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6'
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
+import { useRouter } from 'expo-router'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import MoreComp from '@/component/MoreComp'
+import * as ImagePicker from 'expo-image-picker'
 
-export default function More() {
-  const router = useRouter();
+export default function More () {
+  const router = useRouter()
+
+  const [imageUri, setImageUri] = useState(null)
+  const pickImage = async () => {
+    try {
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync()
+      console.log('Media Library Permission Status:', status)
+      if (status !== 'granted') {
+        alert('Sorry, we need camera roll permissions to make this work!')
+        return
+      }
+
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 1
+      })
+
+      if (!result.cancelled) {
+        setImageUri(result.uri)
+      }
+    } catch (error) {
+      console.error('Error picking an image: ', error)
+      alert('An error occurred while picking the image.')
+    }
+  }
+
   return (
     <View style={styles.container}>
       {/* Profile Section */}
@@ -18,27 +53,35 @@ export default function More() {
         <View>
           <Text style={styles.profileName}>Omekagu Chukwuebuka</Text>
           <View style={styles.ratingContainer}>
-            <AntDesign name="star" size={16} color="#a63932" />
+            <AntDesign name='star' size={16} color='#a63932' />
             <Text style={styles.ratingText}>5.00</Text>
           </View>
         </View>
         <View style={styles.avatar}>
-          <Ionicons name="person-circle" size={64} color="#ccc" />
+          <TouchableOpacity onPress={pickImage}>
+            <View style={styles.avatar}>
+              {imageUri ? (
+                <Image source={{ uri: imageUri }} style={styles.image} />
+              ) : (
+                <Ionicons name='person-circle' size={64} color='#ccc' />
+              )}
+            </View>
+          </TouchableOpacity>
         </View>
       </View>
 
       {/* Quick Access Buttons */}
       <View style={styles.quickAccess}>
         <TouchableOpacity style={styles.accessButton}>
-          <Ionicons name="help-circle" size={30} color="#a63932" />
+          <Ionicons name='help-circle' size={30} color='#a63932' />
           <Text style={styles.cardText}>Help</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.accessButton}>
-          <Fontisto name="wallet" size={30} color="#a63932" />
+          <Fontisto name='wallet' size={30} color='#a63932' />
           <Text style={styles.cardText}>Wallet</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.accessButton}>
-          <Ionicons name="time-outline" size={30} color="#a63932" />
+          <Ionicons name='time-outline' size={30} color='#a63932' />
           <Text style={styles.cardText}>Activity</Text>
         </TouchableOpacity>
       </View>
@@ -51,7 +94,9 @@ export default function More() {
         </View>
         <View style={styles.card}>
           <Text style={styles.cardTitle}>Privacy Checkup</Text>
-          <Text style={styles.cardText}>Take an interactive tour of your privacy settings</Text>
+          <Text style={styles.cardText}>
+            Take an interactive tour of your privacy settings
+          </Text>
         </View>
         <View style={styles.card}>
           <Text style={styles.cardTitle}>Estimated CO₂ Saved</Text>
@@ -62,72 +107,82 @@ export default function More() {
         <MoreComp
           onPress={() => router.push('/Profile')}
           name={'Manage Profile details'}
-          icon={<Ionicons name="person-circle-sharp" size={24} color="#a63932" />}
+          icon={
+            <Ionicons name='person-circle-sharp' size={24} color='#a63932' />
+          }
         />
         <MoreComp
           onPress={() => router.push('/Reward')}
           name={'Rewards & Wallet'}
-          icon={<Fontisto name="wallet" size={24} color="#a63932" />}
+          icon={<Fontisto name='wallet' size={24} color='#a63932' />}
         />
         <MoreComp
           onPress={() => router.push('/Loyalty')}
           name={'Loyalty Programme'}
-          icon={<FontAwesome6 name="thumbs-up" size={24} color="#a63932" />}
+          icon={<FontAwesome6 name='thumbs-up' size={24} color='#a63932' />}
         />
         <MoreComp
           onPress={() => router.push('/Saved')}
           name={'Saved'}
-          icon={<AntDesign name="hearto" size={24} color="#a63932" />}
+          icon={<AntDesign name='hearto' size={24} color='#a63932' />}
         />
         <MoreComp
           onPress={() => router.push('/Reviews')}
           name={'Reviews'}
-          icon={<FontAwesome6 name="thumbs-up" size={24} color="#a63932" />}
+          icon={<FontAwesome6 name='thumbs-up' size={24} color='#a63932' />}
         />
         <MoreComp
           onPress={() => router.push('/Questions')}
           name={'Questions to property'}
-          icon={<FontAwesome6 name="question" size={24} color="#a63932" />}
+          icon={<FontAwesome6 name='question' size={24} color='#a63932' />}
         />
         <MoreComp
           onPress={() => router.push('/CustomerService')}
           name={'Contact Customer Service'}
-          icon={<MaterialCommunityIcons name="account-question-outline" size={24} color="#a63932" />}
+          icon={
+            <MaterialCommunityIcons
+              name='account-question-outline'
+              size={24}
+              color='#a63932'
+            />
+          }
         />
         <MoreComp
           onPress={() => router.push('/ResourceCentre')}
           name={'Safety Resource Centre'}
-          icon={<AntDesign name="Safety" size={24} color="#a63932" />}
+          icon={<AntDesign name='Safety' size={24} color='#a63932' />}
         />
         <MoreComp
           onPress={() => router.push('/Deals')}
           name={'Deals'}
-          icon={<Ionicons name="contract" size={24} color="#a63932" />}
+          icon={<Ionicons name='contract' size={24} color='#a63932' />}
         />
         <MoreComp
           onPress={() => router.push('/Settings')}
           name={'Settings'}
-          icon={<Ionicons name="settings-outline" size={24} color="#a63932" />}
+          icon={<Ionicons name='settings-outline' size={24} color='#a63932' />}
         />
 
         {/* Logout */}
         <View style={styles.bottom}>
-
-        <Text style={styles.logoutText} onPress={async () => {
-          try {
-            await AsyncStorage.removeItem("token");
-            router.replace("/registration/Login");
-          } catch (error) {
-            console.error("Logout Error:", error);
-          }
-        }}>
-          Log Out
-        </Text>
-        <Text> V 1.0.0</Text>
-          </View>
+          <Text
+            style={styles.logoutText}
+            onPress={async () => {
+              try {
+                await AsyncStorage.removeItem('token')
+                router.replace('/registration/Login')
+              } catch (error) {
+                console.error('Logout Error:', error)
+              }
+            }}
+          >
+            Log Out
+          </Text>
+          <Text> V 1.0.0</Text>
+        </View>
       </ScrollView>
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -140,74 +195,80 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 20
   },
   profileName: {
     fontSize: 24,
-    color:'#a63932',
-    fontWeight: 'bold',
+    color: '#a63932',
+    fontWeight: 'bold'
   },
   ratingContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 5,
+    marginTop: 5
   },
   ratingText: {
     marginLeft: 5,
-    color:'#a63932',
-    fontSize: 16,
+    color: '#a63932',
+    fontSize: 16
   },
+
   avatar: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    backgroundColor: '#eee',
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    overflow: 'hidden',
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#f0f0f0'
+  },
+  image: {
+    width: '100%',
+    height: '100%'
   },
   quickAccess: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    marginBottom: 20,
+    marginBottom: 20
   },
   accessButton: {
     alignItems: 'center',
-    color:'#a63932',
+    color: '#a63932'
   },
   scrollContent: {
-    paddingBottom: 40,
+    paddingBottom: 40
   },
   card: {
     backgroundColor: '#f5f5f5',
     borderRadius: 10,
     padding: 20,
-    marginBottom: 15,
+    marginBottom: 15
   },
   cardTitle: {
     fontSize: 15,
     color: '#a63932',
-    fontWeight: 'bold',
+    fontWeight: 'bold'
   },
   cardText: {
     marginTop: 5,
-    color: '#a63932',
+    color: '#a63932'
   },
   settingOption: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 15,
+    paddingVertical: 15
   },
   settingText: {
     marginLeft: 15,
-    fontSize: 16,
+    fontSize: 16
   },
   logoutText: {
     textAlign: 'center',
     color: 'red',
     fontSize: 19,
-    marginVertical: 20,
+    marginVertical: 20
   },
-  bottom:{
-    paddingBottom:100
+  bottom: {
+    paddingBottom: 100
   }
-});
+})

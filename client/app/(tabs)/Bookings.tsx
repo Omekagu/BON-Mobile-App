@@ -240,7 +240,7 @@ const Bookings = () => {
                     console.log('Cancel pressed', booking._id)
                   }
                   image={
-                    booking.hotelId?.image ||
+                    booking.hotelId?.images?.[0] ||
                     'https://i.postimg.cc/QtffXzX9/BON-HOTEL-TRANSTELL-ROOMS6.jpg'
                   }
                   city={booking.hotelId?.location || 'Unknown'}

@@ -22,6 +22,7 @@ const BookingSchema = new mongoose.Schema(
       required: true,
       set: v => (typeof v === 'string' ? Number(v.replace(/,/g, '')) : v)
     },
+    nights: { type: Number },
     status: {
       type: String,
       enum: ['Completed', 'Pending', 'Cancelled'],

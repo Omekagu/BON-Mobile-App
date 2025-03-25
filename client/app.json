@@ -16,6 +16,7 @@
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "This app needs access to your photo library to allow you to upload a profile picture.",
         "UIBackgroundModes": [
           "fetch",
           "remote-notification",
