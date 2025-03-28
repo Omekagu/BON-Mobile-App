@@ -72,7 +72,15 @@ export default function BookingDetails () {
           return
         }
         // console.log('Matched Booking:', booking)
-        const { hotelId, checkInDate, checkOutDate, guests, nights } = booking
+        const {
+          hotelId,
+          checkInDate,
+          checkOutDate,
+          guests,
+          nights,
+          status,
+          totalPrice
+        } = booking
 
         // console.log('UserId:', userId, 'HotelId', id)
 
@@ -85,7 +93,9 @@ export default function BookingDetails () {
           checkInDate,
           checkOutDate,
           guests,
-          nights
+          nights,
+          status,
+          totalPrice
         })
       } catch (error) {
         Toast.show({ type: 'error', text1: 'Failed to load hotel details.' })
@@ -219,6 +229,17 @@ export default function BookingDetails () {
 
           {/* Hotel Details */}
           <View style={styles.detailsContainer}>
+            <Text
+              style={[
+                styles.status,
+                {
+                  color:
+                    bookingDetails.status === 'Completed' ? 'green' : 'orange'
+                }
+              ]}
+            >
+              {bookingDetails.status}
+            </Text>
             <Text style={styles.hotelName}>{hotel.name}</Text>
             <View style={styles.location}>
               <Feather name='map-pin' size={16} color='gray' />
@@ -230,8 +251,8 @@ export default function BookingDetails () {
             </View>
             <Text style={styles.price}>
               ₦
-              {hotel.pricePerNight
-                ? Number(hotel.pricePerNight).toLocaleString()
+              {bookingDetails.totalPrice
+                ? Number(bookingDetails.totalPrice).toLocaleString()
                 : '100,000,000'}{' '}
               <Text style={styles.bookingDetails}>
                 ( {bookingDetails.nights} ) Nights
@@ -320,26 +341,52 @@ export default function BookingDetails () {
           <Text style={styles.description}>{hotel.description}</Text>
 
           {/* New buttons */}
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity
-              style={styles.actionButton}
-              onPress={() => router.push('/BookFlight')}
-            >
-              <Text style={styles.buttonText}>Book Flight</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.actionButton}
-              onPress={() => router.push('/OrderFood')}
-            >
-              <Text style={styles.buttonText}>Order Food</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.actionButton}
-              onPress={() => router.push('/PlanYourRide')}
-            >
-              <Text style={styles.buttonText}>Order Ride</Text>
-            </TouchableOpacity>
-          </View>
+
+          {bookingDetails.status === 'Pending' ? (
+            <>
+              <TouchableOpacity
+                // onPress={() =>
+                // handleBooking('Completed')}
+                style={{
+                  padding: 15,
+                  backgroundColor: '#a63932',
+                  borderRadius: 10,
+                  marginBottom: 10,
+                  alignSelf: 'center',
+                  width: '80%'
+                }}
+              >
+                <Text
+                  style={{ color: '#fff', fontSize: 16, alignSelf: 'center' }}
+                >
+                  Book Now · ₦{bookingDetails.totalPrice}
+                  {/* {calculateTotal()} */}
+                </Text>
+              </TouchableOpacity>
+            </>
+          ) : (
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity
+                style={styles.actionButton}
+                onPress={() => router.push('/BookFlight')}
+              >
+                <Text style={styles.buttonText}>Book Flight</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.actionButton}
+                onPress={() => router.push('/OrderFood')}
+              >
+                <Text style={styles.buttonText}>Order Food</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.actionButton}
+                onPress={() => router.push('/PlanYourRide')}
+              >
+                <Text style={styles.buttonText}>Order Ride</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+
           {/* </View> */}
         </ScrollView>
       </View>
@@ -349,6 +396,10 @@ export default function BookingDetails () {
 
 // Styles
 const styles = StyleSheet.create({
+  status: {
+    fontSize: 15,
+    fontWeight: 900
+  },
   container: {
     flex: 1,
     paddingTop: 30
