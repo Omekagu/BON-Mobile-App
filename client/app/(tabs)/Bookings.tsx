@@ -21,6 +21,7 @@ const Bookings = () => {
   const fadeAnim = useRef(new Animated.Value(0)).current
   const [activeTab, setActiveTab] = useState('Completed')
   const [bookings, setBookings] = useState([])
+  // const [bookingDetails, setBookingsDetails] = useState(null)
   const [loading, setLoading] = useState(false)
   const [modalVisible, setModalVisible] = useState(true) // Show modal on load
 
@@ -78,55 +79,30 @@ const Bookings = () => {
   }, [])
 
   const handlePrintReceipt = async booking => {
+    if (!booking) return console.error('No booking data available')
     try {
-      if (!booking) {
-        console.error('No booking data available')
-        return
-      }
-
-      // Retrieve user data from AsyncStorage
       const userData = await AsyncStorage.getItem('token')
-      if (!userData) {
-        console.error('User data not found in storage.')
-        return
-      }
-
-      const parsedData = JSON.parse(userData)
-      const user = parsedData.user || {} // Ensure we have user details
-
-      console.log('User Data from Storage:', user)
+      const parsedData = userData ? JSON.parse(userData) : {}
+      const user = await getUserId()
 
       const receiptHtml = `
-    <html>
-    <body>
-      <h1>Hotel Receipt</h1>
-      <h2>Guest Details</h2>
-      <p><strong>Name:</strong> ${user.fullName || 'N/A'}</p>
-      <p><strong>Email:</strong> ${user.email || 'N/A'}</p>
-      <p><strong>Phone:</strong> ${user.phone || 'N/A'}</p>
+      <html>
+      <body>
+        <h1>Hotel Receipt</h1>
+        <p><strong>Name:</strong> ${user.fullName || 'N/A'}</p>
+        <p><strong>Email:</strong> ${user.email || 'N/A'}</p>
+        <p><strong>Hotel:</strong> ${booking.hotelId?.name || 'N/A'}</p>
+        <p><strong>Check-in:</strong> ${new Date(
+          booking.checkInDate
+        ).toDateString()}</p>
+        <p><strong>Check-out:</strong> ${new Date(
+          booking.checkOutDate
+        ).toDateString()}</p>
+        <p><strong>Total Price:</strong> ₦${booking.totalPrice.toLocaleString()}</p>
+      </body>
+      </html>`
 
-      <h2>Hotel Details</h2>
-      <p><strong>Hotel:</strong> ${booking.hotelId?.name || 'N/A'}</p>
-      <p><strong>Location:</strong> ${booking.hotelId?.location || 'N/A'}</p>
-
-      <h2>Booking Details</h2>
-      <p><strong>Check-in Date:</strong> ${new Date(
-        booking.checkInDate
-      ).toDateString()}</p>
-      <p><strong>Check-out Date:</strong> ${new Date(
-        booking.checkOutDate
-      ).toDateString()}</p>
-      <p><strong>Total Price:</strong> ₦${booking.totalPrice.toLocaleString()}</p>
-    </body>
-    </html>
-  `
-
-      // Generate the PDF file
       const { uri } = await Print.printToFileAsync({ html: receiptHtml })
-
-      console.log('PDF saved at:', uri)
-
-      // Open system share/save dialog
       await Sharing.shareAsync(uri)
     } catch (error) {
       console.error('Error generating or sharing PDF:', error)

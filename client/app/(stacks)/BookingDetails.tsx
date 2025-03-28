@@ -27,8 +27,9 @@ export default function BookingDetails () {
   const [liked, setLiked] = useState(false)
   const [likesCount, setLikesCount] = useState(2800) // Example initial likes count
   const [modalVisible, setModalVisible] = useState(false)
-  const { id } = useLocalSearchParams() // Get hotel ID from route params
+  const { id, userId } = useLocalSearchParams() // Get hotel ID from route params
   const [hotel, setHotel] = useState(null)
+  const [bookingDetails, setBookingsDetails] = useState()
   const [loading, setLoading] = useState(true)
 
   const handleLike = async () => {
@@ -60,8 +61,32 @@ export default function BookingDetails () {
   useEffect(() => {
     const fetchHotelDetails = async () => {
       try {
-        const response = await axios.get(`http://10.0.1.14:5001/hotel/${id}`)
-        setHotel(response.data)
+        const response = await axios.get(
+          `http://10.0.1.14:5001/hotel/bookings/${userId}`
+        )
+
+        // Find the booking where hotelId._id matches id
+        const booking = response.data.data.find(b => b.hotelId._id === id)
+        if (!booking) {
+          console.error('No matching booking found for hotelId:', id)
+          return
+        }
+        // console.log('Matched Booking:', booking)
+        const { hotelId, checkInDate, checkOutDate, guests, nights } = booking
+
+        // console.log('UserId:', userId, 'HotelId', id)
+
+        // const { hotelId, checkInDate, checkOutDate, guests } = booking
+        console.log(hotelId, checkInDate, checkOutDate, guests, nights)
+
+        setHotel(booking.hotelId) // Store only the hotel details
+        setBookingsDetails({
+          hotelId,
+          checkInDate,
+          checkOutDate,
+          guests,
+          nights
+        })
       } catch (error) {
         Toast.show({ type: 'error', text1: 'Failed to load hotel details.' })
       }
@@ -208,7 +233,20 @@ export default function BookingDetails () {
               {hotel.pricePerNight
                 ? Number(hotel.pricePerNight).toLocaleString()
                 : '100,000,000'}{' '}
-              - (( 4 )) Nights
+              <Text style={styles.bookingDetails}>
+                ( {bookingDetails.nights} ) Nights
+              </Text>
+            </Text>
+
+            <Text style={styles.bookingDetails}>
+              Check - In : {new Date(bookingDetails.checkInDate).toDateString()}
+            </Text>
+            <Text style={styles.bookingDetails}>
+              Check - Out :{' '}
+              {new Date(bookingDetails.checkOutDate).toDateString()}
+            </Text>
+            <Text style={styles.bookingDetails}>
+              Guests : {bookingDetails.guests}
             </Text>
           </View>
 
@@ -396,8 +434,8 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: '#a63932',
-    marginTop: 10,
-    textDecorationLine: 'underline'
+    marginTop: 10
+    // textDecorationLine: 'underline'
   },
   amenities: {
     flexDirection: 'row',
@@ -417,6 +455,12 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 2
+  },
+  bookingDetails: {
+    fontSize: 14,
+    fontWeight: 700,
+    color: '#eeeee',
+    marginVertical: 5
   },
   amenityText: {
     marginTop: 5,
