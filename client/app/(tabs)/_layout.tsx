@@ -1,17 +1,17 @@
-import React from 'react';
-import { Tabs } from 'expo-router';
-import TabBar from '@/component/TabBar';
-import { Text, TouchableOpacity, View } from 'react-native';
-import Entypo from '@expo/vector-icons/Entypo';
+import React from 'react'
+import { Tabs } from 'expo-router'
+import TabBar from '@/component/TabBar'
+import { Text, TouchableOpacity, View } from 'react-native'
+import Entypo from '@expo/vector-icons/Entypo'
 
 const _layout = () => {
   return (
-    <Tabs tabBar={(props) => <TabBar {...props} />}>
+    <Tabs tabBar={props => <TabBar {...props} />}>
       <Tabs.Screen
-        name="Home"
+        name='Home'
         options={{
           headerStyle: {
-            backgroundColor: '#a63932',
+            backgroundColor: '#a63932'
           },
           headerTintColor: '#a63932',
           title: 'Home',
@@ -21,14 +21,14 @@ const _layout = () => {
               style={{
                 flexDirection: 'row',
                 alignItems: 'center',
-                marginLeft: 10,
+                marginLeft: 10
               }}
             >
               <Text
                 style={{
                   fontSize: 20,
                   fontWeight: '900',
-                  color: '#fff',
+                  color: '#fff'
                 }}
               >
                 BON HOTEL
@@ -38,56 +38,47 @@ const _layout = () => {
           headerRight: () => (
             <TouchableOpacity>
               <Entypo
-                name="menu"
+                name='menu'
                 size={40}
-                color="#fff"
+                color='#fff'
                 style={{ marginRight: 10 }}
               />
             </TouchableOpacity>
-          ),
+          )
         }}
       />
       <Tabs.Screen
-        name="Bookings"
+        name='Bookings'
         options={{
           headerStyle: {
-            backgroundColor: '#a63932',
+            backgroundColor: '#a63932'
           },
           headerTintColor: '#a63932',
-          title: 'Bookings',
+          title: 'Bookings'
         }}
       />
       <Tabs.Screen
-        name="Saved"
+        name='BONami'
         options={{
           headerStyle: {
-            backgroundColor: '#a63932',
+            backgroundColor: '#a63932'
           },
           headerTintColor: '#a63932',
-          title: 'Saved',
+          title: 'BONami'
         }}
       />
       <Tabs.Screen
-        name="More"
+        name='More'
         options={{
           headerStyle: {
-            backgroundColor: '#a63932',
+            backgroundColor: '#a63932'
           },
           headerTintColor: '#a63932',
-          title: 'More',
+          title: 'More'
         }}
       />
-      {/* <Tabs.Screen
-        name="(stacks)"
-        options={{
-          headerStyle: {
-            backgroundColor: '#a63932',
-          },
-          headerTintColor: '#a63932',
-        }}
-      /> */}
     </Tabs>
-  );
-};
+  )
+}
 
-export default _layout;
+export default _layout

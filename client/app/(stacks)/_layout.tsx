@@ -1,63 +1,78 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
-import { Feather, FontAwesome} from '@expo/vector-icons';
-import { Stack } from 'expo-router';
-export default function _layout() {
-  const [isHeartClicked, setHeartClicked] = useState(false);
+import React, { useState } from 'react'
+import { View, TouchableOpacity } from 'react-native'
+import { FontAwesome } from '@expo/vector-icons'
+import { Stack } from 'expo-router'
+export default function _layout () {
+  const [isHeartClicked, setHeartClicked] = useState(false)
 
   const toggleHeart = () => {
-    setHeartClicked(!isHeartClicked);
-  };
+    setHeartClicked(!isHeartClicked)
+  }
   return (
     <Stack>
       <Stack.Screen
-        name="BookingInfo"
+        name='BookingInfo'
         options={{
           title: 'BookingInfo',
-          headerShown: false,
+          headerShown: false
         }}
       />
       <Stack.Screen
-        name="DescriptionPage"
+        name='BONamiSouth'
+        options={{
+          title: 'BONamiSouth',
+          headerShown: false
+        }}
+      />
+      <Stack.Screen
+        name='BONamiWst'
+        options={{
+          title: 'BONamiWst',
+          headerShown: false
+        }}
+      />
+
+      <Stack.Screen
+        name='DescriptionPage'
         options={{
           title: 'DescriptionPage',
-          headerShown: false,
+          headerShown: false
         }}
       />
       <Stack.Screen
-        name="SelectDateRange"
+        name='SelectDateRange'
         options={{
           title: 'SelectDateRange',
-          headerShown: false,
+          headerShown: false
         }}
       />
       <Stack.Screen
-        name="SearchPage"
+        name='SearchPage'
         options={{
           title: 'SearchPage',
-          headerShown: false,
+          headerShown: false
         }}
       />
       <Stack.Screen
-        name="PlanYourRide"
+        name='PlanYourRide'
         options={{
           title: 'PlanYourRide',
-          headerShown: false,
+          headerShown: false
         }}
       />
       <Stack.Screen
-        name="SearchPageInfo"
-        
+        name='SearchPageInfo'
         options={{
           title: 'SearchPageInfo',
           headerShown: false,
           headerRight: () => (
-            <View style={{ flexDirection: 'row', alignItems: 'center', marginRight: 10 }}>
-              {/* Search Icon */}
-              <TouchableOpacity onPress={() => console.log('Search clicked')}>
-                <Feather name="search" size={24} color="black" style={{ marginRight: 15 }} />
-              </TouchableOpacity>
-
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginRight: 10
+              }}
+            >
               {/* Heart Icon */}
               <TouchableOpacity onPress={toggleHeart}>
                 <FontAwesome
@@ -67,222 +82,222 @@ export default function _layout() {
                 />
               </TouchableOpacity>
             </View>
-          ),
+          )
         }}
       />
-       <Stack.Screen
-        name="BookingDetails"
+      <Stack.Screen
+        name='BookingDetails'
         options={{
           title: 'BookingDetails',
-          headerShown: false,
+          headerShown: false
         }}
       />
-       <Stack.Screen
-        name="BookRide"
+      <Stack.Screen
+        name='BookRide'
         options={{
           title: 'BookRide',
-          headerShown: false,
-        }}
-      />
-       
-       <Stack.Screen
-        name="BookFlight"
-        options={{
-          title: 'BookFlight',
-          headerShown: false,
-        }}
-      />
-       <Stack.Screen
-        name="OrderFood"
-        options={{
-          title: 'OrderFood',
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="OrderFoodDetails"
-        options={{
-          title: 'OrderFoodDetails',
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="SearchFlightScreen"
-        options={{
-          title: 'SearchFlightScreen',
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="Deals"
-        options={{
-          title: 'Deals',
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="Profile"
-        options={{
-          title: 'Profile',
-          headerShown: false,
-          // statusBarHidden: true,
-        }}
-      />
-      <Stack.Screen
-        name="CustomerService"
-        options={{
-          title: 'CustomerService',
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="Loyalty"
-        options={{
-          title: 'Loyalty',
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="Questions"
-        options={{
-          title: 'Question',
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="ResourceCentre"
-        options={{
-          title: 'ResourceCentre',
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="Reviews"
-        options={{
-          title: 'Reviews',
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="Reward"
-        options={{
-          title: 'Reward',
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="Settings"
-        options={{
-          title: 'Settings',
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="Search"
-        options={{
-          title: 'Search',
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="ChooseNo"
-        options={{
-          title: 'ChooseNo',
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="Payments"
-        options={{
-          title: 'Payments',
-          headerShown: false,
-        }}
-      />
-        <Stack.Screen
-          name="BookingHistory"
-          options={{
-            title: 'BookingHistory',
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="ConnectWallet"
-          options={{
-            title: 'ConnectWallet',
-            headerShown: false,
-          }}
-        />
-      <Stack.Screen
-        name="CardPayment"
-        options={{
-          title: 'CardPayment',
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="CryptoPayment"
-        options={{
-          title: 'CryptoPayment',
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="EditName"
-        options={{
-          title: 'EditName',
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="EditContact"
-        options={{
-          title: 'EditContact',
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="EditDob"
-        options={{
-          title: 'EditDob',
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="EditEmail"
-        options={{
-          title: 'EditEmail',
-          headerShown: false,
+          headerShown: false
         }}
       />
 
       <Stack.Screen
-        name="EditNationality"
+        name='BookFlight'
+        options={{
+          title: 'BookFlight',
+          headerShown: false
+        }}
+      />
+      <Stack.Screen
+        name='OrderFood'
+        options={{
+          title: 'OrderFood',
+          headerShown: false
+        }}
+      />
+      <Stack.Screen
+        name='OrderFoodDetails'
+        options={{
+          title: 'OrderFoodDetails',
+          headerShown: false
+        }}
+      />
+      <Stack.Screen
+        name='SearchFlightScreen'
+        options={{
+          title: 'SearchFlightScreen',
+          headerShown: false
+        }}
+      />
+      <Stack.Screen
+        name='Deals'
+        options={{
+          title: 'Deals',
+          headerShown: false
+        }}
+      />
+      <Stack.Screen
+        name='Profile'
+        options={{
+          title: 'Profile',
+          headerShown: false
+          // statusBarHidden: true,
+        }}
+      />
+      <Stack.Screen
+        name='CustomerService'
+        options={{
+          title: 'CustomerService',
+          headerShown: false
+        }}
+      />
+      <Stack.Screen
+        name='Loyalty'
+        options={{
+          title: 'Loyalty',
+          headerShown: false
+        }}
+      />
+      <Stack.Screen
+        name='Questions'
+        options={{
+          title: 'Question',
+          headerShown: false
+        }}
+      />
+      <Stack.Screen
+        name='ResourceCentre'
+        options={{
+          title: 'ResourceCentre',
+          headerShown: false
+        }}
+      />
+      <Stack.Screen
+        name='Reviews'
+        options={{
+          title: 'Reviews',
+          headerShown: false
+        }}
+      />
+      <Stack.Screen
+        name='Reward'
+        options={{
+          title: 'Reward',
+          headerShown: false
+        }}
+      />
+      <Stack.Screen
+        name='Settings'
+        options={{
+          title: 'Settings',
+          headerShown: false
+        }}
+      />
+      <Stack.Screen
+        name='Search'
+        options={{
+          title: 'Search',
+          headerShown: false
+        }}
+      />
+      <Stack.Screen
+        name='ChooseNo'
+        options={{
+          title: 'ChooseNo',
+          headerShown: false
+        }}
+      />
+      <Stack.Screen
+        name='Payments'
+        options={{
+          title: 'Payments',
+          headerShown: false
+        }}
+      />
+      <Stack.Screen
+        name='BookingHistory'
+        options={{
+          title: 'BookingHistory',
+          headerShown: false
+        }}
+      />
+      <Stack.Screen
+        name='ConnectWallet'
+        options={{
+          title: 'ConnectWallet',
+          headerShown: false
+        }}
+      />
+      <Stack.Screen
+        name='CardPayment'
+        options={{
+          title: 'CardPayment',
+          headerShown: false
+        }}
+      />
+      <Stack.Screen
+        name='CryptoPayment'
+        options={{
+          title: 'CryptoPayment',
+          headerShown: false
+        }}
+      />
+      <Stack.Screen
+        name='EditName'
+        options={{
+          title: 'EditName',
+          headerShown: false
+        }}
+      />
+      <Stack.Screen
+        name='EditContact'
+        options={{
+          title: 'EditContact',
+          headerShown: false
+        }}
+      />
+      <Stack.Screen
+        name='EditDob'
+        options={{
+          title: 'EditDob',
+          headerShown: false
+        }}
+      />
+      <Stack.Screen
+        name='EditEmail'
+        options={{
+          title: 'EditEmail',
+          headerShown: false
+        }}
+      />
+
+      <Stack.Screen
+        name='EditNationality'
         options={{
           title: 'EditNationality',
-          headerShown: false,
+          headerShown: false
         }}
       />
       <Stack.Screen
-        name="EditAddress"
+        name='EditAddress'
         options={{
           title: 'EditAddress',
-          headerShown: false,
+          headerShown: false
         }}
       />
       <Stack.Screen
-        name="EditGender"
+        name='EditGender'
         options={{
           title: 'EditGender',
-          headerShown: false,
+          headerShown: false
         }}
       />
       <Stack.Screen
-        name="EditPhone"
+        name='EditPhone'
         options={{
           title: 'EditPhone',
-          headerShown: false,
+          headerShown: false
         }}
       />
     </Stack>
-  );
+  )
 }

@@ -1,36 +1,36 @@
-import { View, Text, TouchableOpacity } from 'react-native';
-import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { View, Text, TouchableOpacity } from 'react-native'
+import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons'
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
+import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 
-export default function TabBar({ state, descriptors, navigation }) {
+export default function TabBar ({ state, descriptors, navigation }) {
   const icons = {
-    Home: (props) => (
-      <SimpleLineIcons name="home" size={24} color={grayColor} {...props} />
+    Home: props => (
+      <SimpleLineIcons name='home' size={24} color={grayColor} {...props} />
     ),
-    Bookings: (props) => (
+    Bookings: props => (
       <MaterialIcons
-        name="library-books"
+        name='library-books'
         size={24}
         color={grayColor}
         {...props}
       />
     ),
-    Saved: (props) => (
+    BONami: props => (
       <MaterialCommunityIcons
-        name="content-save-check-outline"
+        name='content-save-check-outline'
         size={24}
         color={grayColor}
         {...props}
       />
     ),
 
-    More: (props) => (
-      <MaterialIcons name="more-horiz" size={24} color={grayColor} {...props} />
-    ),
-  };
-  const primaryColor = '#a63932';
-  const grayColor = '#a3a195';
+    More: props => (
+      <MaterialIcons name='more-horiz' size={24} color={grayColor} {...props} />
+    )
+  }
+  const primaryColor = '#a63932'
+  const grayColor = '#a3a195'
   return (
     <View
       style={{
@@ -47,47 +47,47 @@ export default function TabBar({ state, descriptors, navigation }) {
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 10 },
         shadowRadius: 10,
-        shadowOpacity: 0.1,
+        shadowOpacity: 0.1
       }}
     >
       {state.routes.map((route, index) => {
-        const { options } = descriptors[route.key];
+        const { options } = descriptors[route.key]
         const label =
           options.tabBarLabel !== undefined
             ? options.tabBarLabel
             : options.title !== undefined
             ? options.title
-            : route.name;
+            : route.name
 
-        if (['_sitemap', '+not-found'].includes(route.name)) return null;
+        if (['_sitemap', '+not-found'].includes(route.name)) return null
         // console.log('root name:', route.name);
 
-        const isFocused = state.index === index;
+        const isFocused = state.index === index
 
         const onPress = () => {
           const event = navigation.emit({
             type: 'tabPress',
             target: route.key,
-            canPreventDefault: true,
-          });
+            canPreventDefault: true
+          })
 
           if (!isFocused && !event.defaultPrevented) {
-            navigation.navigate(route.name, route.params);
+            navigation.navigate(route.name, route.params)
           }
-        };
+        }
 
         const onLongPress = () => {
           navigation.emit({
             type: 'tabLongPress',
-            target: route.key,
-          });
-        };
+            target: route.key
+          })
+        }
 
         return (
           <TouchableOpacity
             key={route.name}
             style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
-            accessibilityRole="button"
+            accessibilityRole='button'
             accessibilityState={isFocused ? { selected: true } : {}}
             accessibilityLabel={options.tabBarAccessibilityLabel}
             testID={options.tabBarTestID}
@@ -95,14 +95,14 @@ export default function TabBar({ state, descriptors, navigation }) {
             onLongPress={onLongPress}
           >
             {icons[route.name]({
-              color: isFocused ? primaryColor : grayColor,
+              color: isFocused ? primaryColor : grayColor
             })}
             <Text style={{ color: isFocused ? primaryColor : grayColor }}>
               {label}
             </Text>
           </TouchableOpacity>
-        );
+        )
       })}
     </View>
-  );
+  )
 }

@@ -1,18 +1,17 @@
-import { useRouter } from 'expo-router';
-import React from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { useRouter } from 'expo-router'
+import React from 'react'
+import { Text, TouchableOpacity, View } from 'react-native'
 
-const PressButton = ({ text }) => {
-  const router = useRouter();
+const PressButton = ({ text, onPress }) => {
+  const router = useRouter()
   return (
     <TouchableOpacity
-      onPress={() => {
-        router.push('/SearchPage');
-      }}
+      onPress={onPress}
       style={{
         backgroundColor: '#a63932',
         alignSelf: 'center',
-        borderRadius: 10,
+        borderRadius: 5,
+        margin: 10
       }}
     >
       <Text
@@ -22,13 +21,13 @@ const PressButton = ({ text }) => {
           fontSize: 17,
           color: '#FFF',
           textTransform: 'capitalize',
-          fontWeight: '700',
+          fontWeight: '700'
         }}
       >
         {text}
       </Text>
     </TouchableOpacity>
-  );
-};
+  )
+}
 
-export default PressButton;
+export default PressButton
