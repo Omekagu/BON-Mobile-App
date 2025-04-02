@@ -9,13 +9,13 @@ export default function BONamiCard () {
         <View style={styles.chip} />
 
         {/* Card Number */}
-        <Text style={styles.cardNumber}>5418 2822 2918 3201</Text>
+        <Text style={styles.cardNumber}>234 - 009 - 022</Text>
 
         {/* Cardholder & Expiry */}
         <View style={styles.cardDetails}>
           <View>
             <Text style={styles.label}>BONami Cardholder</Text>
-            <Text style={styles.value}>John Doe</Text>
+            <Text style={styles.value}>Omekagu Chukwuebuka</Text>
           </View>
           <View>
             <Text style={styles.label}>Expires</Text>
