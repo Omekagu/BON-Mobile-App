@@ -7,12 +7,15 @@ import {
   Image,
   ScrollView
 } from 'react-native'
+import CustomBotton from '../../component/CustomBotton'
 
 const BONamiWst = () => {
   return (
-    <View>
+    <ScrollView style={styles.container}>
       <ImageBackground
-        source={{ uri: 'https://i.postimg.cc/TPy6rR3C/Building1271.jpg' }}
+        source={{
+          uri: 'https://bonhotels.com/wp-content/uploads/2022/09/loyalty-header.jpg'
+        }}
         style={styles.background}
         imageStyle={styles.imageStyle}
       >
@@ -20,48 +23,82 @@ const BONamiWst = () => {
           <Text style={styles.text}>BONami West Africa</Text>
         </View>
       </ImageBackground>
-      <ScrollView style={styles.container}>
-        <View style={styles.textContainer}>
-          <Text style={styles.description}>
-            For only 20,000 NGN, you get the following benefits, 10% off the
-            best available rate of the day at participating BON Hotels in
-            Africa, 10% Discount on food for up to 2 persons, Hotel Rooms
-            Upgrade – subject to availability, Early arrivals and late
-            check-outs – subject to availability.
-          </Text>
+      <View style={styles.textContainer}>
+        <Text style={styles.description}>
+          For only 20,000 NGN, you get the following benefits, 10% off the best
+          available rate of the day at participating BON Hotels in Africa, 10%
+          Discount on food for up to 2 persons, Hotel Rooms Upgrade – subject to
+          availability, Early arrivals and late check-outs – subject to
+          availability.
+        </Text>
 
-          <Text style={styles.price}>
-            Annual Cost <Text style={styles.priceHighlight}>₦20,000 (NGN)</Text>
-          </Text>
+        <Text style={styles.price}>
+          Annual Cost <Text style={styles.priceHighlight}>₦20,000 (NGN)</Text>
+        </Text>
 
-          <Text style={styles.sectionTitle}>West African Customers</Text>
-        </View>
-
-        {/* Dining Discounts Section */}
-        <View style={styles.section}>
-          <Text style={styles.sectionHeader}>Dining Discounts</Text>
-          <Image
-            source={{ uri: 'https://i.postimg.cc/TPy6rR3C/Building1271.jpg' }}
-            style={styles.image}
-          />
-        </View>
-
-        {/* Discounted Rates Section */}
-        <View style={styles.section}>
-          <Text style={styles.sectionHeader}>Discounted Rates and More</Text>
-          <Image
-            source={{ uri: 'https://i.postimg.cc/TPy6rR3C/Building1271.jpg' }}
-            style={styles.image}
-          />
-        </View>
-      </ScrollView>
-    </View>
+        <Text style={styles.sectionTitle}>West African Customers</Text>
+      </View>
+      {/* Dining Discounts Section */}
+      <View style={styles.section}>
+        <Text style={styles.sectionHeader}>Dining Discounts</Text>
+        <Image
+          source={{
+            uri: 'https://bonhotels.com/wp-content/uploads/2022/09/loyalty-image2.jpg'
+          }}
+          style={styles.image}
+        />
+        <Text style={styles.subText}>
+          Whether you are a guest at the hotel or are just enjoying a night out,
+          BONami members are entitled to a discount on the food portion of the
+          bill at breakfast, lunch and dinner at any participating BON Hotel in
+          Africa.
+        </Text>
+        <Text>Your discount entitlement is as follows:</Text>
+        <Text style={styles.list}>• 2 x Diners = 10% discount.</Text>
+      </View>
+      {/* Discounted Rates and More Section */}
+      <View style={styles.section}>
+        <Text style={styles.sectionHeader}>Discounted Rates and More</Text>
+        <Image
+          source={{
+            uri: 'https://bonhotels.com/wp-content/uploads/2022/09/loyalty-image3.jpg'
+          }}
+          style={styles.image}
+        />
+        <Text style={styles.subText}>
+          You now have access to the best accommodation rates on offer anywhere!
+        </Text>
+        <Text style={styles.list}>
+          • 10% Off the best available rate at participating BON Hotels in
+          Africa.
+        </Text>
+        <Text style={styles.list}>
+          • 5% Off any advertised accommodation specials on bonhotels.com.
+        </Text>
+        <Text style={styles.list}>
+          • Free Room Upgrade – subject to availability.
+        </Text>
+        <Text style={styles.list}>
+          • Early Arrival / Late Checkout perks – subject to availability.
+        </Text>
+        <Text style={styles.list}>• Room Preferences / Special Requests.</Text>
+        <Text style={styles.list}>• Free Wi-Fi.</Text>
+        <Text style={styles.list}>• Free Parking.</Text>
+      </View>
+      <View style={styles.botton}>
+        <CustomBotton button={'Sign Up'} />
+      </View>
+    </ScrollView>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
-    top: 0
+    flex: 1 // Ensures proper layout
+  },
+  botton: {
+    marginBottom: 30,
+    marginHorizontal: 10
   },
   background: {
     width: '100%',
@@ -69,11 +106,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
-  imageStyle: {
-    // borderRadius: 10
+  subText: {
+    marginVertical: 10,
+    fontSize: 14,
+    fontWeight: 500
   },
   overlay: {
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Dark overlay
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Dark overlay for text visibility
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5
@@ -90,7 +129,7 @@ const styles = StyleSheet.create({
   },
   description: {
     textAlign: 'center',
-    fontSize: 17,
+    fontSize: 14,
     fontWeight: '500'
   },
   price: {
@@ -114,14 +153,21 @@ const styles = StyleSheet.create({
   },
   sectionHeader: {
     textAlign: 'center',
-    fontSize: 20,
+    fontSize: 14,
     fontWeight: '800',
     textDecorationLine: 'underline',
     marginBottom: 5
   },
   image: {
     width: '100%',
-    height: 250
+    height: 250,
+    borderRadius: 10
+  },
+  list: {
+    fontSize: 14,
+    fontWeight: '500',
+    marginVertical: 2,
+    paddingHorizontal: 10
   }
 })
 
