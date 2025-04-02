@@ -8,8 +8,10 @@ import {
   ScrollView
 } from 'react-native'
 import CustomBotton from '../../component/CustomBotton'
+import { useRouter } from 'expo-router'
 
 const BONamiWst = () => {
+  const router = useRouter()
   return (
     <ScrollView style={styles.container}>
       <ImageBackground
@@ -86,7 +88,10 @@ const BONamiWst = () => {
         <Text style={styles.list}>• Free Parking.</Text>
       </View>
       <View style={styles.botton}>
-        <CustomBotton button={'Sign Up'} />
+        <CustomBotton
+          button={'Sign Up'}
+          onPress={() => router.push('/BONamiwestForm')}
+        />
       </View>
     </ScrollView>
   )

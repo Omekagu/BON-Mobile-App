@@ -1,13 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import {
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  StyleSheet,
-  SafeAreaView,
-  Alert
-} from 'react-native'
+import { View, Text, StyleSheet, SafeAreaView, Alert } from 'react-native'
 import { useRouter } from 'expo-router'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import * as Device from 'expo-device'
@@ -58,34 +50,6 @@ const Registration: React.FC = () => {
   }, [isAuthenticated, loading])
 
   if (loading) return <Text>Loading...</Text>
-
-  const pickImage = async () => {
-    try {
-      // 🔹 Request permission first
-      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync()
-      if (status !== 'granted') {
-        Alert.alert(
-          'Permission Denied',
-          'Please allow access to the media library.'
-        )
-        return
-      }
-
-      const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ['images'], // ✅ Use 'image' as a string
-        allowsEditing: true,
-        aspect: [1, 1],
-        quality: 1,
-        selectionLimit: 1 // ✅ Ensures only one image is selected
-      })
-
-      if (!result.canceled) {
-        setProfileImage(result.assets?.[0]?.uri ?? null) // ✅ Safe handling
-      }
-    } catch (error) {
-      console.error('Image picking error:', error)
-    }
-  }
 
   const validateEmail = (email: string): boolean =>
     /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)

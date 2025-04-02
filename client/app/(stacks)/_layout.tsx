@@ -99,6 +99,27 @@ export default function _layout () {
           headerShown: false
         }}
       />
+      <Stack.Screen
+        name='BONamiSouthForm'
+        options={{
+          title: 'BONamiSouthForm',
+          headerShown: false
+        }}
+      />
+      <Stack.Screen
+        name='BONamiwestForm'
+        options={{
+          title: 'BONamiwestForm',
+          headerShown: false
+        }}
+      />
+      <Stack.Screen
+        name='BONamiCard'
+        options={{
+          title: 'BONamiCard',
+          headerShown: true
+        }}
+      />
 
       <Stack.Screen
         name='BookFlight'
