@@ -2,323 +2,97 @@ import React, { useState } from 'react'
 import { View, TouchableOpacity } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'
 import { Stack } from 'expo-router'
+
+// List of screens with their options
+const screens = [
+  { name: 'BookingInfo', headerShown: false },
+  { name: 'BONamiSouth', headerShown: false },
+  { name: 'BONamiWst', headerShown: false },
+  { name: 'DescriptionPage', headerShown: false },
+  { name: 'SelectDateRange', headerShown: false },
+  { name: 'SearchPage', headerShown: false },
+  { name: 'PlanYourRide', headerShown: false },
+  { name: 'SearchPageInfo', headerShown: false, hasHeartIcon: true },
+  { name: 'BookingDetails', headerShown: false },
+  { name: 'BookRide', headerShown: false },
+  { name: 'BONamiSouthForm', headerShown: false },
+  { name: 'BONamiwestForm', headerShown: false },
+  { name: 'BONamiCard', headerShown: true },
+  { name: 'BookFlight', headerShown: false },
+  { name: 'OrderFood', headerShown: false },
+  { name: 'OrderFoodDetails', headerShown: false },
+  { name: 'SearchFlightScreen', headerShown: false },
+  { name: 'Deals', headerShown: false },
+  { name: 'Profile', headerShown: false },
+  { name: 'CustomerService', headerShown: false },
+  { name: 'Loyalty', headerShown: false },
+  {
+    name: 'Wallet',
+    headerShown: true,
+    headerTintColor: '#fff',
+    headerStyle: { backgroundColor: '#a63932' }
+  },
+  { name: 'Questions', headerShown: false },
+  { name: 'ResourceCentre', headerShown: false },
+  { name: 'Reviews', headerShown: false },
+  { name: 'Reward', headerShown: false },
+  { name: 'Settings', headerShown: false },
+  { name: 'Search', headerShown: false },
+  { name: 'ChooseNo', headerShown: false },
+  { name: 'Payments', headerShown: false },
+  { name: 'BookingHistory', headerShown: false },
+  { name: 'ConnectWallet', headerShown: false },
+  { name: 'CardPayment', headerShown: false },
+  { name: 'CryptoPayment', headerShown: false },
+  { name: 'EditName', headerShown: false },
+  { name: 'EditContact', headerShown: false },
+  { name: 'EditDob', headerShown: false },
+  { name: 'EditEmail', headerShown: false },
+  { name: 'EditNationality', headerShown: false },
+  { name: 'EditAddress', headerShown: false },
+  { name: 'EditGender', headerShown: false },
+  { name: 'EditPhone', headerShown: false }
+]
+
 export default function _layout () {
   const [isHeartClicked, setHeartClicked] = useState(false)
 
   const toggleHeart = () => {
     setHeartClicked(!isHeartClicked)
   }
+
   return (
     <Stack>
-      <Stack.Screen
-        name='BookingInfo'
-        options={{
-          title: 'BookingInfo',
-          headerShown: false
-        }}
-      />
-      <Stack.Screen
-        name='BONamiSouth'
-        options={{
-          title: 'BONamiSouth',
-          headerShown: false
-        }}
-      />
-      <Stack.Screen
-        name='BONamiWst'
-        options={{
-          title: 'BONamiWst',
-          headerShown: false
-        }}
-      />
-
-      <Stack.Screen
-        name='DescriptionPage'
-        options={{
-          title: 'DescriptionPage',
-          headerShown: false
-        }}
-      />
-      <Stack.Screen
-        name='SelectDateRange'
-        options={{
-          title: 'SelectDateRange',
-          headerShown: false
-        }}
-      />
-      <Stack.Screen
-        name='SearchPage'
-        options={{
-          title: 'SearchPage',
-          headerShown: false
-        }}
-      />
-      <Stack.Screen
-        name='PlanYourRide'
-        options={{
-          title: 'PlanYourRide',
-          headerShown: false
-        }}
-      />
-      <Stack.Screen
-        name='SearchPageInfo'
-        options={{
-          title: 'SearchPageInfo',
-          headerShown: false,
-          headerRight: () => (
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                marginRight: 10
-              }}
-            >
-              {/* Heart Icon */}
-              <TouchableOpacity onPress={toggleHeart}>
-                <FontAwesome
-                  name={isHeartClicked ? 'heart' : 'heart-o'}
-                  size={24}
-                  color={isHeartClicked ? 'red' : 'black'}
-                />
-              </TouchableOpacity>
-            </View>
-          )
-        }}
-      />
-      <Stack.Screen
-        name='BookingDetails'
-        options={{
-          title: 'BookingDetails',
-          headerShown: false
-        }}
-      />
-      <Stack.Screen
-        name='BookRide'
-        options={{
-          title: 'BookRide',
-          headerShown: false
-        }}
-      />
-      <Stack.Screen
-        name='BONamiSouthForm'
-        options={{
-          title: 'BONamiSouthForm',
-          headerShown: false
-        }}
-      />
-      <Stack.Screen
-        name='BONamiwestForm'
-        options={{
-          title: 'BONamiwestForm',
-          headerShown: false
-        }}
-      />
-      <Stack.Screen
-        name='BONamiCard'
-        options={{
-          title: 'BONamiCard',
-          headerShown: true
-        }}
-      />
-
-      <Stack.Screen
-        name='BookFlight'
-        options={{
-          title: 'BookFlight',
-          headerShown: false
-        }}
-      />
-      <Stack.Screen
-        name='OrderFood'
-        options={{
-          title: 'OrderFood',
-          headerShown: false
-        }}
-      />
-      <Stack.Screen
-        name='OrderFoodDetails'
-        options={{
-          title: 'OrderFoodDetails',
-          headerShown: false
-        }}
-      />
-      <Stack.Screen
-        name='SearchFlightScreen'
-        options={{
-          title: 'SearchFlightScreen',
-          headerShown: false
-        }}
-      />
-      <Stack.Screen
-        name='Deals'
-        options={{
-          title: 'Deals',
-          headerShown: false
-        }}
-      />
-      <Stack.Screen
-        name='Profile'
-        options={{
-          title: 'Profile',
-          headerShown: false
-          // statusBarHidden: true,
-        }}
-      />
-      <Stack.Screen
-        name='CustomerService'
-        options={{
-          title: 'CustomerService',
-          headerShown: false
-        }}
-      />
-      <Stack.Screen
-        name='Loyalty'
-        options={{
-          title: 'Loyalty',
-          headerShown: false
-        }}
-      />
-      <Stack.Screen
-        name='Questions'
-        options={{
-          title: 'Question',
-          headerShown: false
-        }}
-      />
-      <Stack.Screen
-        name='ResourceCentre'
-        options={{
-          title: 'ResourceCentre',
-          headerShown: false
-        }}
-      />
-      <Stack.Screen
-        name='Reviews'
-        options={{
-          title: 'Reviews',
-          headerShown: false
-        }}
-      />
-      <Stack.Screen
-        name='Reward'
-        options={{
-          title: 'Reward',
-          headerShown: false
-        }}
-      />
-      <Stack.Screen
-        name='Settings'
-        options={{
-          title: 'Settings',
-          headerShown: false
-        }}
-      />
-      <Stack.Screen
-        name='Search'
-        options={{
-          title: 'Search',
-          headerShown: false
-        }}
-      />
-      <Stack.Screen
-        name='ChooseNo'
-        options={{
-          title: 'ChooseNo',
-          headerShown: false
-        }}
-      />
-      <Stack.Screen
-        name='Payments'
-        options={{
-          title: 'Payments',
-          headerShown: false
-        }}
-      />
-      <Stack.Screen
-        name='BookingHistory'
-        options={{
-          title: 'BookingHistory',
-          headerShown: false
-        }}
-      />
-      <Stack.Screen
-        name='ConnectWallet'
-        options={{
-          title: 'ConnectWallet',
-          headerShown: false
-        }}
-      />
-      <Stack.Screen
-        name='CardPayment'
-        options={{
-          title: 'CardPayment',
-          headerShown: false
-        }}
-      />
-      <Stack.Screen
-        name='CryptoPayment'
-        options={{
-          title: 'CryptoPayment',
-          headerShown: false
-        }}
-      />
-      <Stack.Screen
-        name='EditName'
-        options={{
-          title: 'EditName',
-          headerShown: false
-        }}
-      />
-      <Stack.Screen
-        name='EditContact'
-        options={{
-          title: 'EditContact',
-          headerShown: false
-        }}
-      />
-      <Stack.Screen
-        name='EditDob'
-        options={{
-          title: 'EditDob',
-          headerShown: false
-        }}
-      />
-      <Stack.Screen
-        name='EditEmail'
-        options={{
-          title: 'EditEmail',
-          headerShown: false
-        }}
-      />
-
-      <Stack.Screen
-        name='EditNationality'
-        options={{
-          title: 'EditNationality',
-          headerShown: false
-        }}
-      />
-      <Stack.Screen
-        name='EditAddress'
-        options={{
-          title: 'EditAddress',
-          headerShown: false
-        }}
-      />
-      <Stack.Screen
-        name='EditGender'
-        options={{
-          title: 'EditGender',
-          headerShown: false
-        }}
-      />
-      <Stack.Screen
-        name='EditPhone'
-        options={{
-          title: 'EditPhone',
-          headerShown: false
-        }}
-      />
+      {screens.map(({ name, headerShown, hasHeartIcon, ...options }) => (
+        <Stack.Screen
+          key={name}
+          name={name}
+          options={{
+            title: name,
+            headerShown,
+            ...(hasHeartIcon && {
+              headerRight: () => (
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    marginRight: 10
+                  }}
+                >
+                  <TouchableOpacity onPress={toggleHeart}>
+                    <FontAwesome
+                      name={isHeartClicked ? 'heart' : 'heart-o'}
+                      size={24}
+                      color={isHeartClicked ? 'red' : 'black'}
+                    />
+                  </TouchableOpacity>
+                </View>
+              )
+            }),
+            ...options
+          }}
+        />
+      ))}
     </Stack>
   )
 }

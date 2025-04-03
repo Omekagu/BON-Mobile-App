@@ -154,7 +154,9 @@ export default function More () {
       {/* Profile Section */}
       <View style={styles.profileSection}>
         <View>
-          <Text style={styles.profileName}>{user?.username || 'User'}</Text>
+          <Text style={styles.profileName}>
+            Hi, {user?.username || 'User'}.
+          </Text>
           <View style={styles.ratingContainer}>
             <AntDesign name='star' size={16} color='#a63932' />
             <Text style={styles.ratingText}>5.00</Text>
@@ -195,7 +197,10 @@ export default function More () {
           <Ionicons name='help-circle' size={30} color='#a63932' />
           <Text style={styles.cardText}>Help</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.accessButton}>
+        <TouchableOpacity
+          style={styles.accessButton}
+          onPress={() => router.push('/Wallet')}
+        >
           <Fontisto name='wallet' size={30} color='#a63932' />
           <Text style={styles.cardText}>Wallet</Text>
         </TouchableOpacity>
