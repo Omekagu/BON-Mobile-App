@@ -1,4 +1,5 @@
 import Booking from '../../model/Booking.js'
+import Country from '../../model/Country.js'
 import Hotel from '../../model/hotelModel.js'
 
 // Get list of hotels
@@ -26,13 +27,46 @@ export const hotelId = async (req, res) => {
 // Hotel search by name
 export const SearchHotelsName = async (req, res) => {
   try {
-    const { name } = req.params // Get the name from the URL parameter
+    const { name } = req.params // Hotel name should be in params
+    const { country, state } = req.query // Country & state should be in query
+
     if (!name) return res.status(400).json({ error: 'Hotel name is required' })
 
-    const hotels = await Hotel.find({ name: { $regex: name, $options: 'i' } }) // Case-insensitive search
+    let query = { name: new RegExp(name, 'i') }
+    if (country) query.country = country
+    if (state) query.state = state
+
+    const hotels = await Hotel.find(query) // Search hotels
     res.json(hotels)
   } catch (error) {
-    res.status(500).json({ error: 'Failed to search hotels' })
+    console.error(error) // Log error for debugging
+    res.status(500).json({ error: error.message || 'Failed to search hotels' })
+  }
+}
+
+export const SearchCountry = async (req, res) => {
+  try {
+    const countries = await Country.find().select('name')
+    res.json(countries)
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching countries' })
+  }
+}
+
+// Fetch states for a given states
+export const SearchState = async (req, res) => {
+  try {
+    const { countryName } = req.params
+    const country = await Country.findOne({
+      name: new RegExp(`^${countryName}$`, 'i')
+    })
+
+    if (!country) return res.status(404).json({ message: 'Country not found' })
+
+    res.json(country.states)
+  } catch (error) {
+    console.error(error) // Log exact error
+    res.status(500).json({ message: error.message || 'Error fetching states' })
   }
 }
 

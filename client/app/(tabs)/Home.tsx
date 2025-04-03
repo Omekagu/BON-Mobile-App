@@ -10,6 +10,7 @@ import {
 import axios from 'axios'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import Suggestions from '@/component/Suggestions' // Ensure Suggestions uses FlatList inside
+import FilterSuggestion from '../../component/FilterSuggestion' // Ensure Suggestions uses FlatList inside
 
 export default function Home () {
   const getUserId = async () => {
@@ -71,7 +72,8 @@ export default function Home () {
       </ImageBackground>
 
       <View style={styles.suggestionsContainer}>
-        <Suggestions />
+        {/* <Suggestions /> */}
+        <FilterSuggestion />
       </View>
     </KeyboardAvoidingView>
   )
