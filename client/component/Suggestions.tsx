@@ -28,7 +28,7 @@ const Suggestions = () => {
   const [loading, setLoading] = useState(false)
   const [isListening, setIsListening] = useState(false)
 
-  // 🎤 Voice Search Function
+  // Voice Search Function
   const startVoiceSearch = () => {
     if (!('webkitSpeechRecognition' in window)) {
       Toast.show({

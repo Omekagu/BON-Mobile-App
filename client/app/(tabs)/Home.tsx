@@ -9,7 +9,7 @@ import {
 } from 'react-native'
 import axios from 'axios'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import Suggestions from '@/component/Suggestions' // Ensure Suggestions uses FlatList inside
+// import Suggestions from '@/component/Suggestions' // Ensure Suggestions uses FlatList inside
 import FilterSuggestion from '../../component/FilterSuggestion' // Ensure Suggestions uses FlatList inside
 
 export default function Home () {
@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
   },
   background: {
     width: '100%',
-    height: 250,
+    height: 150,
     justifyContent: 'center',
     alignItems: 'center',
     borderBottomRightRadius: '100px'

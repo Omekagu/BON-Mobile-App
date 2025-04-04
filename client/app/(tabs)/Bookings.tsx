@@ -249,7 +249,7 @@ const Bookings = () => {
 }
 
 const styles = StyleSheet.create({
-  container: { backgroundColor: '#ebebeb', paddingTop: 10 },
+  container: { backgroundColor: '#ebebeb', paddingTop: 10, paddingBottom: 60 },
   tabContainer: {
     flexDirection: 'row',
     paddingHorizontal: 10,

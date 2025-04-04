@@ -28,7 +28,8 @@ export const hotelId = async (req, res) => {
 export const SearchHotelsName = async (req, res) => {
   try {
     const { name } = req.params // Hotel name should be in params
-    const { country, state } = req.query // Country & state should be in query
+    const { country, state } = req.params // Country & state should be in query
+    console.log(country, state)
 
     if (!name) return res.status(400).json({ error: 'Hotel name is required' })
 
@@ -55,18 +56,19 @@ export const SearchCountry = async (req, res) => {
 
 // Fetch states for a given states
 export const SearchState = async (req, res) => {
+  const { state } = req.params // Get the state from query parameters
+  console.log(state)
+  if (!state) {
+    return res.status(400).json({ error: 'State parameter is required' })
+  }
+
   try {
-    const { countryName } = req.params
-    const country = await Country.findOne({
-      name: new RegExp(`^${countryName}$`, 'i')
-    })
+    // Fetch hotels based on the selected state from your database
+    const hotels = await Hotel.find({ state: state }) // Assuming a MongoDB schema
 
-    if (!country) return res.status(404).json({ message: 'Country not found' })
-
-    res.json(country.states)
+    res.json(hotels)
   } catch (error) {
-    console.error(error) // Log exact error
-    res.status(500).json({ message: error.message || 'Error fetching states' })
+    res.status(500).json({ error: 'Server error' })
   }
 }
 
