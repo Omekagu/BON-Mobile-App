@@ -89,7 +89,7 @@ const Bookings = () => {
       <html>
       <body>
         <h1>Hotel Receipt</h1>
-        <p><strong>Name:</strong> ${user.fullName || 'N/A'}</p>
+        <p><strong>Name:</strong> ${user.username || 'N/A'}</p>
         <p><strong>Email:</strong> ${user.email || 'N/A'}</p>
         <p><strong>Hotel:</strong> ${booking.hotelId?.name || 'N/A'}</p>
         <p><strong>Check-in:</strong> ${new Date(

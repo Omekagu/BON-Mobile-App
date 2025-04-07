@@ -120,7 +120,7 @@ export default function HotelBookingScreen () {
 
   return (
     <GestureHandlerRootView>
-      <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
         <ScrollView>
           {/* <View> */}
 
@@ -301,7 +301,7 @@ export default function HotelBookingScreen () {
           />
           {/* </View> */}
         </ScrollView>
-      </SafeAreaView>
+      </View>
     </GestureHandlerRootView>
   )
 }
@@ -309,7 +309,9 @@ export default function HotelBookingScreen () {
 // Styles
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    height: '100%',
+    paddingTop: 30
   },
   loader: {
     flex: 1,

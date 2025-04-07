@@ -77,7 +77,7 @@ export default function SelectDateRange () {
       const response = await axios.get('http://10.0.1.51:5001/auth/usertoken', {
         headers: { Authorization: `Bearer ${token}` }
       })
-      console.log('User Data:', response.data)
+      // console.log('User Data:', response.data)
       return parsedData.userId
     } catch (error) {
       console.error(
@@ -298,7 +298,7 @@ export default function SelectDateRange () {
               padding: 15,
               backgroundColor: '#a63932',
               borderRadius: 10,
-              width: '100%',
+              width: '80%',
               alignItems: 'center',
               elevation: 3
             }}

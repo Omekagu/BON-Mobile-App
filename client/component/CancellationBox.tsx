@@ -14,7 +14,6 @@ import axios from 'axios'
 
 export default function CancellationBox ({
   id, // Added ID to track the booking
-  city,
   date,
   name,
   type,

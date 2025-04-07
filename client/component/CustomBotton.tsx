@@ -1,29 +1,29 @@
-import { View, Text, TouchableOpacity } from 'react-native';
-import React from 'react';
+import { View, Text, TouchableOpacity } from 'react-native'
+import React from 'react'
 
-export default function CustomBotton({ button, onPress }) {
+export default function CustomBotton ({ button, onPress }) {
   return (
     <TouchableOpacity
       onPress={onPress}
       style={{
-            padding: 20,
-            backgroundColor: "#a63932",
-            borderRadius: 30,
-            width: "100%",
-            alignItems: "center",
-            elevation: 3,
+        padding: 15,
+        backgroundColor: '#a63932',
+        borderRadius: 10,
+        width: '80%',
+        alignSelf: 'center',
+        elevation: 3
       }}
     >
       <Text
         style={{
-          color: '#fff',
-          fontSize: 20,
-          fontWeight: '500',
-          textTransform: 'capitalize',
+          color: 'white',
+          fontSize: 18,
+          fontWeight: 'bold',
+          textAlign: 'center'
         }}
       >
         {button}
       </Text>
     </TouchableOpacity>
-  );
+  )
 }
