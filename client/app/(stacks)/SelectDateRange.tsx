@@ -74,7 +74,7 @@ export default function SelectDateRange () {
       console.log('Retrieved Token:', token)
       token = token.replace(/^"|"$/g, '')
       console.log('Cleaned JWT Token:', token)
-      const response = await axios.get('http://10.0.1.14:5001/auth/usertoken', {
+      const response = await axios.get('http://10.0.1.51:5001/auth/usertoken', {
         headers: { Authorization: `Bearer ${token}` }
       })
       console.log('User Data:', response.data)
@@ -123,6 +123,11 @@ export default function SelectDateRange () {
           }
         })
       } else if (status === 'Pending') {
+        const response = await axios.post(
+          'http://10.0.1.51:5001/hotel/bookingCompleted',
+          bookingData
+        )
+        // console.log('Booking Response:', response.data)
         setIsModalVisible(false)
         router.replace({ pathname: '/Bookings', params: { hotelId } })
         Toast.show({

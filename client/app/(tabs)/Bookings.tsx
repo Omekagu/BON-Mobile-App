@@ -35,7 +35,7 @@ const Bookings = () => {
       const parsedData = JSON.parse(userData)
       let token = parsedData.token.replace(/^"|"$/g, '')
 
-      const response = await axios.get('http://10.0.1.14:5001/auth/usertoken', {
+      const response = await axios.get('http://10.0.1.51:5001/auth/usertoken', {
         headers: { Authorization: `Bearer ${token}` }
       })
       console.log(token)
@@ -54,7 +54,7 @@ const Bookings = () => {
         if (!userId) return
 
         const response = await axios.get(
-          `http://10.0.1.14:5001/hotel/bookings/${userId}`
+          `http://10.0.1.51:5001/hotel/bookings/${userId}`
         )
 
         const sortedBookings = Array.isArray(response.data.data)

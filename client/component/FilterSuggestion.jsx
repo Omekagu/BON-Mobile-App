@@ -79,7 +79,7 @@ const FilterSuggestion = () => {
     try {
       console.log('Fetching hotels for:', selectedState)
       const response = await fetch(
-        `http://10.0.1.14:5001/hotel/search/state/${encodeURIComponent(
+        `http://10.0.1.51:5001/hotel/search/state/${encodeURIComponent(
           selectedState
         )}`
       )
@@ -90,7 +90,7 @@ const FilterSuggestion = () => {
 
       const data = await response.json()
       setHotels(data.length ? data : [])
-      console.log(data)
+      //   console.log(data)
     } catch (error) {
       console.error('Error fetching hotels:', error)
       Alert.alert('Error', 'Failed to fetch hotels. Please try again.')

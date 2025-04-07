@@ -62,7 +62,7 @@ export default function BookingDetails () {
     const fetchHotelDetails = async () => {
       try {
         const response = await axios.get(
-          `http://10.0.1.14:5001/hotel/bookings/${userId}`
+          `http://10.0.1.51:5001/hotel/bookings/${userId}`
         )
 
         // Find the booking where hotelId._id matches id

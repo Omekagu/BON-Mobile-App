@@ -1,6 +1,7 @@
 import Booking from '../../model/Booking.js'
 import Country from '../../model/Country.js'
 import Hotel from '../../model/hotelModel.js'
+import { pool } from '../../utilities/pool.js'
 
 // Get list of hotels
 export const hotels = async (req, res) => {
@@ -213,4 +214,14 @@ export const deletebooked = async (req, res) => {
       .status(500)
       .json({ message: 'Error deleting booking', error: error.message })
   }
+}
+
+export const mysqlRooms = (req, res) => {
+  pool.query('SELECT * FROM wp_vikbooking_rooms', (err, results) => {
+    if (err) {
+      console.error('Database Query Error:', err)
+      return res.status(500).send(err)
+    }
+    res.json(results)
+  })
 }
