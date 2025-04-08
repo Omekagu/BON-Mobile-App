@@ -7,6 +7,7 @@ export default function CustomBotton ({ button, onPress }) {
       onPress={onPress}
       style={{
         padding: 15,
+        marginBottom: 10,
         backgroundColor: '#a63932',
         borderRadius: 10,
         width: '80%',

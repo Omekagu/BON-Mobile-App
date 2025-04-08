@@ -21,7 +21,6 @@ const Bookings = () => {
   const fadeAnim = useRef(new Animated.Value(0)).current
   const [activeTab, setActiveTab] = useState('Completed')
   const [bookings, setBookings] = useState([])
-  // const [bookingDetails, setBookingsDetails] = useState(null)
   const [loading, setLoading] = useState(false)
   const [modalVisible, setModalVisible] = useState(true) // Show modal on load
 
@@ -35,7 +34,7 @@ const Bookings = () => {
       const parsedData = JSON.parse(userData)
       let token = parsedData.token.replace(/^"|"$/g, '')
 
-      const response = await axios.get('http://10.0.1.51:5001/auth/usertoken', {
+      const response = await axios.get('http://10.0.1.53:5001/auth/usertoken', {
         headers: { Authorization: `Bearer ${token}` }
       })
       console.log(token)
@@ -54,7 +53,7 @@ const Bookings = () => {
         if (!userId) return
 
         const response = await axios.get(
-          `http://10.0.1.51:5001/hotel/bookings/${userId}`
+          `http://10.0.1.53:5001/hotel/bookings/${userId}`
         )
 
         const sortedBookings = Array.isArray(response.data.data)

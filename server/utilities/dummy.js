@@ -17,7 +17,6 @@ import axios from 'axios'
 import Toast from 'react-native-toast-message'
 import {
   View,
-  SafeAreaView,
   ScrollView,
   Image,
   Text,
@@ -74,7 +73,7 @@ export default function BookingDetails () {
     const fetchHotelDetails = async () => {
       try {
         const response = await axios.get(
-          `http://10.0.1.51:5001/hotel/bookings/${userId}`
+          `http://10.0.1.53:5001/hotel/bookings/${userId}`
         )
         const booking = response.data.data[0]
 
@@ -195,9 +194,6 @@ export default function BookingDetails () {
                   hotel.hotelId?.images?.[1],
                   hotel.hotelId?.images?.[2],
                   hotel.hotelId?.images?.[3]
-                  // "https://i.postimg.cc/sDF3pxL1/YTW-EXECUTIVE-3.jpg",
-                  // "https://i.postimg.cc/Bnps9gn1/YTW-SUPERIOR-6.jpg",
-                  // "https://i.postimg.cc/5ttJxCXK/YTW-DELUXE-6.jpg",
                 ].map((img, index) => (
                   <Image
                     key={index}

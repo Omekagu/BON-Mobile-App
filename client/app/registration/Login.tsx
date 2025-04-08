@@ -71,7 +71,7 @@ const Login = () => {
     const userData = { email: email.trim().toLowerCase(), password }
 
     try {
-      const res = await axios.post('http://10.0.1.51:5001/auth/login', userData)
+      const res = await axios.post('http://10.0.1.53:5001/auth/login', userData)
       if (res.data?.data) {
         const { token, userId } = res.data.data
         console.log('JWT Token:', token)

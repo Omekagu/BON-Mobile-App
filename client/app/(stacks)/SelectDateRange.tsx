@@ -28,7 +28,7 @@ export default function SelectDateRange () {
 
   const timeSlots = ['08:00 AM', '11:00 AM', '12:00 PM', '02:00 PM']
   const guests = [1, 2, 3]
-  const rooms = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+  const rooms = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
   const handleDateConfirm = date => {
     if (showPicker.type === 'start') {
@@ -74,7 +74,7 @@ export default function SelectDateRange () {
       console.log('Retrieved Token:', token)
       token = token.replace(/^"|"$/g, '')
       console.log('Cleaned JWT Token:', token)
-      const response = await axios.get('http://10.0.1.51:5001/auth/usertoken', {
+      const response = await axios.get('http://10.0.1.53:5001/auth/usertoken', {
         headers: { Authorization: `Bearer ${token}` }
       })
       // console.log('User Data:', response.data)
@@ -124,7 +124,7 @@ export default function SelectDateRange () {
         })
       } else if (status === 'Pending') {
         const response = await axios.post(
-          'http://10.0.1.51:5001/hotel/bookingCompleted',
+          'http://10.0.1.53:5001/hotel/bookingCompleted',
           bookingData
         )
         // console.log('Booking Response:', response.data)
@@ -157,11 +157,18 @@ export default function SelectDateRange () {
         }}
       >
         <View style={{ alignItems: 'center' }}>
-          <Text style={{ fontSize: 22, fontWeight: 'bold', marginBottom: 10 }}>
-            Choose Your Stay
+          <Text
+            style={{
+              fontSize: 22,
+              fontWeight: 'bold',
+              marginBottom: 10,
+              textTransform: 'uppercase'
+            }}
+          >
+            Choose Preferences
           </Text>
-          <Text style={{ fontSize: 16, color: '#555' }}>
-            ₦{nightlyPrice.toLocaleString()} /night
+          <Text style={{ fontSize: 16, color: '#555', fontWeight: 'bold' }}>
+            ₦{nightlyPrice.toLocaleString()}/Night
           </Text>
         </View>
 
@@ -172,7 +179,7 @@ export default function SelectDateRange () {
               key={type}
               onPress={() => setShowPicker({ type, visible: true })}
               style={{
-                backgroundColor: '#fff',
+                backgroundColor: '#e9ecef',
                 padding: 15,
                 borderRadius: 10,
                 marginBottom: 10,
@@ -199,7 +206,14 @@ export default function SelectDateRange () {
         </View>
 
         {/* Time Slot Selection */}
-        <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 20 }}>
+        <Text
+          style={{
+            fontSize: 16,
+            fontWeight: 'bold',
+            marginTop: 20,
+            textAlign: 'center'
+          }}
+        >
           Select Check-in Time
         </Text>
         <FlatList
@@ -210,6 +224,8 @@ export default function SelectDateRange () {
             <TouchableOpacity
               onPress={() => setSelectedTime(item)}
               style={{
+                height: 60,
+                alignSelf: 'center',
                 padding: 10,
                 borderRadius: 10,
                 margin: 5,
@@ -218,6 +234,7 @@ export default function SelectDateRange () {
             >
               <Text
                 style={{
+                  textAlign: 'center',
                   fontSize: 14,
                   color: selectedTime === item ? '#fff' : '#333'
                 }}
@@ -229,7 +246,14 @@ export default function SelectDateRange () {
         />
 
         {/* Guest Selection */}
-        <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 20 }}>
+        <Text
+          style={{
+            fontSize: 16,
+            fontWeight: 'bold',
+            marginTop: 20,
+            textAlign: 'center'
+          }}
+        >
           Number of Guests
         </Text>
         <FlatList
@@ -240,7 +264,11 @@ export default function SelectDateRange () {
             <TouchableOpacity
               onPress={() => setSelectedGuests(item)}
               style={{
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignSelf: 'center',
                 padding: 10,
+                height: 60,
                 borderRadius: 50,
                 margin: 5,
                 backgroundColor: selectedGuests === item ? '#a63932' : '#e9ecef'
@@ -259,7 +287,14 @@ export default function SelectDateRange () {
         />
 
         {/* Room Selection */}
-        <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 20 }}>
+        <Text
+          style={{
+            fontSize: 16,
+            fontWeight: 'bold',
+            marginTop: 20,
+            textAlign: 'center'
+          }}
+        >
           Number of Rooms
         </Text>
         <FlatList
@@ -270,7 +305,11 @@ export default function SelectDateRange () {
             <TouchableOpacity
               onPress={() => setSelectedRooms(item)}
               style={{
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignSelf: 'center',
                 padding: 10,
+                height: 60,
                 borderRadius: 50,
                 margin: 5,
                 backgroundColor: selectedRooms === item ? '#a63932' : '#e9ecef'
@@ -278,6 +317,7 @@ export default function SelectDateRange () {
             >
               <Text
                 style={{
+                  textAlign: 'center',
                   fontSize: 16,
                   color: selectedRooms === item ? '#fff' : '#333'
                 }}

@@ -4,7 +4,6 @@ import axios from 'axios'
 import Toast from 'react-native-toast-message'
 import {
   View,
-  SafeAreaView,
   ScrollView,
   Image,
   Text,
@@ -62,7 +61,7 @@ export default function BookingDetails () {
     const fetchHotelDetails = async () => {
       try {
         const response = await axios.get(
-          `http://10.0.1.51:5001/hotel/bookings/${userId}`
+          `http://10.0.1.53:5001/hotel/bookings/${userId}`
         )
 
         // Find the booking where hotelId._id matches id
@@ -345,8 +344,18 @@ export default function BookingDetails () {
           {bookingDetails.status === 'Pending' ? (
             <>
               <TouchableOpacity
-                // onPress={() =>
-                // handleBooking('Completed')}
+                onPress={() =>
+                  router.push({
+                    pathname: '/Payments',
+                    params: {
+                      price: String(bookingDetails.totalPrice),
+                      userId: String(userId),
+                      bookingId: String(bookingDetails.hotelId._id),
+                      hotelId: String(bookingDetails.hotelId._id)
+                      // bookingData: JSON.stringify(bookingData)
+                    }
+                  })
+                }
                 style={{
                   padding: 15,
                   backgroundColor: '#a63932',
