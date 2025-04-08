@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, StyleSheet, SafeAreaView, Alert } from 'react-native'
+import { View, Text, StyleSheet, SafeAreaView } from 'react-native'
 import { useRouter } from 'expo-router'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import * as Device from 'expo-device'
@@ -8,18 +8,18 @@ import axios from 'axios'
 import LabelInputComp from '@/component/LabelInputComp'
 import CustomBotton from '@/component/CustomBotton'
 import Toast from 'react-native-toast-message'
-import * as ImagePicker from 'expo-image-picker'
 import { useAuth } from '../hooks/useAuth'
 
 const Registration: React.FC = () => {
-  const [username, setUsername] = useState<string>('')
+  const [firstName, setFirstname] = useState<string>('')
+  const [surname, setSurname] = useState<string>('')
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const [phoneNumber, setPhoneNumber] = useState<string>('')
   const [profileImage, setProfileImage] = useState<string | null>(null)
   const [deviceType, setDeviceType] = useState<string>('')
   const [userCountry, setUserCountry] = useState<string>('')
-  const [referral, setReferral] = useState<string>('')
+  const [referralCode, setReferralCode] = useState<string>('')
 
   const router = useRouter()
 
@@ -58,7 +58,7 @@ const Registration: React.FC = () => {
     /^\d{11}$/.test(phoneNumber)
 
   const handleSubmit = async () => {
-    if (!username || !email || !password || !phoneNumber) {
+    if (!firstName || !surname || !email || !password || !phoneNumber) {
       Toast.show({
         type: 'error',
         text1: 'Error',
@@ -84,7 +84,9 @@ const Registration: React.FC = () => {
     }
 
     const userData = {
-      username,
+      firstName,
+      surname,
+      referralCode,
       email: email.toLowerCase(),
       password,
       phoneNumber,
@@ -93,7 +95,7 @@ const Registration: React.FC = () => {
       userCountry
     }
 
-    console.log(username, email, password, phoneNumber, referral)
+    console.log(firstName, surname, email, password, phoneNumber, referralCode)
 
     try {
       await axios.post('http://10.0.1.51:5001/auth/register', userData)
@@ -102,12 +104,14 @@ const Registration: React.FC = () => {
         text1: 'Success',
         text2: 'Registration complete'
       })
-      setUsername('')
+      // setUsername('')
+      setFirstname('')
+      setSurname('')
       setProfileImage(null)
       setEmail('')
       setPassword('')
       setPhoneNumber('')
-      setReferral('')
+      setReferralCode('')
       router.push('/registration/Login')
     } catch (error) {
       Toast.show({
@@ -119,16 +123,26 @@ const Registration: React.FC = () => {
   }
 
   return (
-    <KeyboardAwareScrollView contentContainerStyle={styles.container}>
+    <KeyboardAwareScrollView
+      resetScrollToCoords={{ x: 0, y: 0 }}
+      // scrollEnabled={false}
+      contentContainerStyle={styles.container}
+    >
       <SafeAreaView>
         <Text style={styles.infoText}>Create your account</Text>
 
         <View style={styles.formContainer}>
           <LabelInputComp
-            label='Username'
-            placeholder='Enter username'
-            value={username}
-            onChangeText={setUsername}
+            label='Firstname'
+            placeholder='Enter Firstname'
+            value={firstName}
+            onChangeText={setFirstname}
+          />
+          <LabelInputComp
+            label='Surname'
+            placeholder='Enter Surname'
+            value={surname}
+            onChangeText={setSurname}
           />
           <LabelInputComp
             label='Email'
@@ -150,9 +164,9 @@ const Registration: React.FC = () => {
           />
           <LabelInputComp
             label='Referral Code'
-            placeholder='Referral'
-            value={referral}
-            onChangeText={setReferral}
+            placeholder='Referral Code'
+            value={referralCode}
+            onChangeText={setReferralCode}
           />
 
           <Text style={styles.deviceInfo}>

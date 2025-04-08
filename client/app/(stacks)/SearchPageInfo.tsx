@@ -43,7 +43,6 @@ export default function HotelBookingScreen () {
       Toast.show({ type: 'error', text1: 'Unsaved from Favourite.' })
       setLiked(newLikedState)
     }
-
     try {
       // Simulating API call to update likes in the database
       await fetch('https://your-api.com/update-likes', {

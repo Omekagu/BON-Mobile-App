@@ -2,7 +2,15 @@ import mongoose from 'mongoose'
 
 const UserDetailsSchema = new mongoose.Schema(
   {
-    username: {
+    firstName: {
+      type: String,
+      required: true
+    },
+    surname: {
+      type: String,
+      required: true
+    },
+    referralCode: {
       type: String,
       required: true
     },

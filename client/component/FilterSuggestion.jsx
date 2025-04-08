@@ -197,10 +197,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 5,
-    color: '#333'
+    color: '#a63932'
   },
   dropdown: {
-    marginBottom: 15
+    marginBottom: 15,
+    borderColor: '#a63932'
   },
   searchButton: {
     backgroundColor: '#a63932',

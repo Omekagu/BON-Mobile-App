@@ -4,8 +4,10 @@ import { sendWelcomeEmail } from '../../utilities/email.js'
 
 export const register = async (req, res) => {
   const {
-    username,
+    firstName,
+    surname,
     email,
+    referralCode,
     password,
     phoneNumber,
     profileImage,
@@ -17,10 +19,23 @@ export const register = async (req, res) => {
     const oldUser = await User.findOne({ email })
     if (oldUser) return res.status(400).json({ message: 'User already exists' })
 
-    console.log(username, email, password, phoneNumber)
+    console.log(
+      firstName,
+      surname,
+      email,
+      password,
+      phoneNumber,
+      referralCode,
+      profileImage,
+      deviceType,
+      userCountry
+    )
+    // Check if the password is strong enough
     const hashedPassword = await bcrypt.hash(password, 10)
     const newUser = new User({
-      username,
+      firstName,
+      surname,
+      referralCode,
       email,
       password: hashedPassword,
       phoneNumber,
@@ -30,7 +45,7 @@ export const register = async (req, res) => {
     })
     console.log(newUser)
     await newUser.save()
-    sendWelcomeEmail(email, username)
+    sendWelcomeEmail(email, firstName)
     res.status(201).json({ message: 'User registered successfully' })
   } catch (error) {
     res.status(500).json({ message: 'Server Error', error })

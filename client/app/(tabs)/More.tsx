@@ -155,7 +155,7 @@ export default function More () {
       <View style={styles.profileSection}>
         <View>
           <Text style={styles.profileName}>
-            Hi, {user?.username || 'User'}.
+            Hi, {user?.firstName || 'User'}.
           </Text>
           <View style={styles.ratingContainer}>
             <AntDesign name='star' size={16} color='#a63932' />
