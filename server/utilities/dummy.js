@@ -73,7 +73,7 @@ export default function BookingDetails () {
     const fetchHotelDetails = async () => {
       try {
         const response = await axios.get(
-          `http://10.0.1.53:5001/hotel/bookings/${userId}`
+          `http://10.0.1.26:5001/hotel/bookings/${userId}`
         )
         const booking = response.data.data[0]
 
