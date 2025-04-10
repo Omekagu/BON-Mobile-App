@@ -34,6 +34,17 @@ export default function Profile () {
     }
   }
 
+  const goToEditPage = (field, path) => {
+    if (
+      !field ||
+      field === '' ||
+      field.startsWith('Enter') ||
+      field.startsWith('Select')
+    ) {
+      router.push(path)
+    }
+  }
+
   useEffect(() => {
     // Fetch user data from backend
     const fetchUser = async () => {
@@ -60,19 +71,19 @@ export default function Profile () {
   }
   return (
     <SafeAreaView>
-      <ScrollView style={{ padding: 10 }}>
-        <View
-          style={{
-            alignSelf: 'center'
-          }}
-        >
-          <TouchableOpacity onPress={() => {}}>
-            <Image
-              source={{ uri: user.profileImage }}
-              style={styles.profileImage}
-            />
-          </TouchableOpacity>
-
+      {/* <ScrollView style={{ padding: 10 }}> */}
+      <View
+        style={{
+          alignSelf: 'center'
+        }}
+      >
+        <TouchableOpacity onPress={() => {}}>
+          <Image
+            source={{ uri: user.profileImage }}
+            style={styles.profileImage}
+          />
+        </TouchableOpacity>
+        {/* 
           <TouchableOpacity>
             <MaterialCommunityIcons
               name='camera-plus-outline'
@@ -86,49 +97,65 @@ export default function Profile () {
                 borderRadius: 100
               }}
             />
-          </TouchableOpacity>
-        </View>
-        <ExtComp
-          head={'Username'}
-          tag={user?.username}
-          onPress={() => router.push('/EditName')}
-        />
-        <ExtComp
-          head={'Gender'}
-          tag={'Select Your Gender'}
-          onPress={() => router.push('/EditGender')}
-        />
-        <ExtComp
-          head={'Date of Birth'}
-          tag={'Enter date of birth'}
-          onPress={() => router.push('/EditDob')}
-        />
-        <ExtComp
-          head={'Email'}
-          tag={'Enter Email Address'}
-          onPress={() => router.push('/EditAddress')}
-        />
-        <ExtComp
-          head={'Contact Details'}
-          tag={'Our company will use'}
-          onPress={() => router.push('/EditContact')}
-        />
-        <ExtComp
-          head={'Phone Number'}
-          tag={'Add your phone number'}
-          onPress={() => router.push('/EditPhone')}
-        />
-        <ExtComp
-          head={'Address'}
-          tag={'Add your address'}
-          onPress={() => router.push('/EditAddress')}
-        />
-        <ExtComp
-          head={'Nationalty'}
-          tag={'Select your nationality'}
-          onPress={() => router.push('/EditNationality')}
-        />
-      </ScrollView>
+          </TouchableOpacity> */}
+      </View>
+
+      <ExtComp
+        head={'Name'}
+        tag={`${user.firstName} ${user.surname}`}
+        onPress={() => {
+          if (!user.firstName) router.push('/EditName')
+        }}
+      />
+
+      <ExtComp
+        head={'Gender'}
+        tag={user.gender || 'Select Your Gender'}
+        onPress={() => {
+          if (!user.gender) router.push('/EditGender')
+        }}
+      />
+
+      <ExtComp
+        head={'Date of Birth'}
+        tag={user.dob || 'Enter date of birth'}
+        onPress={() => {
+          if (!user.dob) router.push('/EditDob')
+        }}
+      />
+
+      <ExtComp
+        head={'Email'}
+        tag={user.email || 'Enter Email Address'}
+        onPress={() => {
+          if (!user.email) router.push('/EditAddress')
+        }}
+      />
+
+      <ExtComp
+        head={'Phone Number'}
+        tag={user.phoneNumber || 'Enter Phone Number'}
+        onPress={() => {
+          if (!user.phoneNumber) router.push('/EditPhone')
+        }}
+      />
+
+      <ExtComp
+        head={'Address'}
+        tag={user.address || 'Enter Address'}
+        onPress={() => {
+          if (!user.address) router.push('/EditAddress')
+        }}
+      />
+
+      <ExtComp
+        head={'Nationality'}
+        tag={user.userCountry || 'Enter Nationality'}
+        onPress={() => {
+          if (!user.userCountry) router.push('/EditNationality')
+        }}
+      />
+      {/* </ScrollView> */}
     </SafeAreaView>
   )
 }

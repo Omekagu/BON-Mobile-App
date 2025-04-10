@@ -29,11 +29,11 @@ transporter.verify((error, success) => {
 // Function to send a welcome email
 export const sendLoginEmail = (email, firstName) => {
   const mailOptions = {
-    from: 'ea@bonhotelsinternational.com', // Sender address
+    from: '"BON Hospitality" <ea@bonhotelsinternational.com>', // Sender address
     to: email, // Recipient email
-    subject: 'Welcome to Our App!',
-    html: `<h1>Welcome, ${firstName}!</h1>
-           <p>Thank you for registering with Bon Hotels. We're excited to have you onboard.</p>
+    subject: `Welcome back ${firstName}🥳🎉!!!`,
+    html: `<h1>Happy to have you back at BON Hospitality app ${firstName}!</h1>
+           <p> We're excited to have you onboard again.</p>
            <p>If you have any questions, feel free to contact us at support@bonhotels.com.</p>
            <p>Best regards,<br>The Team</p>`
   }
@@ -47,17 +47,16 @@ export const sendLoginEmail = (email, firstName) => {
     }
   })
 }
-// sendWelcomeEmail('testedeye@gmail.com', 'Omekagu Chukwuebuka');
 
 // Function to send welcome email
 export const sendWelcomeEmail = (email, firstName) => {
   const mailOptions = {
-    from: 'bonhotels68@gmail.com', // Sender address
+    from: '"BON Hospitality" <ea@bonhotelsinternational.com>', // Sender address
     to: email, // Recipient email
-    subject: 'Welcome to Our App!',
+    subject: `Welcome to Our App  ${firstName} 🥳🎉!!!!`,
     html: `<h1>Welcome, ${firstName}!</h1>
-           <p>Thank you for registering with Bon Hotels. We're excited to have you onboard.</p>
-           <p>If you have any questions, feel free to contact us at yellowtrumpethotels@gmail.com.</p>
+           <p>Thank you for registering with Bon Hospitality  ${firstName}. We're excited to have you onboard.</p>
+           <p>If you have any questions, feel free to contact us at support@bonhotels.com.</p>
            <p>Best regards,<br>The Team</p>`
   }
 

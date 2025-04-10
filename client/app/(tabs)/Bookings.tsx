@@ -252,7 +252,7 @@ const styles = StyleSheet.create({
   tabContainer: {
     flexDirection: 'row',
     paddingHorizontal: 10,
-    paddingVertical: 10,
+    paddingVertical: 5,
     width: '100%',
     justifyContent: 'space-between'
   },

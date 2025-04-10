@@ -159,7 +159,7 @@ export default function SelectDateRange () {
         <View style={{ alignItems: 'center' }}>
           <Text
             style={{
-              fontSize: 22,
+              fontSize: 15,
               fontWeight: 'bold',
               marginBottom: 10,
               textTransform: 'uppercase'
@@ -168,7 +168,7 @@ export default function SelectDateRange () {
             Choose Preferences
           </Text>
           <Text style={{ fontSize: 16, color: '#555', fontWeight: 'bold' }}>
-            ₦{nightlyPrice.toLocaleString()}/Night
+            ₦{nightlyPrice.toLocaleString()} - A night
           </Text>
         </View>
 
@@ -181,19 +181,26 @@ export default function SelectDateRange () {
               style={{
                 backgroundColor: '#e9ecef',
                 padding: 15,
-                borderRadius: 10,
+                borderRadius: 3,
                 marginBottom: 10,
                 elevation: 3
               }}
             >
-              <Text style={{ fontSize: 16, color: '#333' }}>
+              <Text
+                style={{
+                  fontSize: 11,
+                  textTransform: 'capitalize',
+                  color: '#333',
+                  fontWeight: 'bold'
+                }}
+              >
                 {type === 'start'
                   ? startDate
-                    ? `Check-in: ${startDate.toDateString()}`
-                    : 'Select Check-in Date'
+                    ? `Check - in  :${startDate.toDateString()}`
+                    : 'Select Check - in Date'
                   : endDate
-                  ? `Check-out: ${endDate.toDateString()}`
-                  : 'Select Check-out Date'}
+                  ? `Check - out  :${endDate.toDateString()}`
+                  : 'Select Check - out Date'}
               </Text>
             </TouchableOpacity>
           ))}
@@ -208,13 +215,14 @@ export default function SelectDateRange () {
         {/* Time Slot Selection */}
         <Text
           style={{
-            fontSize: 16,
+            fontSize: 12,
             fontWeight: 'bold',
+            textTransform: 'uppercase',
             marginTop: 20,
             textAlign: 'center'
           }}
         >
-          Select Check-in Time
+          Select Check - in Time
         </Text>
         <FlatList
           data={timeSlots}
@@ -248,10 +256,11 @@ export default function SelectDateRange () {
         {/* Guest Selection */}
         <Text
           style={{
-            fontSize: 16,
+            fontSize: 12,
             fontWeight: 'bold',
             marginTop: 20,
-            textAlign: 'center'
+            textAlign: 'center',
+            textTransform: 'uppercase'
           }}
         >
           Number of Guests
@@ -289,10 +298,11 @@ export default function SelectDateRange () {
         {/* Room Selection */}
         <Text
           style={{
-            fontSize: 16,
+            fontSize: 12,
             fontWeight: 'bold',
             marginTop: 20,
-            textAlign: 'center'
+            textAlign: 'center',
+            textTransform: 'uppercase'
           }}
         >
           Number of Rooms

@@ -117,6 +117,24 @@ export default function HotelBookingScreen () {
   // console.log(hotel.contact)
   // console.log(hotel.reviews)
 
+  const OpenInstagram = () => {
+    Linking.openURL('https://www.instagram.com/').catch(err =>
+      console.error("Couldn't load page", err)
+    )
+  }
+
+  const OpenFacebook = () => {
+    Linking.openURL('https://www.facebook.com/').catch(err =>
+      console.error("Couldn't load page", err)
+    )
+  }
+
+  const OpenTwitter = () => {
+    Linking.openURL('https://www.twitter.com/').catch(err =>
+      console.error("Couldn't load page", err)
+    )
+  }
+
   return (
     <GestureHandlerRootView>
       <View style={styles.container}>
@@ -208,7 +226,7 @@ export default function HotelBookingScreen () {
               {hotel.pricePerNight
                 ? Number(hotel.pricePerNight).toLocaleString()
                 : '100,000,000'}{' '}
-              - perNight
+              - A night
             </Text>
           </View>
 
@@ -252,7 +270,7 @@ export default function HotelBookingScreen () {
             />
             <View>
               <Text style={styles.ownerName}>{hotel.owners?.name}</Text>
-              <Text style={styles.ownerRole}>Customer Service</Text>
+              <Text style={styles.ownerRole}>Reservations Personnel</Text>
             </View>
             <View style={styles.contactIcons}>
               <TouchableOpacity onPress={handleEmail}>
@@ -266,13 +284,13 @@ export default function HotelBookingScreen () {
 
           <View>
             <View style={styles.socials}>
-              <TouchableOpacity onPress={handleEmail}>
+              <TouchableOpacity onPress={OpenFacebook}>
                 <FontAwesome name='facebook-square' size={24} color='black' />
               </TouchableOpacity>
-              <TouchableOpacity onPress={handleCall}>
+              <TouchableOpacity onPress={OpenInstagram}>
                 <FontAwesome5 name='instagram' size={24} color='black' />
               </TouchableOpacity>
-              <TouchableOpacity onPress={handleCall}>
+              <TouchableOpacity onPress={OpenTwitter}>
                 <FontAwesome name='twitter' size={24} color='black' />
               </TouchableOpacity>
             </View>
@@ -348,7 +366,8 @@ const styles = StyleSheet.create({
     padding: 10
   },
   hotelName: {
-    fontSize: 22,
+    fontSize: 15,
+    textTransform: 'uppercase',
     fontWeight: 'bold'
   },
   location: {
@@ -357,7 +376,9 @@ const styles = StyleSheet.create({
     marginVertical: 5
   },
   locationText: {
-    color: 'gray',
+    color: '#000',
+    fontSize: 14,
+    fontWeight: 'bold',
     marginLeft: 5
   },
   rating: {
@@ -365,16 +386,20 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   star: {
-    fontSize: 16,
-    color: '#FFA500'
+    color: '#000',
+    fontSize: 14,
+    fontWeight: 'bold'
+    // fontSize: 16,
+    // color: '#FFA500'
   },
   reviews: {
+    color: '#000',
     fontSize: 14,
-    color: 'gray',
+    fontWeight: 'bold',
     marginLeft: 5
   },
   price: {
-    fontSize: 18,
+    fontSize: 13,
     fontWeight: 'bold',
     color: '#a63932',
     marginTop: 10
