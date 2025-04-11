@@ -2,13 +2,13 @@ import {
   View,
   Image,
   TouchableOpacity,
-  ScrollView,
+  // ScrollView,
   StyleSheet,
   ActivityIndicator
 } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import ExtComp from '@/component/ExtComp'
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
+// import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 import { router } from 'expo-router'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import axios from 'axios'

@@ -12,6 +12,7 @@ import {
   SearchHotelsName,
   SearchState
 } from '../../controllers/hotel/hotel.js'
+import { createBonamiCard } from '../../controllers/hotel/bonamiCard.js'
 const router = express.Router()
 
 router.get('/hotels', hotels)
@@ -25,5 +26,6 @@ router.post('/create-menu/:hotelId', createMenuHotelId)
 router.post('/bookingCompleted', bookingCompleted)
 router.get('/bookings/:userId', bookedUserId)
 router.delete('/delete-bookings/:id', deletebooked)
+router.post('/bonami-card', createBonamiCard)
 
 export default router

@@ -27,10 +27,9 @@ export default function More () {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
 
-  // Replace with your Cloudinary upload endpoint and preset
   const CLOUDINARY_UPLOAD_URL =
     'https://api.cloudinary.com/v1_1/da26wgev2/image/upload'
-  const UPLOAD_PRESET = 'chataap' // replace with your actual preset
+  const UPLOAD_PRESET = 'chataap'
 
   const pickImage = async () => {
     try {
