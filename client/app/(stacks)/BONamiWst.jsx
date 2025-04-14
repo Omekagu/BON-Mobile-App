@@ -90,7 +90,7 @@ const BONamiWst = () => {
       <View style={styles.botton}>
         <CustomBotton
           button={'Sign Up'}
-          onPress={() => router.push('/BONamiwestForm')}
+          onPress={() => router.push('/BONamiSouthForm')}
         />
       </View>
     </ScrollView>

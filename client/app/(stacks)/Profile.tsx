@@ -54,6 +54,7 @@ export default function Profile () {
           `http://10.0.1.26:5001/user/user/${userId}`
         )
         setUser(response.data.user)
+        console.log('User data:', response.data.user)
       } catch (error) {
         console.error('Error fetching user:', error)
       }

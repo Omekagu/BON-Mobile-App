@@ -192,9 +192,18 @@ export default function BONamiSouthForm () {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, margin: 15 }}>
-      <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 10 }}>
-        BONami South Form
+    <SafeAreaView
+      style={{ flex: 1, marginVertical: 200, marginHorizontal: 20 }}
+    >
+      <Text
+        style={{
+          fontSize: 14,
+          fontWeight: 'bold',
+          marginBottom: 30,
+          textAlign: 'center'
+        }}
+      >
+        BONami Registration Form
       </Text>
 
       <LabelInputComp
@@ -210,8 +219,8 @@ export default function BONamiSouthForm () {
         onChangeText={setAddress}
       />
       <LabelInputComp
-        label='Province'
-        placeholder='Enter your province'
+        label='Postal code'
+        placeholder='Enter your Postal code'
         value={province}
         onChangeText={setProvince}
       />
@@ -313,6 +322,31 @@ export default function BONamiSouthForm () {
               onPress={handlePaymentComplete}
               disabled={loading}
             />
+            {loading && (
+              <View
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  justifyContent: 'center'
+                }}
+              >
+                <ActivityIndicator size='large' color='#a63932' />
+              </View>
+            )}
+            <TouchableOpacity
+              onPress={() => setShowPaymentModal(false)}
+              style={{
+                position: 'absolute',
+                top: 10,
+                right: 10,
+                padding: 5
+              }}
+            >
+              <Text style={{ fontSize: 25, color: '#a63932' }}>X</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>

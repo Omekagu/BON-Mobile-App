@@ -1,25 +1,93 @@
-import { View, Text, StyleSheet } from 'react-native'
-import React from 'react'
+import { View, Text, StyleSheet, ActivityIndicator } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import axios from 'axios'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export default function BONamiCard () {
+  const [cardDetails, setCardDetails] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [userId, setUserId] = useState(null)
+
+  // STEP 1: Get User ID from Token
+  const getUserId = async () => {
+    try {
+      const userData = await AsyncStorage.getItem('token')
+      if (!userData) return null
+      const parsedData = JSON.parse(userData)
+      const token = parsedData.token.replace(/^"|"$/g, '')
+
+      const response = await axios.get('http://10.0.1.26:5001/auth/usertoken', {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      console.log('User ID:', parsedData.userId)
+      return parsedData.userId
+    } catch (error) {
+      console.error('Error retrieving user ID:', error)
+      return null
+    }
+  }
+
+  // STEP 2: When Component Mounts, Get User ID then Fetch Card Details
+  useEffect(() => {
+    const initialize = async () => {
+      try {
+        const id = await getUserId()
+        if (!id) {
+          console.warn('No user ID found.')
+          return
+        }
+
+        setUserId(id)
+
+        const cardRes = await axios.get(
+          `http://10.0.1.26:5001/hotel/userbonami-card/${id}`
+        )
+        setCardDetails(cardRes.data)
+        console.log('Card details:', cardRes.data)
+      } catch (error) {
+        console.error('Error initializing BONamiCard screen:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    initialize()
+  }, [])
+
+  // Loading State
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size='large' color='#a63932' />
+      </View>
+    )
+  }
+
+  // Card Not Found
+  if (!cardDetails) {
+    return (
+      <View style={styles.container}>
+        <Text style={{ color: 'gray' }}>BONami card not found.</Text>
+      </View>
+    )
+  }
+
+  // Display Card
   return (
     <View style={styles.container}>
       <View style={styles.card}>
-        {/* Chip Icon (Optional) */}
         <View style={styles.chip} />
 
-        {/* Card Number */}
-        <Text style={styles.cardNumber}>234 - 009 - 022</Text>
+        <Text style={styles.cardNumber}>{cardDetails.cardNumber}</Text>
 
-        {/* Cardholder & Expiry */}
         <View style={styles.cardDetails}>
-          <View>
+          <View style={{ marginRight: 50 }}>
             <Text style={styles.label}>BONami Cardholder</Text>
-            <Text style={styles.value}>Omekagu Chukwuebuka</Text>
+            <Text style={styles.value}>{cardDetails.name}</Text>
           </View>
           <View>
             <Text style={styles.label}>Expires</Text>
-            <Text style={styles.value}>08/26</Text>
+            <Text style={styles.value}>{cardDetails.expires}</Text>
           </View>
         </View>
       </View>
@@ -33,7 +101,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5'
+    backgroundColor: '#f5f5f5',
+    width: '100%'
   },
   card: {
     width: '90%',
