@@ -8,7 +8,7 @@ export default function BONamiCard () {
   const [loading, setLoading] = useState(true)
   const [userId, setUserId] = useState(null)
 
-  // STEP 1: Get User ID from Token
+  //Get User ID from Token
   const getUserId = async () => {
     try {
       const userData = await AsyncStorage.getItem('token')
@@ -27,7 +27,7 @@ export default function BONamiCard () {
     }
   }
 
-  // STEP 2: When Component Mounts, Get User ID then Fetch Card Details
+  // When Component Mounts, Get User ID then Fetch Card Details
   useEffect(() => {
     const initialize = async () => {
       try {

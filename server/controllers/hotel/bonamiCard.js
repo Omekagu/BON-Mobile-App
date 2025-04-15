@@ -1,6 +1,5 @@
 import mongoose from 'mongoose'
 import BonamiCard from '../../model/BonamiCardSchema.js'
-// import User from '../../model/UserDetails.js'
 
 const generateCardNumber = async () => {
   const count = await BonamiCard.countDocuments()
@@ -63,7 +62,7 @@ export const createBonamiCard = async (req, res) => {
 
 export const getBonamiCard = async (req, res) => {
   try {
-    const { id } = req.params // This is the userId
+    const { id } = req.params
     console.log('User ID:', id)
 
     const card = await BonamiCard.findOne({ userId: id }).populate(

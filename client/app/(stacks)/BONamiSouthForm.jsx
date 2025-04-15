@@ -16,6 +16,7 @@ import { useRouter } from 'expo-router'
 import * as ImagePicker from 'expo-image-picker'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from 'axios'
+import Toast from 'react-native-toast-message'
 
 export default function BONamiSouthForm () {
   const [country, setCountry] = useState('')
@@ -95,18 +96,25 @@ export default function BONamiSouthForm () {
 
   const handleSubmit = () => {
     if (!country || !address || !province || !city || !imageUri) {
-      Alert.alert('Error', 'Please fill in all fields before proceeding.')
+      // Alert.alert('Error', 'Please fill in all fields before proceeding.')
+      Toast.show({
+        type: 'error',
+        text1: 'Please fill in all fields before proceeding.'
+      })
 
-      if (!imageUri.startsWith('https://')) {
-        Alert.alert('Error', 'Image not uploaded. Please try again.')
-        return
-      }
       if (!imageUri) {
-        Alert.alert('Error', 'Please upload your ID.')
+        Toast.show({
+          type: 'error',
+          text1: 'Image not uploaded. Please upload a valid ID.'
+        })
         return
       }
       if (imageUri.length < 10) {
-        Alert.alert('Error', 'Image not uploaded. Please try again.')
+        // Alert.alert('Error', 'Image not uploaded. Please try again.')
+        Toast.show({
+          type: 'error',
+          text1: 'Image not uploaded. Please try again.'
+        })
         return
       }
       return
@@ -116,22 +124,39 @@ export default function BONamiSouthForm () {
 
   const handlePaymentComplete = async () => {
     if (!cardNumber || !expiryDate || !cvv) {
-      Alert.alert('Error', 'Please enter all card details.')
+      Toast.show({
+        type: 'error',
+        text1: 'Please enter all card details.'
+      })
+      // Alert.alert('Error', 'Please enter all card details.')
       return
     }
 
     if (cardNumber.length < 16) {
-      Alert.alert('Error', 'Card number must be 16 digits.')
+      Toast.show({
+        type: 'error',
+        text1: 'Card number must be 16 digits.'
+      })
+      // Alert.alert('Error', 'Card number must be 16 digits.')
       return
     }
 
     if (!/^\d{2}\/\d{2}$/.test(expiryDate)) {
-      Alert.alert('Error', 'Expiry date format should be MM/YY.')
+      Toast.show({
+        type: 'error',
+        text1: 'Expiry date format should be MM/YY.'
+      })
+
+      // Alert.alert('Error', 'Expiry date format should be MM/YY.')
       return
     }
 
     if (cvv.length < 3) {
-      Alert.alert('Error', 'CVV must be 3 digits.')
+      Toast.show({
+        type: 'error',
+        text1: 'CVV must be 3 digits.'
+      })
+      // Alert.alert('Error', 'CVV must be 3 digits.')
       return
     }
 
@@ -161,9 +186,12 @@ export default function BONamiSouthForm () {
         setShowPaymentModal(false)
 
         const { cardNumber, expires } = response.data.card
-
-        router.push({
-          pathname: '/BONamiCard',
+        Toast.show({
+          type: 'success',
+          text1: 'BONami card created successfully!'
+        })
+        router.replace({
+          pathname: '/BONami',
           params: {
             cardNumber,
             name: fullName || 'BONami User',
