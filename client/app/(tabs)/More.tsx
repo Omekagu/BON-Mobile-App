@@ -158,7 +158,7 @@ export default function More () {
           </Text>
           <View style={styles.ratingContainer}>
             <AntDesign name='star' size={16} color='#a63932' />
-            <Text style={styles.ratingText}>5.00</Text>
+            <Text style={styles.ratingText}>Tier 1</Text>
           </View>
         </View>
         <TouchableOpacity
@@ -222,14 +222,14 @@ export default function More () {
           </Text>
         </View>
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>Estimated CO₂ Saved</Text>
-          <Text style={styles.cardText}>0g</Text>
+          <Text style={styles.cardTitle}>Estimated Cost Saved</Text>
+          <Text style={styles.cardText}>$1000</Text>
         </View>
 
         {/* Settings Section */}
         <MoreComp
           onPress={() => router.push('/Profile')}
-          name={'Manage Profile details'}
+          name={'Manage Profile'}
           icon={
             <Ionicons name='person-circle-sharp' size={24} color='#a63932' />
           }
@@ -240,12 +240,12 @@ export default function More () {
           icon={<Fontisto name='wallet' size={24} color='#a63932' />}
         />
         <MoreComp
-          onPress={() => router.push('/Loyalty')}
+          onPress={() => router.push('/BONami')}
           name={'Loyalty Programme'}
           icon={<FontAwesome6 name='thumbs-up' size={24} color='#a63932' />}
         />
         <MoreComp
-          onPress={() => router.push('/Saved')}
+          onPress={() => router.push('/Bookings')}
           name={'Saved'}
           icon={<AntDesign name='hearto' size={24} color='#a63932' />}
         />
@@ -256,7 +256,7 @@ export default function More () {
         />
         <MoreComp
           onPress={() => router.push('/Questions')}
-          name={'Questions to property'}
+          name={'FAQs'}
           icon={<FontAwesome6 name='question' size={24} color='#a63932' />}
         />
         <MoreComp

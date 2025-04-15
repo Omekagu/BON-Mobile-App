@@ -1,8 +1,7 @@
 import { View, Text, TouchableOpacity } from 'react-native'
 import React from 'react'
-import AntDesign from '@expo/vector-icons/AntDesign'
 
-export default function ExtComp ({ head, tag, onPress }) {
+export default function ExtComp ({ head, tag, onPress, icon }) {
   return (
     <TouchableOpacity
       onPress={onPress}
@@ -17,18 +16,13 @@ export default function ExtComp ({ head, tag, onPress }) {
       }}
     >
       <View>
-        <Text style={{ fontSize: 15, fontWeight: '500', marginBottom: 8 }}>
+        <Text style={{ fontSize: 12, fontWeight: '500', marginBottom: 8 }}>
           {head}
         </Text>
-        <Text style={[{ fontSize: 13, fontWeight: '700' }]}>{tag}</Text>
+        <Text style={[{ fontSize: 15, fontWeight: '700' }]}>{tag}</Text>
       </View>
 
-      <AntDesign
-        name='right'
-        size={18}
-        color='black'
-        style={{ marginLeft: 'auto' }}
-      />
+      {icon}
     </TouchableOpacity>
   )
 }

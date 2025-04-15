@@ -9,6 +9,9 @@ import {
 import { resetUserPassword } from '../../controllers/users/resetUserPassword.js'
 import { sendOtp, verifyOtp } from '../../controllers/users/otpController.js'
 import { updateProfileImage } from '../../controllers/users/uploadProfile.js'
+import { editDob } from '../../controllers/users/editDob.js'
+import { editGender } from '../../controllers/users/editGender.js'
+import { uploadAddress } from '../../controllers/users/uploadAddress.js'
 const router = express.Router()
 
 router.post('/register', register)
@@ -20,5 +23,8 @@ router.get('/userdata', userdata)
 router.post('/send-otp', sendOtp)
 router.post('/verify-otp', verifyOtp)
 router.post('/update-profile-image', updateProfileImage)
+router.post('/editDob', editDob)
+router.post('/editGender', editGender)
+router.post('/editAddress', uploadAddress)
 
 export default router

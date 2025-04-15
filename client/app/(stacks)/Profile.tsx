@@ -84,28 +84,15 @@ export default function Profile () {
             style={styles.profileImage}
           />
         </TouchableOpacity>
-        {/* 
-          <TouchableOpacity>
-            <MaterialCommunityIcons
-              name='camera-plus-outline'
-              size={24}
-              color='black'
-              style={{
-                marginVertical: -20,
-                marginHorizontal: 60,
-                backgroundColor: '#fff',
-                padding: 0.1,
-                borderRadius: 100
-              }}
-            />
-          </TouchableOpacity> */}
       </View>
 
       <ExtComp
         head={'Name'}
         tag={`${user.firstName} ${user.surname}`}
         onPress={() => {
-          if (!user.firstName) router.push('/EditName')
+          if (!user.firstName) {
+            router.push('/EditName')
+          }
         }}
       />
 

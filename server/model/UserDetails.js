@@ -27,6 +27,9 @@ const UserDetailsSchema = new mongoose.Schema(
       type: String
     },
     profileImage: { type: String },
+    dob: { type: String },
+    gender: { type: String },
+    address: { type: String },
     deviceType: { type: String },
     userCountry: { type: String },
     role: {
