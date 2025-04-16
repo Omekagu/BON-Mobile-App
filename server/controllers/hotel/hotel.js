@@ -1,7 +1,21 @@
 import Booking from '../../model/Booking.js'
 import Country from '../../model/Country.js'
 import Hotel from '../../model/hotelModel.js'
-import { pool } from '../../utilities/pool.js'
+import {
+  poolASABA,
+  poolASOKORO,
+  poolELVIS,
+  poolHYATTI,
+  poolIKEJARES,
+  poolIMPERIAL,
+  poolKANO,
+  poolNESTGARKI,
+  poolNESTIB,
+  poolPLATINUM,
+  poolROYALPARKLANE,
+  poolSMITHCITY,
+  poolTRANSTELL
+} from '../../utilities/pool.js'
 
 // Get list of hotels
 export const hotels = async (req, res) => {
@@ -10,7 +24,7 @@ export const hotels = async (req, res) => {
     res.json(hotels)
     // console.log(hotels)
   } catch (error) {
-    rmSync.status(500).json({ error: 'Failed to fetch hotels' })
+    res.status(500).json({ error: 'Failed to fetch hotels' })
   }
 }
 
@@ -216,8 +230,134 @@ export const deletebooked = async (req, res) => {
   }
 }
 
-export const mysqlRooms = (req, res) => {
-  pool.query('SELECT * FROM wp_vikbooking_rooms', (err, results) => {
+// Get rooms from nestIB database
+export const nestIBRooms = (req, res) => {
+  poolNESTIB.query('SELECT * FROM wp_vikbooking_rooms', (err, results) => {
+    if (err) {
+      console.error('Database Query Error:', err)
+      return res.status(500).send(err)
+    }
+    res.json(results)
+  })
+}
+
+// Get rooms from royalparklane database
+export const royalparklaneRooms = (req, res) => {
+  poolROYALPARKLANE.query(
+    'SELECT * FROM wp_vikbooking_rooms',
+    (err, results) => {
+      if (err) {
+        console.error('Database Query Error:', err)
+        return res.status(500).send(err)
+      }
+      res.json(results)
+    }
+  )
+}
+// Get rooms from kano database
+export const kanoRooms = (req, res) => {
+  poolKANO.query('SELECT * FROM wp_vikbooking_rooms', (err, results) => {
+    if (err) {
+      console.error('Database Query Error:', err)
+      return res.status(500).send(err)
+    }
+    res.json(results)
+  })
+}
+// Get rooms from  platinum database
+export const platinumRooms = (req, res) => {
+  poolPLATINUM.query('SELECT * FROM wp_vikbooking_rooms', (err, results) => {
+    if (err) {
+      console.error('Database Query Error:', err)
+      return res.status(500).send(err)
+    }
+    res.json(results)
+  })
+}
+// Get rooms from hyatti database
+export const hyattiRooms = (req, res) => {
+  poolHYATTI.query('SELECT * FROM wp_vikbooking_rooms', (err, results) => {
+    if (err) {
+      console.error('Database Query Error:', err)
+      return res.status(500).send(err)
+    }
+    res.json(results)
+  })
+}
+// Get rooms from smithcity database
+export const smithcityRooms = (req, res) => {
+  poolSMITHCITY.query('SELECT * FROM wp_vikbooking_rooms', (err, results) => {
+    if (err) {
+      console.error('Database Query Error:', err)
+      return res.status(500).send(err)
+    }
+    res.json(results)
+  })
+}
+// Get rooms from nestgarki database
+export const nestgarkiRooms = (req, res) => {
+  poolNESTGARKI.query('SELECT * FROM wp_vikbooking_rooms', (err, results) => {
+    if (err) {
+      console.error('Database Query Error:', err)
+      return res.status(500).send(err)
+    }
+    res.json(results)
+  })
+}
+// Get rooms from imperial database
+export const imperialRooms = (req, res) => {
+  poolIMPERIAL.query('SELECT * FROM wp_vikbooking_rooms', (err, results) => {
+    if (err) {
+      console.error('Database Query Error:', err)
+      return res.status(500).send(err)
+    }
+    res.json(results)
+  })
+}
+// Get rooms from elvis database
+export const elvisRooms = (req, res) => {
+  poolELVIS.query('SELECT * FROM wp_vikbooking_rooms', (err, results) => {
+    if (err) {
+      console.error('Database Query Error:', err)
+      return res.status(500).send(err)
+    }
+    res.json(results)
+  })
+}
+// Get rooms from asokoro database
+export const asokoroRooms = (req, res) => {
+  poolASOKORO.query('SELECT * FROM wp_vikbooking_rooms', (err, results) => {
+    if (err) {
+      console.error('Database Query Error:', err)
+      return res.status(500).send(err)
+    }
+    res.json(results)
+  })
+}
+// Get rooms from transtell database
+export const transtellRooms = (req, res) => {
+  poolTRANSTELL.query('SELECT * FROM wp_vikbooking_rooms', (err, results) => {
+    if (err) {
+      console.error('Database Query Error:', err)
+      return res.status(500).send(err)
+    }
+    res.json(results)
+  })
+}
+// Get rooms from ikejares database
+export const ikejaresRooms = (req, res) => {
+  poolIKEJARES.query('SELECT * FROM wp_vikbooking_rooms', (err, results) => {
+    if (err) {
+      console.error('Database Query Error:', err)
+      return res.status(500).send(err)
+    }
+    res.json(results)
+  })
+}
+
+// Get rooms from asaba database
+export const asabaRooms = (req, res) => {
+  poolASABA.query('SELECT * FROM wp_vikbooking_rooms', (err, results) => {
     if (err) {
       console.error('Database Query Error:', err)
       return res.status(500).send(err)

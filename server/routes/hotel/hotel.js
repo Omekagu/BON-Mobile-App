@@ -1,5 +1,6 @@
 import express from 'express'
 import {
+  asabaRooms,
   bookedUserId,
   bookingCompleted,
   createMenuHotelId,
@@ -7,7 +8,7 @@ import {
   getMenuId,
   hotelId,
   hotels,
-  mysqlRooms,
+  nestIBRooms,
   SearchCountry,
   SearchHotelsName,
   SearchState
@@ -20,7 +21,8 @@ import {
 const router = express.Router()
 
 router.get('/hotels', hotels)
-router.get('/rooms', mysqlRooms)
+router.get('/nestib-rooms', nestIBRooms)
+router.get('/asaba-rooms', asabaRooms)
 router.get('/:id', hotelId)
 router.get('/search/:name', SearchHotelsName)
 router.get('/search/countries', SearchCountry)

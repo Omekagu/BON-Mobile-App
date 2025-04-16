@@ -8,7 +8,7 @@ import authRoutes from './routes/users/authentication.js'
 import usersRoutes from './routes/users/user.js'
 import adminRoutes from './routes/admin/adminAuth.js'
 import hotelRoutes from './routes/hotel/hotel.js'
-import { pool } from './utilities/pool.js'
+import { poolASABA, poolNESTIB } from './utilities/pool.js'
 const app = express()
 const server = http.createServer(app)
 
@@ -67,11 +67,20 @@ mongoose
   })
 
 // Test database connection
-pool.getConnection((err, connection) => {
+poolNESTIB.getConnection((err, connection) => {
   if (err) {
     console.error('❌ Database connection failed:', err)
   } else {
-    console.log('✅ Connected to MySQL database successfully!')
+    console.log('✅ Connected to  NestIBSQL successfully!')
+    connection.release() // Release connection back to the pool
+  }
+})
+// Test database connection
+poolASABA.getConnection((err, connection) => {
+  if (err) {
+    console.error('❌ Database connection failed:', err)
+  } else {
+    console.log('✅ Connected to  AsabaSQL successfully!')
     connection.release() // Release connection back to the pool
   }
 })
