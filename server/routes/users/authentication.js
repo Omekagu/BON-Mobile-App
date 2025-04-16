@@ -24,7 +24,7 @@ router.post('/send-otp', sendOtp)
 router.post('/verify-otp', verifyOtp)
 router.post('/update-profile-image', updateProfileImage)
 router.post('/editDob', editDob)
-router.post('/editGender', editGender)
+router.post('/edit-gender', editGender)
 router.post('/editAddress', uploadAddress)
 
 export default router

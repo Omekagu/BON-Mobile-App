@@ -17,7 +17,7 @@ export const Usertoken = (req, res) => {
   }
 }
 
-// **📌 Protected Route (Example)**
+// Protected Route
 export const protectedApi = (req, res) => {
   const token = req.headers['authorization']
   if (!token) return res.status(401).json({ error: 'No token provided' })
