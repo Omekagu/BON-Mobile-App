@@ -212,7 +212,7 @@ export const deletebooked = async (req, res) => {
     const { id } = req.params
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: 'Invalid booking ID' })
+      return res.status(400).json({ message: 'Invalid user ID format' })
     }
 
     const deletedBooking = await Booking.findByIdAndDelete(id)
@@ -230,138 +230,67 @@ export const deletebooked = async (req, res) => {
   }
 }
 
-// Get rooms from nestIB database
-export const nestIBRooms = (req, res) => {
-  poolNESTIB.query('SELECT * FROM wp_vikbooking_rooms', (err, results) => {
-    if (err) {
-      console.error('Database Query Error:', err)
-      return res.status(500).send(err)
-    }
+// hotel.js
+
+// ✅ Reusable function with async/await and proper PromisePool usage
+const getRoomsFromPool = pool => async (req, res) => {
+  try {
+    const [results] = await pool.query('SELECT * FROM wp_vikbooking_rooms')
     res.json(results)
-  })
+  } catch (err) {
+    console.error('Database Query Error:', err)
+    res.status(500).send(err)
+  }
 }
 
-// Get rooms from royalparklane database
-export const royalparklaneRooms = (req, res) => {
-  poolROYALPARKLANE.query(
-    'SELECT * FROM wp_vikbooking_rooms',
-    (err, results) => {
-      if (err) {
-        console.error('Database Query Error:', err)
-        return res.status(500).send(err)
-      }
-      res.json(results)
-    }
-  )
-}
-// Get rooms from kano database
-export const kanoRooms = (req, res) => {
-  poolKANO.query('SELECT * FROM wp_vikbooking_rooms', (err, results) => {
-    if (err) {
-      console.error('Database Query Error:', err)
-      return res.status(500).send(err)
-    }
-    res.json(results)
-  })
-}
-// Get rooms from  platinum database
-export const platinumRooms = (req, res) => {
-  poolPLATINUM.query('SELECT * FROM wp_vikbooking_rooms', (err, results) => {
-    if (err) {
-      console.error('Database Query Error:', err)
-      return res.status(500).send(err)
-    }
-    res.json(results)
-  })
-}
-// Get rooms from hyatti database
-export const hyattiRooms = (req, res) => {
-  poolHYATTI.query('SELECT * FROM wp_vikbooking_rooms', (err, results) => {
-    if (err) {
-      console.error('Database Query Error:', err)
-      return res.status(500).send(err)
-    }
-    res.json(results)
-  })
-}
-// Get rooms from smithcity database
-export const smithcityRooms = (req, res) => {
-  poolSMITHCITY.query('SELECT * FROM wp_vikbooking_rooms', (err, results) => {
-    if (err) {
-      console.error('Database Query Error:', err)
-      return res.status(500).send(err)
-    }
-    res.json(results)
-  })
-}
-// Get rooms from nestgarki database
-export const nestgarkiRooms = (req, res) => {
-  poolNESTGARKI.query('SELECT * FROM wp_vikbooking_rooms', (err, results) => {
-    if (err) {
-      console.error('Database Query Error:', err)
-      return res.status(500).send(err)
-    }
-    res.json(results)
-  })
-}
-// Get rooms from imperial database
-export const imperialRooms = (req, res) => {
-  poolIMPERIAL.query('SELECT * FROM wp_vikbooking_rooms', (err, results) => {
-    if (err) {
-      console.error('Database Query Error:', err)
-      return res.status(500).send(err)
-    }
-    res.json(results)
-  })
-}
-// Get rooms from elvis database
-export const elvisRooms = (req, res) => {
-  poolELVIS.query('SELECT * FROM wp_vikbooking_rooms', (err, results) => {
-    if (err) {
-      console.error('Database Query Error:', err)
-      return res.status(500).send(err)
-    }
-    res.json(results)
-  })
-}
-// Get rooms from asokoro database
-export const asokoroRooms = (req, res) => {
-  poolASOKORO.query('SELECT * FROM wp_vikbooking_rooms', (err, results) => {
-    if (err) {
-      console.error('Database Query Error:', err)
-      return res.status(500).send(err)
-    }
-    res.json(results)
-  })
-}
-// Get rooms from transtell database
-export const transtellRooms = (req, res) => {
-  poolTRANSTELL.query('SELECT * FROM wp_vikbooking_rooms', (err, results) => {
-    if (err) {
-      console.error('Database Query Error:', err)
-      return res.status(500).send(err)
-    }
-    res.json(results)
-  })
-}
-// Get rooms from ikejares database
-export const ikejaresRooms = (req, res) => {
-  poolIKEJARES.query('SELECT * FROM wp_vikbooking_rooms', (err, results) => {
-    if (err) {
-      console.error('Database Query Error:', err)
-      return res.status(500).send(err)
-    }
-    res.json(results)
-  })
-}
+// ✅ Exporting all handlers using the reusable function
+export const nestIBRooms = getRoomsFromPool(poolNESTIB)
+export const royalparklaneRooms = getRoomsFromPool(poolROYALPARKLANE)
+export const kanoRooms = getRoomsFromPool(poolKANO)
+export const platinumRooms = getRoomsFromPool(poolPLATINUM)
+export const hyattiRooms = getRoomsFromPool(poolHYATTI)
+export const smithcityRooms = getRoomsFromPool(poolSMITHCITY)
+export const nestgarkiRooms = getRoomsFromPool(poolNESTGARKI)
+export const imperialRooms = getRoomsFromPool(poolIMPERIAL)
+export const elvisRooms = getRoomsFromPool(poolELVIS)
+export const asokoroRooms = getRoomsFromPool(poolASOKORO)
+export const transtellRooms = getRoomsFromPool(poolTRANSTELL)
+export const ikejaresRooms = getRoomsFromPool(poolIKEJARES)
+export const asabaRooms = getRoomsFromPool(poolASABA)
 
-// Get rooms from asaba database
-export const asabaRooms = (req, res) => {
-  poolASABA.query('SELECT * FROM wp_vikbooking_rooms', (err, results) => {
-    if (err) {
-      console.error('Database Query Error:', err)
-      return res.status(500).send(err)
-    }
-    res.json(results)
-  })
+export const fetchHotelpool = async (req, res) => {
+  const { pool } = req.params
+  console.log(req.params)
+  console.log(pool)
+
+  const poolMap = {
+    IkejaResSQL: poolIKEJARES,
+    NestGarkiSQL: poolNESTGARKI,
+    KanoSQL: poolKANO,
+    TranstellSQL: poolTRANSTELL,
+    HyattiSQL: poolHYATTI,
+    PlatinumSQL: poolPLATINUM,
+    RoyalParkLaneSQL: poolROYALPARKLANE,
+    ImperialSQL: poolIMPERIAL,
+    SmithCitySQL: poolSMITHCITY,
+    ElvisSQL: poolELVIS,
+    AsokoroSQL: poolASOKORO,
+    AsabaSQL: poolASABA,
+    NestIBSQL: poolNESTIB
+  }
+
+  const selectedPool = poolMap[pool]
+  if (!selectedPool) {
+    return res.status(400).json({ message: 'Invalid pool name' })
+  }
+
+  try {
+    // Assuming rooms table instead of hotels table
+    const [rows] = await selectedPool.query('SELECT * FROM wp_vikbooking_rooms')
+    res.json(rows)
+    console.log(rows)
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ message: 'Error fetching rooms' })
+  }
 }

@@ -1,87 +1,101 @@
-import React from 'react';
-import EvilIcons from '@expo/vector-icons/EvilIcons';
-import { Image, Platform, Text, TouchableOpacity, View } from 'react-native';
+import React from 'react'
+import EvilIcons from '@expo/vector-icons/EvilIcons'
+import { Image, Platform, Text, TouchableOpacity, View } from 'react-native'
 
-const SuggestionBox = ({ name, price, location, image,stars, reviews, onPress }) => {
-  
+const SuggestionBox = ({
+  name,
+  price,
+  available,
+  location,
+  image,
+  reviews,
+  onPress
+}) => {
+  const availabilityColor = available < 2 ? 'red' : 'green'
+  const availabilityText =
+    available < 2
+      ? `${available} Left – Act Fast!`
+      : `${available} Units Available`
+
   return (
     <TouchableOpacity
       onPress={onPress}
       style={{
-        width:'100%',
-        marginRight: 10,
-        marginBottom:30,
+        width: '100%',
+        marginBottom: 30,
+        borderRadius: 20,
+        backgroundColor: '#fff',
         ...Platform.select({
           ios: {
             shadowColor: '#000',
-            shadowOffset: {
-              width: 0,
-              height: 2,
-            },
-            shadowOpacity: 0.3,
-            shadowRadius: 4,
+            shadowOffset: { width: 0, height: 3 },
+            shadowOpacity: 0.15,
+            shadowRadius: 6
           },
           android: {
-            elevation: 5,
-          },
-        }),
+            elevation: 6
+          }
+        })
       }}
     >
       <Image
+        source={{ uri: image }}
         style={{
           width: '100%',
-          height: 300,
-          marginTop: 10,
-          borderRadius:20
-        }}
-        source={{
-          uri: image,
+          height: 220,
+          borderTopLeftRadius: 20,
+          borderTopRightRadius: 20
         }}
       />
       <View
         style={{
-          backgroundColor: '#fff',
-          gap: 5,
-          padding:15,
-          // borderBottomRightRadius: 10,
-          borderRadius: 10,
-          marginTop: -90,
-          marginHorizontal:5,
-          paddingLeft:10
+          padding: 15,
+          gap: 8
         }}
       >
-        
-        <Text style={{ fontWeight: '700' }}>{name}</Text>
+        <Text style={{ fontSize: 16, fontWeight: '700' }}>{name}</Text>
 
-        <View style={{flexDirection: 'row', justifyContent:'space-between', alignItems:'center'}}>
-        <View style={{flexDirection:'row', alignItems:'center'}}>
-        <Text>⭐⭐⭐⭐</Text>
-        </View>
-        <Text
+        <View
           style={{
-            fontWeight: '700',
-            fontSize: 12,
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center'
           }}
-          >
-          ({reviews})k · Reviews
-        </Text>
+        >
+          <Text style={{ color: availabilityColor, fontSize: 13 }}>
+            {availabilityText}
+          </Text>
+          <Text style={{ fontWeight: '600', fontSize: 13, color: '#555' }}>
+            {reviews}K Reviews
+          </Text>
         </View>
-      <View style={{flexDirection: 'row', justifyContent:'space-between', alignItems:'center'}}>
-        <View style={{flexDirection:'row', alignItems:'center'}}>
-        <EvilIcons name="location" size={24} color="black" /><Text  style={{fontWeight: '700', fontSize:13}}>{location}</Text>
-        </View>
-        <Text
+
+        <View
           style={{
-            fontWeight: '900',
-            fontSize: 17,
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center'
           }}
+        >
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <EvilIcons name='location' size={20} color='gray' />
+            <Text style={{ fontWeight: '600', fontSize: 13, color: '#333' }}>
+              {location}
+            </Text>
+          </View>
+          <Text
+            style={{
+              fontWeight: '900',
+              fontSize: 16,
+              color: '#000'
+            }}
           >
-          ₦{price}
-        </Text>
+            ₦{price}
+          </Text>
         </View>
       </View>
     </TouchableOpacity>
-  );
-};
+  )
+}
 
-export default SuggestionBox;
+export default SuggestionBox

@@ -1,17 +1,29 @@
 import express from 'express'
 import {
   asabaRooms,
+  asokoroRooms,
   bookedUserId,
   bookingCompleted,
   createMenuHotelId,
   deletebooked,
+  elvisRooms,
+  fetchHotelpool,
   getMenuId,
   hotelId,
   hotels,
+  hyattiRooms,
+  ikejaresRooms,
+  imperialRooms,
+  kanoRooms,
+  nestgarkiRooms,
   nestIBRooms,
+  platinumRooms,
+  royalparklaneRooms,
   SearchCountry,
   SearchHotelsName,
-  SearchState
+  SearchState,
+  smithcityRooms,
+  transtellRooms
 } from '../../controllers/hotel/hotel.js'
 import {
   checkBonamiCardStatus,
@@ -23,6 +35,18 @@ const router = express.Router()
 router.get('/hotels', hotels)
 router.get('/nestib-rooms', nestIBRooms)
 router.get('/asaba-rooms', asabaRooms)
+router.get('/royalparlane-rooms', royalparklaneRooms)
+router.get('/kano-rooms', kanoRooms)
+router.get('/platinum-rooms', platinumRooms)
+router.get('/hyatti-rooms', hyattiRooms)
+router.get('/smithcity-rooms', smithcityRooms)
+router.get('/nestgarki-rooms', nestgarkiRooms)
+router.get('/imperial-rooms', imperialRooms)
+router.get('/elvis-rooms', elvisRooms)
+router.get('/asokoro-rooms', asokoroRooms)
+router.get('/transtell-rooms', transtellRooms)
+router.get('/ikejares-rooms', ikejaresRooms)
+router.get('/search/pool/:pool', fetchHotelpool)
 router.get('/:id', hotelId)
 router.get('/search/:name', SearchHotelsName)
 router.get('/search/countries', SearchCountry)

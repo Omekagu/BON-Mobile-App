@@ -8,7 +8,21 @@ import authRoutes from './routes/users/authentication.js'
 import usersRoutes from './routes/users/user.js'
 import adminRoutes from './routes/admin/adminAuth.js'
 import hotelRoutes from './routes/hotel/hotel.js'
-import { poolASABA, poolNESTIB } from './utilities/pool.js'
+import {
+  poolASABA,
+  poolASOKORO,
+  poolELVIS,
+  poolHYATTI,
+  poolIKEJARES,
+  poolIMPERIAL,
+  poolKANO,
+  poolNESTGARKI,
+  poolNESTIB,
+  poolPLATINUM,
+  poolROYALPARKLANE,
+  poolSMITHCITY,
+  poolTRANSTELL
+} from './utilities/pool.js'
 const app = express()
 const server = http.createServer(app)
 
@@ -66,23 +80,29 @@ mongoose
     console.log(e)
   })
 
-// Test database connection
-poolNESTIB.getConnection((err, connection) => {
-  if (err) {
-    console.error('❌ Database connection failed:', err)
-  } else {
-    console.log('✅ Connected to  NestIBSQL successfully!')
-    connection.release() // Release connection back to the pool
-  }
-})
-// Test database connection
-poolASABA.getConnection((err, connection) => {
-  if (err) {
-    console.error('❌ Database connection failed:', err)
-  } else {
-    console.log('✅ Connected to  AsabaSQL successfully!')
-    connection.release() // Release connection back to the pool
-  }
-})
+const testDbConnection = (pool, label) => {
+  pool.getConnection((err, connection) => {
+    if (err) {
+      console.error(`Database connection to ${label} failed:`, err)
+    } else {
+      console.log(`Connected to ${label} successfully!`)
+      connection.release()
+    }
+  })
+}
+
+testDbConnection(poolNESTIB, 'NestIBSQL')
+testDbConnection(poolASABA, 'AsabaSQL')
+testDbConnection(poolROYALPARKLANE, 'RoyalParkLaneSQL')
+testDbConnection(poolKANO, 'KanoSQL')
+testDbConnection(poolPLATINUM, 'PlatinumSQL')
+testDbConnection(poolHYATTI, 'HyattiSQL')
+testDbConnection(poolSMITHCITY, 'SmithCitySQL')
+testDbConnection(poolNESTGARKI, 'NestGarkiSQL')
+testDbConnection(poolIMPERIAL, 'ImperialSQL')
+testDbConnection(poolELVIS, 'ElvisSQL')
+testDbConnection(poolASOKORO, 'AsokoroSQL')
+testDbConnection(poolTRANSTELL, 'TranstellSQL')
+testDbConnection(poolIKEJARES, 'IkejaResSQL')
 
 app.listen(5001, console.log('server is up and running '))

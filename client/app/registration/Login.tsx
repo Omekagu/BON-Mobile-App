@@ -21,7 +21,6 @@ const Login = () => {
 
   useEffect(() => {
     const backAction = () => {
-      // Prevent going back to previous screen
       return true
     }
 
