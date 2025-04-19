@@ -15,7 +15,7 @@ import { router } from 'expo-router'
 import Icon from 'react-native-vector-icons/Ionicons'
 
 // Connect to your Node.js server
-const socket = io('http://10.0.1.26:5001')
+const socket = io('http://172.20.10.3:5001')
 
 export default function BookRide () {
   const [userLocation, setUserLocation] = useState(null)

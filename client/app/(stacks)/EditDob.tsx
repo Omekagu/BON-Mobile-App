@@ -30,10 +30,13 @@ export default function EditDob () {
       const tokenData = await AsyncStorage.getItem('token')
       const { userId } = JSON.parse(tokenData)
 
-      const response = await axios.post('http://10.0.1.26:5001/auth/editDob', {
-        userId,
-        dob
-      })
+      const response = await axios.post(
+        'http://172.20.10.3:5001/auth/editDob',
+        {
+          userId,
+          dob
+        }
+      )
 
       if (response.status === 200) {
         Toast.show({

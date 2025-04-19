@@ -75,7 +75,7 @@ const Suggestions = () => {
     setLoading(true)
     try {
       const response = await axios.get(
-        `http://10.0.1.26:5001/hotel/search/${encodeURIComponent(query)}`
+        `http://172.20.10.3:5001/hotel/search/${encodeURIComponent(query)}`
       )
       setHotels(response.data.length ? response.data : [])
 

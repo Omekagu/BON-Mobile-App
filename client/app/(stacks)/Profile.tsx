@@ -24,9 +24,12 @@ export default function Profile () {
       if (!userData) return null
       const parsedData = JSON.parse(userData)
       let token = parsedData.token.replace(/^"|"$/g, '')
-      const response = await axios.get('http://10.0.1.26:5001/auth/usertoken', {
-        headers: { Authorization: `Bearer ${token}` }
-      })
+      const response = await axios.get(
+        'http://172.20.10.3:5001/auth/usertoken',
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      )
       return parsedData.userId
     } catch (error) {
       console.error('Error retrieving user ID:', error)
@@ -51,7 +54,7 @@ export default function Profile () {
       try {
         const userId = await getUserId()
         const response = await axios.get(
-          `http://10.0.1.26:5001/user/user/${userId}`
+          `http://172.20.10.3:5001/user/user/${userId}`
         )
         setUser(response.data.user)
         console.log('User data:', response.data.user)

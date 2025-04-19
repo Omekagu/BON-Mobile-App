@@ -60,7 +60,7 @@ export default function HotelBookingScreen () {
   useEffect(() => {
     const fetchHotelDetails = async () => {
       try {
-        const response = await axios.get(`http://10.0.1.26:5001/hotel/${id}`)
+        const response = await axios.get(`http://172.20.10.3:5001/hotel/${id}`)
         setHotel(response.data)
       } catch (error) {
         Toast.show({ type: 'error', text1: 'Failed to load hotel details.' })
@@ -299,10 +299,6 @@ export default function HotelBookingScreen () {
           {/* Description */}
           <Text style={styles.description}>{hotel.description}</Text>
 
-          {/* Book Now Button */}
-          {/* <TouchableOpacity style={styles.bookButton}  onPress={() => router.push({ pathname: '/SelectDateRange', params: { price: hotel.pricePerNight, hotelId: hotel._id } })}>
-          <Text style={styles.bookButtonText}>Next - ₦{hotel.pricePerNight ? Number(hotel.pricePerNight).toLocaleString() : '100,000'}</Text>
-        </TouchableOpacity> */}
           <CustomBotton
             button={`Next - ₦${
               hotel.pricePerNight

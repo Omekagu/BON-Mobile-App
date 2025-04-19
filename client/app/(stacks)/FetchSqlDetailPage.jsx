@@ -1,16 +1,3 @@
-// Generate OTP
-const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString()
-
-app.get('/dispcost', (req, res) => {
-  pool.query('SELECT * FROM wp_vikbooking_dispcost', (err, results) => {
-    if (err) {
-      console.error('Database Query Error:', err)
-      return res.status(500).send(err)
-    }
-    res.json(results)
-  })
-})
-
 import React, { useEffect, useState } from 'react'
 import { router, useLocalSearchParams } from 'expo-router'
 import axios from 'axios'
@@ -34,12 +21,13 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 import Entypo from '@expo/vector-icons/Entypo'
 import { AntDesign, FontAwesome } from '@expo/vector-icons'
+import CustomBotton from '@/component/CustomBotton'
 
-export default function BookingDetails () {
+export default function FetchSqlDetailPage () {
   const [liked, setLiked] = useState(false)
   const [likesCount, setLikesCount] = useState(2800) // Example initial likes count
   const [modalVisible, setModalVisible] = useState(false)
-  const { id, userId } = useLocalSearchParams() // Get hotel ID from route params
+  const { id } = useLocalSearchParams() // Get hotel ID from route params
   const [hotel, setHotel] = useState(null)
   const [loading, setLoading] = useState(true)
 
@@ -54,7 +42,6 @@ export default function BookingDetails () {
       Toast.show({ type: 'error', text1: 'Unsaved from Favourite.' })
       setLiked(newLikedState)
     }
-
     try {
       // Simulating API call to update likes in the database
       await fetch('https://your-api.com/update-likes', {
@@ -72,12 +59,8 @@ export default function BookingDetails () {
   useEffect(() => {
     const fetchHotelDetails = async () => {
       try {
-        const response = await axios.get(
-          `http://172.20.10.3:5001/hotel/bookings/${userId}`
-        )
-        const booking = response.data.data[0]
-
-        setHotel(booking)
+        const response = await axios.get(`http://172.20.10.3:5001/hotel/${id}`)
+        setHotel(response.data)
       } catch (error) {
         Toast.show({ type: 'error', text1: 'Failed to load hotel details.' })
       }
@@ -98,19 +81,19 @@ export default function BookingDetails () {
   }
 
   const handleCall = () => {
-    Linking.openURL(`tel:${hotel.hotelId?.contact.phone}`)
+    Linking.openURL(`tel:${hotel.contact.phone}`)
   }
 
   const handleEmail = () => {
     Linking.openURL(
-      `mailto:${hotel.hotelId?.contact.email}?subject=Support Request&body=Hello, I need help with...`
+      `mailto:${hotel.contact.email}?subject=Support Request&body=Hello, I need help with...`
     )
   }
 
   const handleShare = async () => {
     try {
-      const hotelLink = `https://yourhotelwebsite.com/hotel/${hotel.hotelId?._id}` // Ensure it's a full URL
-      const message = `🏨 Check out this amazing hotel: *${hotel.hotelId?.name}* 📍 ${hotel.hotelId?.location}\n💰 Price: $₦{hotel.hotelId?.pricePerNight.toLocaleString()} per night.\n🔗 Click here: ${hotelLink}`
+      const hotelLink = `https://yourhotelwebsite.com/hotel/${hotel._id}` // Ensure it's a full URL
+      const message = `🏨 Check out this amazing hotel: *${hotel.name}* 📍 ${hotel.location}\n💰 Price: $₦{hotel.pricePerNight.toLocaleString()} per night.\n🔗 Click here: ${hotelLink}`
 
       const result = await Share.share({
         message: message,
@@ -130,8 +113,26 @@ export default function BookingDetails () {
       console.error('Error sharing hotel:', error)
     }
   }
-  // console.log(hotel.hotelId?.contact)
-  // console.log(hotel.hotelId?.reviews)
+  // console.log(hotel.contact)
+  // console.log(hotel.reviews)
+
+  const OpenInstagram = () => {
+    Linking.openURL('https://www.instagram.com/').catch(err =>
+      console.error("Couldn't load page", err)
+    )
+  }
+
+  const OpenFacebook = () => {
+    Linking.openURL('https://www.facebook.com/').catch(err =>
+      console.error("Couldn't load page", err)
+    )
+  }
+
+  const OpenTwitter = () => {
+    Linking.openURL('https://www.twitter.com/').catch(err =>
+      console.error("Couldn't load page", err)
+    )
+  }
 
   return (
     <GestureHandlerRootView>
@@ -168,7 +169,7 @@ export default function BookingDetails () {
               style={styles.image}
               source={{
                 uri:
-                  hotel.hotelId?.images?.[0] ||
+                  hotel.images?.[0] ||
                   'https://i.postimg.cc/5ttJxCXK/YTW-DELUXE-6.jpg'
               }}
             />
@@ -190,10 +191,13 @@ export default function BookingDetails () {
               </TouchableOpacity>
               <ScrollView horizontal pagingEnabled style={styles.imageScroll}>
                 {[
-                  hotel.hotelId?.images?.[0],
-                  hotel.hotelId?.images?.[1],
-                  hotel.hotelId?.images?.[2],
-                  hotel.hotelId?.images?.[3]
+                  hotel.images?.[0],
+                  hotel.images?.[1],
+                  hotel.images?.[2],
+                  hotel.images?.[3]
+                  // "https://i.postimg.cc/sDF3pxL1/YTW-EXECUTIVE-3.jpg",
+                  // "https://i.postimg.cc/Bnps9gn1/YTW-SUPERIOR-6.jpg",
+                  // "https://i.postimg.cc/5ttJxCXK/YTW-DELUXE-6.jpg",
                 ].map((img, index) => (
                   <Image
                     key={index}
@@ -207,23 +211,21 @@ export default function BookingDetails () {
 
           {/* Hotel Details */}
           <View style={styles.detailsContainer}>
-            <Text style={styles.hotelName}>{hotel.hotelId?.name}</Text>
+            <Text style={styles.hotelName}>{hotel.name}</Text>
             <View style={styles.location}>
               <Feather name='map-pin' size={16} color='gray' />
-              <Text style={styles.locationText}>{hotel.hotelId?.location}</Text>
+              <Text style={styles.locationText}>{hotel.location}</Text>
             </View>
             <View style={styles.rating}>
-              <Text style={styles.star}>⭐{hotel.hotelId?.rating}</Text>
-              <Text style={styles.reviews}>
-                ({hotel.hotelId?.reviews})k · reviews
-              </Text>
+              <Text style={styles.star}>⭐{hotel.rating}</Text>
+              <Text style={styles.reviews}>({hotel.reviews})k · reviews</Text>
             </View>
             <Text style={styles.price}>
               ₦
-              {hotel.hotelId?.pricePerNight
-                ? Number(hotel.hotelId?.pricePerNight).toLocaleString()
+              {hotel.pricePerNight
+                ? Number(hotel.pricePerNight).toLocaleString()
                 : '100,000,000'}{' '}
-              - ({hotel.hotelId?.nights}) Nights
+              - A night
             </Text>
           </View>
 
@@ -261,15 +263,13 @@ export default function BookingDetails () {
               style={styles.ownerImage}
               source={{
                 uri:
-                  hotel.hotelId?.owners?.ownerImage ||
+                  hotel.owners?.ownerImage ||
                   'https://i.postimg.cc/5ttJxCXK/YTW-DELUXE-6.jpg'
               }}
             />
             <View>
-              <Text style={styles.ownerName}>
-                {hotel.hotelId?.owners?.name}
-              </Text>
-              <Text style={styles.ownerRole}>Customer Service</Text>
+              <Text style={styles.ownerName}>{hotel.owners?.name}</Text>
+              <Text style={styles.ownerRole}>Reservations Personnel</Text>
             </View>
             <View style={styles.contactIcons}>
               <TouchableOpacity onPress={handleEmail}>
@@ -283,42 +283,34 @@ export default function BookingDetails () {
 
           <View>
             <View style={styles.socials}>
-              <TouchableOpacity onPress={handleEmail}>
+              <TouchableOpacity onPress={OpenFacebook}>
                 <FontAwesome name='facebook-square' size={24} color='black' />
               </TouchableOpacity>
-              <TouchableOpacity onPress={handleCall}>
+              <TouchableOpacity onPress={OpenInstagram}>
                 <FontAwesome5 name='instagram' size={24} color='black' />
               </TouchableOpacity>
-              <TouchableOpacity onPress={handleCall}>
+              <TouchableOpacity onPress={OpenTwitter}>
                 <FontAwesome name='twitter' size={24} color='black' />
               </TouchableOpacity>
             </View>
           </View>
 
           {/* Description */}
-          <Text style={styles.description}>{hotel.hotelId?.description}</Text>
+          <Text style={styles.description}>{hotel.description}</Text>
 
-          {/* New buttons */}
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity
-              style={styles.actionButton}
-              onPress={() => router.push('/BookFlight')}
-            >
-              <Text style={styles.buttonText}>Book Flight</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.actionButton}
-              onPress={() => router.push('/OrderFood')}
-            >
-              <Text style={styles.buttonText}>Order Food</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.actionButton}
-              onPress={() => router.push('/PlanYourRide')}
-            >
-              <Text style={styles.buttonText}>Order Ride</Text>
-            </TouchableOpacity>
-          </View>
+          <CustomBotton
+            button={`Next - ₦${
+              hotel.pricePerNight
+                ? Number(hotel.pricePerNight).toLocaleString()
+                : '100,000'
+            }`}
+            onPress={() =>
+              router.push({
+                pathname: '/SelectDateRange',
+                params: { price: hotel.pricePerNight, hotelId: hotel._id }
+              })
+            }
+          />
           {/* </View> */}
         </ScrollView>
       </View>
@@ -330,6 +322,7 @@ export default function BookingDetails () {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    height: '100%',
     paddingTop: 30
   },
   loader: {
@@ -357,22 +350,6 @@ const styles = StyleSheet.create({
   right: {
     flexDirection: 'row'
   },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between'
-  },
-  actionButton: {
-    backgroundColor: '#a63932',
-    padding: 15,
-    borderRadius: 10,
-    alignItems: 'center',
-    marginHorizontal: 5
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold'
-  },
   image: {
     width: '100%',
     height: 250,
@@ -384,7 +361,8 @@ const styles = StyleSheet.create({
     padding: 10
   },
   hotelName: {
-    fontSize: 22,
+    fontSize: 15,
+    textTransform: 'uppercase',
     fontWeight: 'bold'
   },
   location: {
@@ -393,7 +371,9 @@ const styles = StyleSheet.create({
     marginVertical: 5
   },
   locationText: {
-    color: 'gray',
+    color: '#000',
+    fontSize: 14,
+    fontWeight: 'bold',
     marginLeft: 5
   },
   rating: {
@@ -401,20 +381,23 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   star: {
-    fontSize: 16,
-    color: '#FFA500'
+    color: '#000',
+    fontSize: 14,
+    fontWeight: 'bold'
+    // fontSize: 16,
+    // color: '#FFA500'
   },
   reviews: {
+    color: '#000',
     fontSize: 14,
-    color: 'gray',
+    fontWeight: 'bold',
     marginLeft: 5
   },
   price: {
-    fontSize: 18,
+    fontSize: 13,
     fontWeight: 'bold',
     color: '#a63932',
-    marginTop: 10,
-    textDecorationLine: 'underline'
+    marginTop: 10
   },
   amenities: {
     flexDirection: 'row',
