@@ -37,16 +37,16 @@ export default function Profile () {
     }
   }
 
-  const goToEditPage = (field, path) => {
-    if (
-      !field ||
-      field === '' ||
-      field.startsWith('Enter') ||
-      field.startsWith('Select')
-    ) {
-      router.push(path)
-    }
-  }
+  // const goToEditPage = (field, path) => {
+  //   if (
+  //     !field ||
+  //     field === '' ||
+  //     field.startsWith('Enter') ||
+  //     field.startsWith('Select')
+  //   ) {
+  //     router.push(path)
+  //   }
+  // }
 
   useEffect(() => {
     // Fetch user data from backend
@@ -109,7 +109,15 @@ export default function Profile () {
 
       <ExtComp
         head={'Date of Birth'}
-        tag={user.dob || 'Enter date of birth'}
+        tag={
+          user.dob
+            ? new Date(user.dob).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              })
+            : 'Enter date of birth'
+        }
         onPress={() => {
           if (!user.dob) router.push('/EditDob')
         }}

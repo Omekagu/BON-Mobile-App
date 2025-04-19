@@ -294,3 +294,45 @@ export const fetchHotelpool = async (req, res) => {
     res.status(500).json({ message: 'Error fetching rooms' })
   }
 }
+
+export const fecthPoolDetails = async (req, res) => {
+  const { pool, id } = req.params
+  console.log(req.params)
+
+  const poolMap = {
+    IkejaResSQL: poolIKEJARES,
+    NestGarkiSQL: poolNESTGARKI,
+    KanoSQL: poolKANO,
+    TranstellSQL: poolTRANSTELL,
+    HyattiSQL: poolHYATTI,
+    PlatinumSQL: poolPLATINUM,
+    RoyalParkLaneSQL: poolROYALPARKLANE,
+    ImperialSQL: poolIMPERIAL,
+    SmithCitySQL: poolSMITHCITY,
+    ElvisSQL: poolELVIS,
+    AsokoroSQL: poolASOKORO,
+    AsabaSQL: poolASABA,
+    NestIBSQL: poolNESTIB
+  }
+
+  const selectedPool = poolMap[pool]
+  if (!selectedPool) {
+    return res.status(400).json({ message: 'Invalid pool name' })
+  }
+
+  try {
+    const [rows] = await selectedPool.query(
+      `SELECT * FROM wp_vikbooking_rooms WHERE id = ?`,
+      [id]
+    )
+
+    if (!rows.length) {
+      return res.status(404).json({ message: 'Room not found' })
+    }
+
+    res.json(rows[0])
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ message: 'Error fetching room details' })
+  }
+}

@@ -91,7 +91,7 @@ const FilterSuggestion = () => {
             onPress={() => {
               router.push({
                 pathname: '/SearchPageInfo',
-                params: { id: item._id }
+                params: { id: item._id, pool: selectedPool }
               })
             }}
             image={
@@ -155,8 +155,8 @@ const FilterSuggestion = () => {
                 <SuggestionBox
                   onPress={() => {
                     router.push({
-                      pathname: '/SearchPageInfo',
-                      params: { id: item._id }
+                      pathname: '/SearchedPoolDetailsPage',
+                      params: { id: item._id, pool: selectedPool }
                     })
                   }}
                   image={

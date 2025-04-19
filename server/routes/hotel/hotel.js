@@ -7,6 +7,7 @@ import {
   createMenuHotelId,
   deletebooked,
   elvisRooms,
+  fecthPoolDetails,
   fetchHotelpool,
   getMenuId,
   hotelId,
@@ -47,6 +48,7 @@ router.get('/asokoro-rooms', asokoroRooms)
 router.get('/transtell-rooms', transtellRooms)
 router.get('/ikejares-rooms', ikejaresRooms)
 router.get('/search/pool/:pool', fetchHotelpool)
+router.get('/:pool/:id', fecthPoolDetails)
 router.get('/:id', hotelId)
 router.get('/search/:name', SearchHotelsName)
 router.get('/search/countries', SearchCountry)
