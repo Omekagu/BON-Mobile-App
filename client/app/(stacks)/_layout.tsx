@@ -17,6 +17,7 @@ const screens = [
   { name: 'BookRide', headerShown: false },
   { name: 'BONamiSouthForm', headerShown: false },
   { name: 'SearchedPoolDetailsPage', headerShown: false },
+  { name: 'SelectPoolDateRange', headerShown: false },
   { name: 'BONamiCard', headerShown: false },
   { name: 'BookFlight', headerShown: false },
   { name: 'OrderFood', headerShown: false },

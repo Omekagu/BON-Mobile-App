@@ -107,7 +107,9 @@ export default function SearchedPoolDetailsPage () {
   const handleShare = async () => {
     try {
       const hotelLink = `https://yourhotelwebsite.com/hotel/${hotel._id}` // Ensure it's a full URL
-      const message = `🏨 Check out this amazing hotel: *${hotel.name}* 📍 ${hotel.location}\n💰 Price: $₦{hotel.pricePerNight.toLocaleString()} per night.\n🔗 Click here: ${hotelLink}`
+      const message = `🏨 Check out this amazing hotel: *${hotel.name}* 📍 ${hotel.location}\n💰 Price: $₦{hotel.params
+                ? JSON.parse(hotel.params).custprice
+                : 'N/A'.toLocaleString()} per night.\n🔗 Click here: ${hotelLink}`
 
       const result = await Share.share({
         message: message,
@@ -228,7 +230,7 @@ export default function SearchedPoolDetailsPage () {
             <Text style={styles.hotelName}>{hotel.name}</Text>
             <View style={styles.location}>
               <Feather name='map-pin' size={16} color='gray' />
-              <Text style={styles.locationText}>{hotel.alias}</Text>
+              <Text style={styles.locationText}>{hotel.location}</Text>
             </View>
             <View style={styles.rating}>
               <Text style={styles.star}>{hotel.rating}</Text>
@@ -318,14 +320,24 @@ export default function SearchedPoolDetailsPage () {
 
           <CustomBotton
             button={`Next - ₦${
-              hotel.pricePerNight
-                ? Number(hotel.pricePerNight).toLocaleString()
+              hotel.params
+                ? JSON.parse(hotel.params).custprice
+                : 'N/A'
+                ? Number(
+                    hotel.params ? JSON.parse(hotel.params).custprice : 'N/A'
+                  ).toLocaleString()
                 : '100,000'
             }`}
             onPress={() =>
               router.push({
                 pathname: '/SelectDateRange',
-                params: { price: hotel.pricePerNight, hotelId: hotel._id }
+                params: {
+                  price: hotel.params
+                    ? JSON.parse(hotel.params).custprice
+                    : 'N/A',
+                  hotelId: hotel._id,
+                  pool: pool
+                }
               })
             }
           />

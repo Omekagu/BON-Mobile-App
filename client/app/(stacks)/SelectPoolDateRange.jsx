@@ -14,8 +14,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import Toast from 'react-native-toast-message'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 
-export default function SelectDateRange () {
-  const { price, hotelId } = useLocalSearchParams()
+export default function SelectPoolDateRange () {
+  const { price, hotelId, pool } = useLocalSearchParams()
   const nightlyPrice = parseFloat(price) || 0
 
   const [startDate, setStartDate] = useState(null)
@@ -105,6 +105,7 @@ export default function SelectDateRange () {
       const bookingData = {
         userId,
         hotelId,
+        pool,
         checkInDate: startDate.toISOString(),
         checkOutDate: endDate.toISOString(),
         checkInTime: selectedTime,
@@ -122,6 +123,7 @@ export default function SelectDateRange () {
           params: {
             price: String(calculateTotal()),
             hotelId,
+            pool,
             bookingData: JSON.stringify(bookingData)
           }
         })
@@ -132,7 +134,7 @@ export default function SelectDateRange () {
         )
         // console.log('Booking Response:', response.data)
         setIsModalVisible(false)
-        router.replace({ pathname: '/Bookings', params: { hotelId } })
+        router.replace({ pathname: '/Bookings', params: { hotelId, pool } })
         Toast.show({
           type: 'success',
           text1: 'Saved for later!',
@@ -410,7 +412,7 @@ export default function SelectDateRange () {
                 }}
               >
                 <Text style={{ color: '#a63932', fontSize: 16 }}>
-                  Pay On Arrival
+                  Save for Later
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
