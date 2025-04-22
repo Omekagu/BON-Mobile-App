@@ -52,7 +52,7 @@ const SearchPage = ({ item }) => {
     setLoading(true)
     try {
       const response = await axios.get(
-        `http://172.20.10.3:5001/hotel/search/${encodeURIComponent(hotelName)}`
+        `http://10.0.1.26:5001/hotel/search/${encodeURIComponent(hotelName)}`
       )
       setHotels(response.data.length ? response.data : [])
       if (!response.data.length) {

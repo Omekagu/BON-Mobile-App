@@ -74,12 +74,9 @@ export default function SelectDateRange () {
       console.log('Retrieved Token:', token)
       token = token.replace(/^"|"$/g, '')
       console.log('Cleaned JWT Token:', token)
-      const response = await axios.get(
-        'http://172.20.10.3:5001/auth/usertoken',
-        {
-          headers: { Authorization: `Bearer ${token}` }
-        }
-      )
+      const response = await axios.get('http://10.0.1.26:5001/auth/usertoken', {
+        headers: { Authorization: `Bearer ${token}` }
+      })
       // console.log('User Data:', response.data)
       return parsedData.userId
     } catch (error) {
@@ -127,7 +124,7 @@ export default function SelectDateRange () {
         })
       } else if (status === 'Pending') {
         const response = await axios.post(
-          'http://172.20.10.3:5001/hotel/bookingCompleted',
+          'http://10.0.1.26:5001/hotel/bookingCompleted',
           bookingData
         )
         // console.log('Booking Response:', response.data)

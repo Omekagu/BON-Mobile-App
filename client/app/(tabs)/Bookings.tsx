@@ -34,12 +34,9 @@ const Bookings = () => {
       const parsedData = JSON.parse(userData)
       let token = parsedData.token.replace(/^"|"$/g, '')
 
-      const response = await axios.get(
-        'http://172.20.10.3:5001/auth/usertoken',
-        {
-          headers: { Authorization: `Bearer ${token}` }
-        }
-      )
+      const response = await axios.get('http://10.0.1.26:5001/auth/usertoken', {
+        headers: { Authorization: `Bearer ${token}` }
+      })
       console.log(token)
       return parsedData.userId
     } catch (error) {
@@ -56,7 +53,7 @@ const Bookings = () => {
         if (!userId) return
 
         const response = await axios.get(
-          `http://172.20.10.3:5001/hotel/bookings/${userId}`
+          `http://10.0.1.26:5001/hotel/bookings/${userId}`
         )
 
         const sortedBookings = Array.isArray(response.data.data)

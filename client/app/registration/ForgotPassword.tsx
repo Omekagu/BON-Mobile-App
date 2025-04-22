@@ -25,7 +25,7 @@ const ForgotPassword = () => {
     }
 
     axios
-      .post('http://172.20.10.3:5001/auth/send-otp', {
+      .post('http://10.0.1.26:5001/auth/send-otp', {
         email: email.trim().toLowerCase()
       })
       .then(() => {
@@ -52,7 +52,7 @@ const ForgotPassword = () => {
     }
 
     axios
-      .post('http://172.20.10.3:5001/auth/verify-otp', { email, otp })
+      .post('http://10.0.1.26:5001/auth/verify-otp', { email, otp })
       .then(() => {
         setStep(3)
         Toast.show({
@@ -77,7 +77,7 @@ const ForgotPassword = () => {
     }
 
     axios
-      .post('http://172.20.10.3:5001/auth/reset-password', {
+      .post('http://10.0.1.26:5001/auth/reset-password', {
         email,
         newPassword
       })
