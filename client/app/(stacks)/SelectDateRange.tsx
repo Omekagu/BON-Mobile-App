@@ -101,7 +101,7 @@ export default function SelectDateRange () {
 
       const bookingData = {
         userId,
-        hotelId,
+        // hotelId,
         checkInDate: startDate.toISOString(),
         checkOutDate: endDate.toISOString(),
         checkInTime: selectedTime,
@@ -111,6 +111,7 @@ export default function SelectDateRange () {
         totalPrice: calculateTotal().replace(/,/g, ''), // Remove commas
         status
       }
+      console.log('Booking Data:', bookingData)
 
       if (status === 'Completed') {
         setIsModalVisible(false)
@@ -118,7 +119,7 @@ export default function SelectDateRange () {
           pathname: '/Payments',
           params: {
             price: String(calculateTotal()),
-            hotelId,
+            // hotelId,
             bookingData: JSON.stringify(bookingData)
           }
         })

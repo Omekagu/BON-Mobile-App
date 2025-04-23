@@ -6,12 +6,13 @@ import { FontAwesome, FontAwesome5, MaterialIcons } from '@expo/vector-icons'
 
 export default function Payments () {
   const params = useLocalSearchParams()
+  // cnsole.log(params)
   const price = params.price || ''
   const hotelId = params.hotelId || ''
   const bookingData = params.bookingData
   console.log(price, hotelId)
   // Check if required params are available
-  if (!price || !hotelId) {
+  if (!price || !bookingData) {
     return (
       <SafeAreaView
         style={{
@@ -34,10 +35,10 @@ export default function Payments () {
     setModalVisible(false) // Close the modal
     if (paymentMethod === 'card') {
       router.push({
-        pathname: '/CardPayment',
+        pathname: '/PaystackPage',
         params: {
           price: String(price),
-          hotelId,
+          // hotelId,
           bookingData: JSON.stringify(bookingData)
         }
       })

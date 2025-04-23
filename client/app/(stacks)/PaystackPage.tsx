@@ -16,7 +16,7 @@ Notifications.setNotificationHandler({
   })
 })
 
-export default function CardPayment () {
+export default function PaystackPage () {
   // Now we expect a bookingData parameter in addition to price and hotelId.
   const { price, hotelId, bookingData } = useLocalSearchParams<{
     price: string
@@ -135,6 +135,7 @@ export default function CardPayment () {
     } catch (error) {
       console.error('Error completing booking after payment:', error)
       Toast.show({ type: 'error', text1: 'Error saving booking after payment' })
+      router.replace({ pathname: '/Bookings', params: { amount, hotelId } })
     }
   }
 

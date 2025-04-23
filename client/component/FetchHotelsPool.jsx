@@ -124,7 +124,7 @@ const FilterSuggestion = () => {
           setValue={setSelectedPool}
           setItems={() => {}}
           style={styles.dropdown}
-          placeholder='Select a pool'
+          placeholder='Select a Hotel'
           dropDownDirection='BOTTOM'
           listMode='SCROLLVIEW'
           dropDownContainerStyle={styles.dropdownContainer}

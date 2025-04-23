@@ -44,6 +44,7 @@ const screens = [
   { name: 'BookingHistory', headerShown: false },
   { name: 'ConnectWallet', headerShown: false },
   { name: 'CardPayment', headerShown: false },
+  { name: 'PaystackPage', headerShown: false },
   { name: 'CryptoPayment', headerShown: false },
   { name: 'EditName', headerShown: false },
   { name: 'EditContact', headerShown: false },
