@@ -22,7 +22,7 @@ export default function EditAddress () {
 
       console.log('User ID:', userId, address)
       const response = await axios.post(
-        'http://10.0.1.26:5001/auth/editAddress', // ⚠️ make sure this endpoint is correct
+        'http://10.0.1.8:5001/auth/editAddress', // ⚠️ make sure this endpoint is correct
         {
           userId,
           address

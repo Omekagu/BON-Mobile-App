@@ -98,7 +98,7 @@ const Registration: React.FC = () => {
     console.log(firstName, surname, email, password, phoneNumber, referralCode)
 
     try {
-      await axios.post('http://10.0.1.26:5001/auth/register', userData)
+      await axios.post('http://10.0.1.8:5001/auth/register', userData)
       Toast.show({
         type: 'success',
         text1: 'Success',
