@@ -47,7 +47,7 @@ const FilterSuggestion = () => {
     try {
       console.log(`Fetching hotels from pool: ${selectedPool}`)
       const response = await fetch(
-        `http://10.0.1.8:5001/hotel/search/pool/${encodeURIComponent(
+        `http:///10.0.1.13:5001/hotel/search/pool/${encodeURIComponent(
           selectedPool
         )}`
       )

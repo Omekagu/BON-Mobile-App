@@ -122,7 +122,7 @@ export default function PaystackPage () {
         console.log('Parsed Booking Data:', parsedBookingData)
 
         const response = await axios.post(
-          'http://10.0.1.8:5001/hotel/bookingCompleted',
+          'http:///10.0.1.13:5001/hotel/bookingCompleted',
           parsedBookingData
         )
       }
@@ -151,7 +151,7 @@ export default function PaystackPage () {
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <Text>Payment with Paystack</Text>
       <Paystack
-        paystackKey='pk_test_3e98f6bdd30173891907024c91b3b9293b4d0014'
+        paystackKey='pk_live_13b8d907f067d24fb827e16a5e3a890ad641b3c7'
         amount={amount * 1.0} // Ensure amount is converted correctly
         billingEmail='reservation@booking.com'
         activityIndicatorColor='green'

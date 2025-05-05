@@ -30,7 +30,7 @@ export default function EditDob () {
       const tokenData = await AsyncStorage.getItem('token')
       const { userId } = JSON.parse(tokenData)
 
-      const response = await axios.post('http://10.0.1.8:5001/auth/editDob', {
+      const response = await axios.post('http:///10.0.1.13:5001/auth/editDob', {
         userId,
         dob
       })

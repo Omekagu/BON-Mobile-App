@@ -122,7 +122,7 @@ export default function CardPayment () {
         console.log('Parsed Booking Data:', parsedBookingData)
 
         const response = await axios.post(
-          'http://10.0.1.8:5001/hotel/bookingCompleted',
+          'http:///10.0.1.13:5001/hotel/bookingCompleted',
           parsedBookingData
         )
       }
