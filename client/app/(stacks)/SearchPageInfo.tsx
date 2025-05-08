@@ -4,7 +4,6 @@ import axios from 'axios'
 import Toast from 'react-native-toast-message'
 import {
   View,
-  SafeAreaView,
   ScrollView,
   Image,
   Text,
@@ -60,7 +59,7 @@ export default function HotelBookingScreen () {
   useEffect(() => {
     const fetchHotelDetails = async () => {
       try {
-        const response = await axios.get(`http:///10.0.1.13:5001/hotel/${id}`)
+        const response = await axios.get(`http://10.0.1.13:5001/hotel/${id}`)
         setHotel(response.data)
       } catch (error) {
         Toast.show({ type: 'error', text1: 'Failed to load hotel details.' })
@@ -307,7 +306,7 @@ export default function HotelBookingScreen () {
             }`}
             onPress={() =>
               router.push({
-                pathname: '/SelectDateRange',
+                pathname: '/SelectPoolDateRange',
                 params: { price: hotel.pricePerNight, hotelId: hotel._id }
               })
             }

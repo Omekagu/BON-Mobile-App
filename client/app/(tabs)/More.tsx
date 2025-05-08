@@ -87,12 +87,9 @@ export default function More () {
       if (!userData) return null
       const parsedData = JSON.parse(userData)
       let token = parsedData.token.replace(/^"|"$/g, '')
-      const response = await axios.get(
-        'http:///10.0.1.13:5001/auth/usertoken',
-        {
-          headers: { Authorization: `Bearer ${token}` }
-        }
-      )
+      const response = await axios.get('http://10.0.1.13:5001/auth/usertoken', {
+        headers: { Authorization: `Bearer ${token}` }
+      })
       return parsedData.userId
     } catch (error) {
       console.error('Error retrieving user ID:', error)
@@ -111,7 +108,7 @@ export default function More () {
       }
       // imageUrl is the short URL returned from Cloudinary
       const response = await axios.post(
-        'http:///10.0.1.13:5001/auth/update-profile-image',
+        'http://10.0.1.13:5001/auth/update-profile-image',
         { userId, profileImage: imageUrl }
       )
       Alert.alert('Success', 'Profile image updated successfully')
@@ -132,7 +129,7 @@ export default function More () {
       try {
         const userId = await getUserId()
         const response = await axios.get(
-          `http:///10.0.1.13:5001/user/user/${userId}`
+          `http://10.0.1.13:5001/user/user/${userId}`
         )
         setUser(response.data.user)
       } catch (error) {

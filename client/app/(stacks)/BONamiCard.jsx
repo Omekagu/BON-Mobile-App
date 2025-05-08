@@ -16,12 +16,9 @@ export default function BONamiCard () {
       const parsedData = JSON.parse(userData)
       const token = parsedData.token.replace(/^"|"$/g, '')
 
-      const response = await axios.get(
-        'http:///10.0.1.13:5001/auth/usertoken',
-        {
-          headers: { Authorization: `Bearer ${token}` }
-        }
-      )
+      const response = await axios.get('http://10.0.1.13:5001/auth/usertoken', {
+        headers: { Authorization: `Bearer ${token}` }
+      })
       console.log('User ID:', parsedData.userId)
       return parsedData.userId
     } catch (error) {
@@ -43,7 +40,7 @@ export default function BONamiCard () {
         setUserId(id)
 
         const cardRes = await axios.get(
-          `http:///10.0.1.13:5001/hotel/userbonami-card/${id}`
+          `http://10.0.1.13:5001/hotel/userbonami-card/${id}`
         )
         setCardDetails(cardRes.data)
         console.log('Card details:', cardRes.data)

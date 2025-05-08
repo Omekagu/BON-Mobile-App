@@ -62,7 +62,7 @@ export default function SearchedPoolDetailsPage () {
     const fetchHotelDetails = async () => {
       try {
         const response = await axios.get(
-          `http:///10.0.1.13:5001/hotel/${pool}/${id}`
+          `http://10.0.1.13:5001/hotel/${pool}/${id}`
         )
         const extractImageUrls = htmlString => {
           return [...(htmlString.match(/src="(https:\/\/[^"]+)"/g) || [])].map(
