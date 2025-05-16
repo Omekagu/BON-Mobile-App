@@ -4,154 +4,170 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  BackHandler
+  BackHandler,
+  Image,
+  TextInput,
+  Pressable
 } from 'react-native'
 import { useRouter } from 'expo-router'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import axios from 'axios'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import LabelInputComp from '@/component/LabelInputComp'
-import CustomBotton from '@/component/CustomBotton'
 import Toast from 'react-native-toast-message'
+import { Ionicons } from '@expo/vector-icons'
+import { Button } from 'react-native-paper'
 
 const Login = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [secure, setSecure] = useState(true)
   const router = useRouter()
 
   useEffect(() => {
-    const backAction = () => {
-      return true
-    }
-
     const backHandler = BackHandler.addEventListener(
       'hardwareBackPress',
-      backAction
+      () => true
     )
-
     return () => backHandler.remove()
   }, [])
 
-  // ✅ Check if User is Already Logged In
   useEffect(() => {
     const checkAuth = async () => {
       const tokenData = await AsyncStorage.getItem('token')
-
       if (tokenData) {
         const { token, expiryTime } = JSON.parse(tokenData)
-
-        if (Date.now() < expiryTime) {
-          // Token is valid, redirect to Home page
-          router.replace('/Home')
-          return
-        } else {
-          // Token expired, remove it
-          await AsyncStorage.removeItem('token')
-        }
+        if (Date.now() < expiryTime) router.replace('/Home')
+        else await AsyncStorage.removeItem('token')
       }
     }
-
     checkAuth()
   }, [])
 
-  // ✅ Handle Login
   const handleSubmit = async () => {
     if (!email.trim() || !password.trim()) {
       Toast.show({
         type: 'error',
-        position: 'top',
         text1: 'Error',
-        text2: 'Please fill in all fields',
-        visibilityTime: 4000
+        text2: 'Please fill in all fields'
       })
       return
     }
 
-    const userData = { email: email.trim().toLowerCase(), password }
-    console.log('User Data:', userData)
     try {
-      const res = await axios.post('http://10.0.1.13:5001/auth/login', userData)
+      const res = await axios.post('http://10.0.1.12:5001/auth/login', {
+        email: email.trim().toLowerCase(),
+        password
+      })
+
       if (res.data?.data) {
         const { token, userId } = res.data.data
-        console.log('JWT Token:', token)
-        console.log('User ID:', userId)
-        // ✅ Set Expiry Time (30 minutes from now)
         const expiryTime = Date.now() + 30 * 60 * 1000
         await AsyncStorage.setItem(
           'token',
           JSON.stringify({ token, expiryTime, userId })
         )
-        console.log(`User data saved successfully ${userId}`)
-        // console.log(token, expiryTime, userId)
-        router.replace('/Home') // ✅ Redirect to Home page after login
+        router.replace('/Home')
         Toast.show({
           type: 'success',
-          position: 'top',
           text1: 'Success',
-          text2: 'Welcome Back!',
-          visibilityTime: 4000
+          text2: 'Welcome Back!'
         })
       } else {
         Toast.show({
           type: 'error',
-          position: 'top',
-          text1: 'Error',
-          text2: 'Login failed! Token not received.',
-          visibilityTime: 4000
+          text1: 'Login failed',
+          text2: 'Invalid response from server.'
         })
       }
     } catch (error) {
-      console.error('Login Error:', error)
       Toast.show({
         type: 'error',
-        position: 'top',
-        text1: 'Error',
-        text2: 'Login failed! Please check your credentials.',
-        visibilityTime: 4000
+        text1: 'Login failed',
+        text2: 'Please check your credentials.'
       })
     }
   }
 
-  const FgPassword = () => {
-    router.push('registration/ForgotPassword')
-  }
-
   return (
-    <KeyboardAwareScrollView
-      resetScrollToCoords={{ x: 0, y: 0 }}
-      scrollEnabled={false}
-      contentContainerStyle={styles.container}
-    >
-      <View style={styles.formContainer}>
-        <View style={styles.loginPrompt}>
-          <Text>
-            Create an account ?{' '}
-            <Text
-              style={styles.linkText}
-              onPress={() => router.push('/registration/Registration')}
-            >
-              Register
-            </Text>
-          </Text>
+    <KeyboardAwareScrollView contentContainerStyle={styles.container}>
+      <Image
+        source={{
+          uri: 'https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg?auto=compress&cs=tinysrgb&w=600'
+        }} // Replace with the actual image path
+        style={styles.backgroundImage}
+      />
+      <View style={styles.overlay}>
+        <View
+          style={{
+            marginBottom: 20,
+            flexDirection: 'row',
+            alignItems: 'center'
+          }}
+        >
+          <Text style={styles.loginTitle}>WELCOME TO BON</Text>
+          <Button
+            mode='contained'
+            onPress={() => router.push('registration/Registration')}
+            style={{
+              backgroundColor: '#a63932',
+              marginLeft: 'auto',
+              borderRadius: 10
+            }}
+          >
+            Register
+          </Button>
         </View>
 
-        <LabelInputComp
-          label='Email'
-          placeholder='Enter your email'
-          value={email}
-          onChangeText={setEmail}
-        />
-        <LabelInputComp
-          label='Password'
-          placeholder='Enter your password'
-          value={password}
-          onChangeText={setPassword}
-        />
+        <View style={styles.profileCard}>
+          <Image
+            source={{
+              uri: 'https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg?auto=compress&cs=tinysrgb&w=600'
+            }} // Replace with user avatar if available
+            style={styles.avatar}
+          />
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>Email</Text>
+            <View style={styles.passwordBox}>
+              <TextInput
+                placeholder='Enter Email'
+                value={email}
+                onChangeText={setEmail}
+                style={styles.inputField}
+              />
+            </View>
 
-        <TouchableOpacity onPress={FgPassword}>
-          <Text style={styles.forgot}>Forgot password?</Text>
-        </TouchableOpacity>
-        <CustomBotton onPress={handleSubmit} button='Sign In' />
+            <View style={styles.inputContainer}>
+              <Text style={styles.inputLabel}>Password</Text>
+              <View style={styles.passwordBox}>
+                <TextInput
+                  placeholder='Enter password'
+                  secureTextEntry={secure}
+                  value={password}
+                  onChangeText={setPassword}
+                  style={styles.inputField}
+                />
+                <Pressable onPress={() => setSecure(!secure)}>
+                  <Text style={styles.viewText}>
+                    {secure ? 'View' : 'Hide'}
+                  </Text>
+                </Pressable>
+              </View>
+            </View>
+
+            <TouchableOpacity
+              style={styles.continueButton}
+              onPress={handleSubmit}
+            >
+              <Text style={styles.continueText}>Continue</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => router.push('registration/ForgotPassword')}
+            >
+              <Text style={styles.forgotLink}>Forgot your password?</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
       </View>
     </KeyboardAwareScrollView>
   )
@@ -159,36 +175,91 @@ const Login = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#a63932',
-    justifyContent: 'center',
+    flexGrow: 1,
+    backgroundColor: '#eee'
+  },
+  backgroundImage: {
+    width: '100%',
+    height: 250,
+    resizeMode: 'cover'
+  },
+  overlay: {
     paddingHorizontal: 20,
-    paddingVertical: 40
+    marginTop: -80
   },
-  formContainer: {
-    backgroundColor: '#fff',
+  loginTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginBottom: 20
+  },
+  profileCard: {
+    backgroundColor: '#111111DD',
     padding: 20,
-    borderRadius: 8,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 5,
-    elevation: 3
+    borderRadius: 16
   },
-  loginPrompt: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginVertical: 10
+  avatar: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    alignSelf: 'center',
+    marginBottom: 10
   },
-  linkText: {
+  nameText: {
+    color: '#fff',
+    fontWeight: '600',
     fontSize: 16,
-    fontWeight: '500',
-    color: '#007BFF'
+    textAlign: 'center'
   },
-  forgot: {
-    paddingVertical: 10,
-    fontSize: 20,
-    textTransform: 'capitalize'
+  emailText: {
+    color: '#ccc',
+    fontSize: 14,
+    textAlign: 'center',
+    marginBottom: 20
+  },
+  inputContainer: {
+    marginBottom: 15
+  },
+  inputLabel: {
+    color: '#aaa',
+    fontSize: 15,
+    marginTop: 10,
+    marginBottom: 2
+  },
+  passwordBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#1E1E1E',
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 10
+  },
+  inputField: {
+    height: 50,
+    flex: 1,
+    color: '#fff'
+  },
+  viewText: {
+    color: '#a63932',
+    fontWeight: '600'
+  },
+  continueButton: {
+    backgroundColor: '#a63932',
+    paddingVertical: 14,
+    borderRadius: 12,
+    marginTop: 10
+  },
+  continueText: {
+    color: '#000',
+    fontWeight: 'bold',
+    fontSize: 16,
+    textAlign: 'center'
+  },
+  forgotLink: {
+    textAlign: 'center',
+    color: '#a63932',
+    fontWeight: '500',
+    marginTop: 15
   }
 })
 

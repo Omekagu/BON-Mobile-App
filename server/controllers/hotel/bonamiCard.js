@@ -76,7 +76,7 @@ export const getBonamiCard = async (req, res) => {
 
     res.json({
       cardNumber: card.cardNumber,
-      name: `${card.userId.firstName} ${card.userId.surname}`,
+      name: `${card.userIdfirstname} ${card.userId.surname}`,
       expires: card.expiryDate
     })
   } catch (err) {

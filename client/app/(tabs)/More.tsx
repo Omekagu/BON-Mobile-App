@@ -87,7 +87,7 @@ export default function More () {
       if (!userData) return null
       const parsedData = JSON.parse(userData)
       let token = parsedData.token.replace(/^"|"$/g, '')
-      const response = await axios.get('http://10.0.1.13:5001/auth/usertoken', {
+      const response = await axios.get('http:/10.0.1.12:5001/auth/usertoken', {
         headers: { Authorization: `Bearer ${token}` }
       })
       return parsedData.userId
@@ -108,7 +108,7 @@ export default function More () {
       }
       // imageUrl is the short URL returned from Cloudinary
       const response = await axios.post(
-        'http://10.0.1.13:5001/auth/update-profile-image',
+        'http:/10.0.1.12:5001/auth/update-profile-image',
         { userId, profileImage: imageUrl }
       )
       Alert.alert('Success', 'Profile image updated successfully')
@@ -129,7 +129,7 @@ export default function More () {
       try {
         const userId = await getUserId()
         const response = await axios.get(
-          `http://10.0.1.13:5001/user/user/${userId}`
+          `http:/10.0.1.12:5001/user/user/${userId}`
         )
         setUser(response.data.user)
       } catch (error) {
@@ -154,7 +154,7 @@ export default function More () {
       <View style={styles.profileSection}>
         <View>
           <Text style={styles.profileName}>
-            Hi, {user?.firstName || 'User'}.
+            Hi, {user?.firstname || 'User'}.
           </Text>
           <View style={styles.ratingContainer}>
             <AntDesign name='star' size={16} color='#a63932' />

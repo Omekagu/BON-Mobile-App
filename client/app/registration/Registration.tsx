@@ -1,17 +1,25 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, StyleSheet, SafeAreaView } from 'react-native'
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  TouchableOpacity,
+  Pressable,
+  Button,
+  Image,
+  TextInput
+} from 'react-native'
 import { useRouter } from 'expo-router'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import * as Device from 'expo-device'
 import * as Localization from 'expo-localization'
 import axios from 'axios'
-import LabelInputComp from '@/component/LabelInputComp'
-import CustomBotton from '@/component/CustomBotton'
 import Toast from 'react-native-toast-message'
 import { useAuth } from '../hooks/useAuth'
 
 const Registration: React.FC = () => {
-  const [firstName, setFirstname] = useState<string>('')
+  const [firstname, setFirstname] = useState<string>('')
   const [surname, setSurname] = useState<string>('')
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
@@ -20,6 +28,7 @@ const Registration: React.FC = () => {
   const [deviceType, setDeviceType] = useState<string>('')
   const [userCountry, setUserCountry] = useState<string>('')
   const [referralCode, setReferralCode] = useState<string>('')
+  const [secure, setSecure] = useState<boolean>(true)
 
   const router = useRouter()
 
@@ -58,7 +67,7 @@ const Registration: React.FC = () => {
     /^\d{11}$/.test(phoneNumber)
 
   const handleSubmit = async () => {
-    if (!firstName || !surname || !email || !password || !phoneNumber) {
+    if (!firstname || !surname || !email || !password || !phoneNumber) {
       Toast.show({
         type: 'error',
         text1: 'Error',
@@ -84,7 +93,7 @@ const Registration: React.FC = () => {
     }
 
     const userData = {
-      firstName,
+      firstname,
       surname,
       referralCode,
       email: email.toLowerCase(),
@@ -95,10 +104,10 @@ const Registration: React.FC = () => {
       userCountry
     }
 
-    console.log(firstName, surname, email, password, phoneNumber, referralCode)
+    console.log(firstname, surname, email, password, phoneNumber, referralCode)
 
     try {
-      await axios.post('http://10.0.1.13:5001/auth/register', userData)
+      await axios.post('http:/10.0.1.12:5001/auth/register', userData)
       Toast.show({
         type: 'success',
         text1: 'Success',
@@ -123,157 +132,194 @@ const Registration: React.FC = () => {
   }
 
   return (
-    <KeyboardAwareScrollView
-      resetScrollToCoords={{ x: 0, y: 0 }}
-      // scrollEnabled={false}
-      contentContainerStyle={styles.container}
-    >
-      <SafeAreaView>
-        <Text style={styles.infoText}>Create your account</Text>
-
-        <View style={styles.formContainer}>
-          <LabelInputComp
-            label='Firstname'
-            placeholder='Enter Firstname'
-            value={firstName}
-            onChangeText={setFirstname}
-          />
-          <LabelInputComp
-            label='Surname'
-            placeholder='Enter Surname'
-            value={surname}
-            onChangeText={setSurname}
-          />
-          <LabelInputComp
-            label='Email'
-            placeholder='Email'
-            value={email}
-            onChangeText={setEmail}
-          />
-          <LabelInputComp
-            label='Phone Number'
-            placeholder='Phone Number'
-            value={phoneNumber}
-            onChangeText={setPhoneNumber}
-          />
-          <LabelInputComp
-            label='Password'
-            placeholder='Password'
-            value={password}
-            onChangeText={setPassword}
-          />
-          <LabelInputComp
-            label='Referral Code'
-            placeholder='Referral Code'
-            value={referralCode}
-            onChangeText={setReferralCode}
-          />
-
-          <Text style={styles.deviceInfo}>
-            📱 Device: {deviceType || 'Detecting...'}
-          </Text>
-
-          <Text style={styles.termsText}>
-            By signing up, you agree to BON'S{' '}
-            <Text
-              style={styles.linkText}
-              onPress={() => router.push('/registration/Login')}
-            >
-              Terms of Use
-            </Text>{' '}
-            and{' '}
-            <Text
-              style={styles.linkText}
-              onPress={() => router.push('/registration/Login')}
-            >
-              Privacy Policy
-            </Text>
-            .
-          </Text>
-
-          <View style={styles.loginPrompt}>
-            <Text>
-              Already have an account?{' '}
-              <Text
-                style={styles.linkText}
-                onPress={() => router.push('/registration/Login')}
-              >
-                Login
-              </Text>
-            </Text>
-          </View>
-
-          <CustomBotton onPress={handleSubmit} button='Sign Up' />
+    <KeyboardAwareScrollView contentContainerStyle={styles.container}>
+      <Image
+        source={{
+          uri: 'https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg?auto=compress&cs=tinysrgb&w=600'
+        }} // Replace with the actual image path
+        style={styles.backgroundImage}
+      />
+      <View style={styles.overlay}>
+        <View
+          style={{
+            marginBottom: 10,
+            flexDirection: 'row',
+            alignItems: 'center'
+          }}
+        >
+          <Text style={styles.loginTitle}>Create an account. </Text>
         </View>
-      </SafeAreaView>
+
+        <View style={styles.profileCard}>
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>Firstname</Text>
+            <View style={styles.passwordBox}>
+              <TextInput
+                placeholder='Enter Your first name'
+                value={firstname}
+                onChangeText={setFirstname}
+                style={styles.inputField}
+              />
+            </View>
+            <Text style={styles.inputLabel}>Surname</Text>
+            <View style={styles.passwordBox}>
+              <TextInput
+                placeholder='Enter Your Surname'
+                value={surname}
+                onChangeText={setSurname}
+                style={styles.inputField}
+              />
+            </View>
+            <Text style={styles.inputLabel}>Email</Text>
+            <View style={styles.passwordBox}>
+              <TextInput
+                placeholder='Enter Email'
+                value={email}
+                onChangeText={setEmail}
+                style={styles.inputField}
+              />
+            </View>
+
+            <Text style={styles.inputLabel}>Phone Number</Text>
+            <View style={styles.passwordBox}>
+              <TextInput
+                placeholder='Enter Phone Number'
+                value={phoneNumber}
+                onChangeText={setPhoneNumber}
+                style={styles.inputField}
+              />
+            </View>
+            <Text style={styles.inputLabel}>Referral Code</Text>
+            <View style={styles.passwordBox}>
+              <TextInput
+                placeholder='Enter referral Code'
+                value={referralCode}
+                onChangeText={setReferralCode}
+                style={styles.inputField}
+              />
+            </View>
+            <View style={styles.inputContainer}>
+              <Text style={styles.inputLabel}>Password</Text>
+              <View style={styles.passwordBox}>
+                <TextInput
+                  placeholder='Enter password'
+                  secureTextEntry={secure}
+                  value={password}
+                  onChangeText={setPassword}
+                  style={styles.inputField}
+                />
+                <Pressable onPress={() => setSecure(!secure)}>
+                  <Text style={styles.viewText}>
+                    {secure ? 'View' : 'Hide'}
+                  </Text>
+                </Pressable>
+              </View>
+            </View>
+            <TouchableOpacity
+              style={styles.continueButton}
+              onPress={handleSubmit}
+            >
+              <Text style={styles.continueText}>Continue</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => router.push('registration/Login')}>
+              <Text style={styles.forgotLink}>
+                Already have an account? Login
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
     </KeyboardAwareScrollView>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#a63932',
-    paddingHorizontal: 10,
-    justifyContent: 'center',
-    paddingTop: 30
+    flexGrow: 1,
+    backgroundColor: '#eee'
   },
-  infoText: {
+  backgroundImage: {
+    width: '100%',
+    height: 250,
+    resizeMode: 'cover'
+  },
+  overlay: {
+    paddingHorizontal: 20,
+    marginTop: -200
+  },
+  loginTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 20,
-    color: '#fff'
+    color: '#fff',
+    marginBottom: 20
   },
-  formContainer: {
-    backgroundColor: '#fff',
+  profileCard: {
+    backgroundColor: '#111111DD',
     padding: 20,
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 5,
-    elevation: 3
+    borderRadius: 16
   },
-  imagePicker: {
+  avatar: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
     alignSelf: 'center',
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    backgroundColor: '#eee',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 15
+    marginBottom: 10
   },
-  profileImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 50
+  nameText: {
+    color: '#fff',
+    fontWeight: '600',
+    fontSize: 16,
+    textAlign: 'center'
   },
-  imageText: {
-    color: '#666'
-  },
-  deviceInfo: {
-    fontSize: 15,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginVertical: 10,
-    color: '#333'
-  },
-  termsText: {
+  emailText: {
+    color: '#ccc',
     fontSize: 14,
     textAlign: 'center',
-    padding: 10
+    marginBottom: 20
   },
-  loginPrompt: {
+  inputContainer: {
+    marginBottom: 15
+  },
+  inputLabel: {
+    color: '#aaa',
+    fontSize: 15,
+    marginTop: 10,
+    marginBottom: 2
+  },
+  passwordBox: {
     flexDirection: 'row',
-    justifyContent: 'center',
-    marginVertical: 10
+    alignItems: 'center',
+    backgroundColor: '#1E1E1E',
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 10
   },
-  linkText: {
+  inputField: {
+    height: 50,
+    flex: 1,
+    color: '#fff'
+  },
+  viewText: {
+    color: '#a63932',
+    fontWeight: '600'
+  },
+  continueButton: {
+    backgroundColor: '#a63932',
+    paddingVertical: 14,
+    borderRadius: 12,
+    marginTop: 10
+  },
+  continueText: {
+    color: '#000',
+    fontWeight: 'bold',
     fontSize: 16,
+    textAlign: 'center'
+  },
+  forgotLink: {
+    textAlign: 'center',
+    color: '#a63932',
     fontWeight: '500',
-    color: '#007BFF'
+    marginTop: 15
   }
 })
 
