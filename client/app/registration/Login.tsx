@@ -67,11 +67,6 @@ const Login = () => {
           JSON.stringify({ token, expiryTime, userId })
         )
         router.replace('/Home')
-        Toast.show({
-          type: 'success',
-          text1: 'Success',
-          text2: 'Welcome Back!'
-        })
       } else {
         Toast.show({
           type: 'error',
@@ -154,11 +149,8 @@ const Login = () => {
               </View>
             </View>
 
-            <TouchableOpacity
-              style={styles.continueButton}
-              onPress={handleSubmit}
-            >
-              <Text style={styles.continueText}>Continue</Text>
+            <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+              <Text style={styles.buttonText}>Sign In</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -176,11 +168,11 @@ const Login = () => {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    backgroundColor: '#eee'
+    backgroundColor: '#000'
   },
   backgroundImage: {
     width: '100%',
-    height: 250,
+    height: 350,
     resizeMode: 'cover'
   },
   overlay: {
@@ -194,7 +186,7 @@ const styles = StyleSheet.create({
     marginBottom: 20
   },
   profileCard: {
-    backgroundColor: '#111111DD',
+    backgroundColor: '#6b6963',
     padding: 20,
     borderRadius: 16
   },
@@ -243,21 +235,21 @@ const styles = StyleSheet.create({
     color: '#a63932',
     fontWeight: '600'
   },
-  continueButton: {
+  button: {
     backgroundColor: '#a63932',
     paddingVertical: 14,
     borderRadius: 12,
     marginTop: 10
   },
-  continueText: {
-    color: '#000',
+  buttonText: {
+    color: '#fff',
     fontWeight: 'bold',
     fontSize: 16,
     textAlign: 'center'
   },
   forgotLink: {
     textAlign: 'center',
-    color: '#a63932',
+    color: '#fff',
     fontWeight: '500',
     marginTop: 15
   }

@@ -155,7 +155,7 @@ const Registration: React.FC = () => {
             <Text style={styles.inputLabel}>Firstname</Text>
             <View style={styles.passwordBox}>
               <TextInput
-                placeholder='Enter Your first name'
+                placeholder='Enter your first name'
                 value={firstname}
                 onChangeText={setFirstname}
                 style={styles.inputField}
@@ -164,7 +164,7 @@ const Registration: React.FC = () => {
             <Text style={styles.inputLabel}>Surname</Text>
             <View style={styles.passwordBox}>
               <TextInput
-                placeholder='Enter Your Surname'
+                placeholder='Enter your surname'
                 value={surname}
                 onChangeText={setSurname}
                 style={styles.inputField}
@@ -173,7 +173,7 @@ const Registration: React.FC = () => {
             <Text style={styles.inputLabel}>Email</Text>
             <View style={styles.passwordBox}>
               <TextInput
-                placeholder='Enter Email'
+                placeholder='Enter email'
                 value={email}
                 onChangeText={setEmail}
                 style={styles.inputField}
@@ -183,7 +183,7 @@ const Registration: React.FC = () => {
             <Text style={styles.inputLabel}>Phone Number</Text>
             <View style={styles.passwordBox}>
               <TextInput
-                placeholder='Enter Phone Number'
+                placeholder='Enter phone number'
                 value={phoneNumber}
                 onChangeText={setPhoneNumber}
                 style={styles.inputField}
@@ -192,7 +192,7 @@ const Registration: React.FC = () => {
             <Text style={styles.inputLabel}>Referral Code</Text>
             <View style={styles.passwordBox}>
               <TextInput
-                placeholder='Enter referral Code'
+                placeholder='Enter referral code'
                 value={referralCode}
                 onChangeText={setReferralCode}
                 style={styles.inputField}
@@ -215,11 +215,8 @@ const Registration: React.FC = () => {
                 </Pressable>
               </View>
             </View>
-            <TouchableOpacity
-              style={styles.continueButton}
-              onPress={handleSubmit}
-            >
-              <Text style={styles.continueText}>Continue</Text>
+            <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+              <Text style={styles.buttonText}>Sign Up</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => router.push('registration/Login')}>
               <Text style={styles.forgotLink}>
@@ -236,7 +233,7 @@ const Registration: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    backgroundColor: '#eee'
+    backgroundColor: '#000'
   },
   backgroundImage: {
     width: '100%',
@@ -245,7 +242,7 @@ const styles = StyleSheet.create({
   },
   overlay: {
     paddingHorizontal: 20,
-    marginTop: -200
+    marginTop: -180
   },
   loginTitle: {
     fontSize: 18,
@@ -254,7 +251,7 @@ const styles = StyleSheet.create({
     marginBottom: 20
   },
   profileCard: {
-    backgroundColor: '#111111DD',
+    backgroundColor: '#6b6963',
     padding: 20,
     borderRadius: 16
   },
@@ -303,23 +300,23 @@ const styles = StyleSheet.create({
     color: '#a63932',
     fontWeight: '600'
   },
-  continueButton: {
+  button: {
     backgroundColor: '#a63932',
     paddingVertical: 14,
     borderRadius: 12,
     marginTop: 10
   },
-  continueText: {
-    color: '#000',
+  buttonText: {
+    color: '#fff',
     fontWeight: 'bold',
     fontSize: 16,
     textAlign: 'center'
   },
   forgotLink: {
     textAlign: 'center',
-    color: '#a63932',
+    color: '#fff',
     fontWeight: '500',
-    marginTop: 15
+    marginTop: 5
   }
 })
 

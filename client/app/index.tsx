@@ -55,7 +55,7 @@ export default function IndexPage () {
           }
         }
 
-        router.replace('/registration/Login') // Redirect to login
+        router.replace('/registration/WelcomeScreen') // Redirect to login
       } catch (error) {
         console.error('Auth Check Error:', error)
         router.replace('/registration/Registration')
