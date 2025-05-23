@@ -40,7 +40,7 @@ export default function BONamiCard () {
         }
         setUserId(id)
         const cardRes = await axios.get(
-          `http:/10.0.1.25:5001/bonami/userbonamicard/${id}`
+          `http:/10.0.1.25:5001/hotel/bonami/userbonamicard/${id}`
         )
         console.log('User ID:', id)
         setCardDetails(cardRes.data)
