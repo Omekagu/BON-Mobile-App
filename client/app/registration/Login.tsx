@@ -52,9 +52,9 @@ const Login = () => {
       })
       return
     }
-
+    console.log('Submitting login form with:', { email, password })
     try {
-      const res = await axios.post('http://10.0.1.12:5001/auth/login', {
+      const res = await axios.post('http://10.0.1.25:5001/auth/login', {
         email: email.trim().toLowerCase(),
         password
       })

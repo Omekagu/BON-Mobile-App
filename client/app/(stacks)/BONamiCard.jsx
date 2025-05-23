@@ -16,7 +16,7 @@ export default function BONamiCard () {
       const parsedData = JSON.parse(userData)
       const token = parsedData.token.replace(/^"|"$/g, '')
 
-      const response = await axios.get('http:/10.0.1.12:5001/auth/usertoken', {
+      const response = await axios.get('http:/10.0.1.25:5001/auth/usertoken', {
         headers: { Authorization: `Bearer ${token}` }
       })
       console.log('User ID:', parsedData.userId)
@@ -35,15 +35,18 @@ export default function BONamiCard () {
         if (!id) {
           console.warn('No user ID found.')
           return
+        } else {
+          console.log('User ID:', id)
         }
-
         setUserId(id)
-
         const cardRes = await axios.get(
-          `http:/10.0.1.12:5001/hotel/userbonami-card/${id}`
+          `http:/10.0.1.25:5001/bonami/userbonamicard/${id}`
         )
+        console.log('User ID:', id)
         setCardDetails(cardRes.data)
-        console.log('Card details:', cardRes.data)
+        console.log('Card Details:', cardRes.data)
+        console.log('Card Details:', cardRes.data)
+        console.log('Card Details:', cardRes.data)
       } catch (error) {
         console.error('Error initializing BONamiCard screen:', error)
       } finally {

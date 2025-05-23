@@ -67,16 +67,16 @@ export const getBonamiCard = async (req, res) => {
 
     const card = await BonamiCard.findOne({ userId: id }).populate(
       'userId',
-      'firstName surname'
+      'firstname surname'
     )
-
+    console.log('Card:', card)
     if (!card) {
       return res.status(404).json({ message: 'BONami Card not found' })
     }
 
     res.json({
       cardNumber: card.cardNumber,
-      name: `${card.userIdfirstname} ${card.userId.surname}`,
+      name: `${card.userId.firstname} ${card.userId.surname}`,
       expires: card.expiryDate
     })
   } catch (err) {
@@ -95,7 +95,11 @@ export const checkBonamiCardStatus = async (req, res) => {
 
     console.log('Checking BONami card status for user ID:', userId)
     // Check if userId exists in User collection
-    const card = await BonamiCard.findOne({ userId })
+    const card = await BonamiCard.findOne({ userId }).populate(
+      'userId',
+      'firstname surname'
+    )
+    console.log('Card:', card)
 
     if (!card) {
       return res.status(200).json({ hasValidCard: false })

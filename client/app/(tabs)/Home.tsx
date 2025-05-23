@@ -34,7 +34,7 @@ export default function Home () {
       console.log('Cleaned JWT Token:', token)
 
       // Fetch user data from backend
-      const response = await axios.get('http:/10.0.1.12:5001/auth/usertoken', {
+      const response = await axios.get('http:/10.0.1.25:5001/auth/usertoken', {
         headers: { Authorization: `Bearer ${token}` }
       })
 

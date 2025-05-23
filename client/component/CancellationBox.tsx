@@ -28,7 +28,7 @@ export default function CancellationBox ({
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`http:/10.0.1.12:5001/hotel/delete-bookings/${id}`)
+      await axios.delete(`http:/10.0.1.25:5001/hotel/delete-bookings/${id}`)
       onDelete(id) // Remove item from state after successful deletion
     } catch (error) {
       console.error('Failed to delete booking:', error)

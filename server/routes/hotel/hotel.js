@@ -59,7 +59,7 @@ router.post('/bookingCompleted', bookingCompleted)
 router.get('/bookings/:userId', bookedUserId)
 router.delete('/delete-bookings/:id', deletebooked)
 router.post('/bonami-card', createBonamiCard)
-router.get('/userbonami-card/:id', getBonamiCard)
+router.get('/bonami/userbonamicard/:id', getBonamiCard)
 router.get('/bonami/check/:userId', checkBonamiCardStatus)
 
 export default router
