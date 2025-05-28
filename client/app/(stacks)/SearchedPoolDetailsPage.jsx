@@ -202,7 +202,7 @@ export default function SearchedPoolDetailsPage () {
                 style={styles.closeButton}
                 onPress={() => setModalVisible(false)}
               >
-                <AntDesign name='close' size={30} color='white' />
+                <AntDesign name='close' size={30} color='#000' />
               </TouchableOpacity>
               <ScrollView horizontal pagingEnabled style={styles.imageScroll}>
                 {(hotel.images || [])
