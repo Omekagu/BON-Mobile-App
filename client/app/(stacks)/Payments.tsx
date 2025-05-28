@@ -96,31 +96,37 @@ export default function Payments () {
             flex: 1,
             justifyContent: 'center',
             alignItems: 'center',
-            backgroundColor: 'rgba(0,0,0,0.5)'
+            backgroundColor: 'rgba(52, 52, 77, 0.7)'
           }}
         >
           <View
             style={{
-              backgroundColor: 'white',
-              padding: 20,
-              borderRadius: 15,
-              width: 320,
+              backgroundColor: '#fff',
+              paddingVertical: 30,
+              paddingHorizontal: 25,
+              borderRadius: 24,
+              width: 340,
               alignItems: 'center',
-              shadowColor: '#000',
-              shadowOpacity: 0.2,
-              shadowRadius: 5,
-              elevation: 5
+              shadowColor: '#3e1f47',
+              shadowOpacity: 0.22,
+              shadowOffset: { width: 0, height: 8 },
+              shadowRadius: 15,
+              elevation: 8,
+              borderWidth: 2,
+              borderColor: '#d0c4e7'
             }}
           >
             <Text
               style={{
-                fontSize: 20,
+                fontSize: 24,
                 fontWeight: 'bold',
-                marginBottom: 15,
-                textAlign: 'center'
+                marginBottom: 18,
+                color: '#7b2ff2',
+                textAlign: 'center',
+                letterSpacing: 0.5
               }}
             >
-              Choose Payment Method
+              ✨ Payment Methods ✨
             </Text>
 
             {paymentOptions.map(
@@ -134,26 +140,48 @@ export default function Payments () {
                   style={{
                     flexDirection: 'row',
                     alignItems: 'center',
-                    backgroundColor: '#f9f9f9',
-                    padding: 12,
-                    borderRadius: 10,
+                    backgroundColor: '#f6edfa',
+                    padding: 15,
+                    borderRadius: 14,
                     width: '100%',
-                    marginBottom: 10,
-                    shadowColor: '#000',
+                    marginBottom: 12,
+                    shadowColor: '#7b2ff2',
                     shadowOpacity: 0.1,
-                    shadowRadius: 3,
-                    elevation: 2
+                    shadowRadius: 4,
+                    elevation: 1,
+                    borderWidth: 1.5,
+                    borderColor: '#e5d5fa',
+                    transition: 'background 0.2s'
                   }}
+                  activeOpacity={0.9}
                 >
                   {isMaterial ? (
-                    <MaterialIcons name={icon} size={24} color={color} />
+                    <MaterialIcons
+                      name={icon}
+                      size={26}
+                      color={color || '#7b2ff2'}
+                    />
                   ) : isFontAwesome5 ? (
-                    <FontAwesome5 name={icon} size={24} color={color} />
+                    <FontAwesome5
+                      name={icon}
+                      size={26}
+                      color={color || '#7b2ff2'}
+                    />
                   ) : (
-                    <FontAwesome name={icon} size={24} color={color} />
+                    <FontAwesome
+                      name={icon}
+                      size={26}
+                      color={color || '#7b2ff2'}
+                    />
                   )}
                   <Text
-                    style={{ fontSize: 16, fontWeight: '500', marginLeft: 10 }}
+                    style={{
+                      fontSize: 17,
+                      fontWeight: '600',
+                      marginLeft: 16,
+                      color: '#4e2785',
+                      letterSpacing: 0.2
+                    }}
                   >
                     Pay {name}
                   </Text>
@@ -164,24 +192,31 @@ export default function Payments () {
             <TouchableOpacity
               onPress={() => setModalVisible(false)}
               style={{
-                marginTop: 20,
-                padding: 12,
-                backgroundColor: '#FF3B30',
-                borderRadius: 10,
+                marginTop: 24,
+                paddingVertical: 13,
+                borderRadius: 14,
                 width: '100%',
-                alignItems: 'center'
+                alignItems: 'center',
+                backgroundColor: '#fff',
+                borderWidth: 2,
+                borderColor: '#ffb8b8'
               }}
+              activeOpacity={0.85}
             >
               <Text
-                style={{ color: 'white', fontSize: 16, fontWeight: 'bold' }}
+                style={{
+                  color: '#ff3b30',
+                  fontWeight: 'bold',
+                  fontSize: 17,
+                  letterSpacing: 0.2
+                }}
               >
-                Cancel
+                ❌ Cancel
               </Text>
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
-
       <CustomBotton
         button={'Pay with Cryptocurrency'}
         onPress={() => router.push('/CryptoPayment')}

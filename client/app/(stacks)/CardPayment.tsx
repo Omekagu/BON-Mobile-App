@@ -135,6 +135,7 @@ export default function CardPayment () {
     } catch (error) {
       console.error('Error completing booking after payment:', error)
       Toast.show({ type: 'error', text1: 'Error saving booking after payment' })
+      router.replace({ pathname: '/Bookings', params: { amount, hotelId } })
     }
   }
 
@@ -143,7 +144,12 @@ export default function CardPayment () {
       'Payment Failed',
       'Your payment could not be processed. Please try again.'
     )
-    router.replace({ pathname: '/Payments', params: { price, hotelId } })
+    router.replace({
+      pathname: '/Payments'
+      //       params: {
+      //   price, hotelId
+      // }
+    })
   }
 
   return (

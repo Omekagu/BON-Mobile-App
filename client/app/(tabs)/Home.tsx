@@ -73,8 +73,6 @@ export default function Home () {
       </ImageBackground>
 
       <View style={styles.suggestionsContainer}>
-        {/* <Suggestions /> */}
-        {/* <FilterSuggestion /> */}
         <FetchHotelsPool />
       </View>
     </KeyboardAvoidingView>

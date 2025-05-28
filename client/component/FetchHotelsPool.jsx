@@ -1,17 +1,47 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import {
   View,
   Text,
   FlatList,
   StyleSheet,
   TouchableOpacity,
-  ActivityIndicator,
-  Alert
+  Dimensions
 } from 'react-native'
 import DropDownPicker from 'react-native-dropdown-picker'
 import SuggestionBox from './SuggestionBox'
 import * as Animatable from 'react-native-animatable'
 import { useRouter } from 'expo-router'
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons'
+
+// Simple custom skeleton component for React Native
+const SkeletonBox = ({ height = 120, width = '100%', style = {} }) => (
+  <View
+    style={[
+      {
+        backgroundColor: '#e6e6e6',
+        height,
+        width,
+        borderRadius: 12,
+        marginBottom: 16,
+        overflow: 'hidden'
+      },
+      style
+    ]}
+  >
+    <Animatable.View
+      animation='pulse'
+      iterationCount='infinite'
+      duration={900}
+      style={{
+        flex: 1,
+        backgroundColor: '#ece9f7',
+        opacity: 0.7
+      }}
+    />
+  </View>
+)
+
+const { width } = Dimensions.get('window')
 
 const FilterSuggestion = () => {
   const [hotels, setHotels] = useState([])
@@ -39,13 +69,12 @@ const FilterSuggestion = () => {
 
   const fetchHotelsByPool = async () => {
     if (!selectedPool) {
-      Alert.alert('Missing Selection', 'Please select a pool to search.')
+      alert('Please select a hotel to search.')
       return
     }
 
     setLoading(true)
     try {
-      console.log(`Fetching hotels from pool: ${selectedPool}`)
       const response = await fetch(
         `http:/10.0.1.27:5001/hotel/search/pool/${encodeURIComponent(
           selectedPool
@@ -58,64 +87,32 @@ const FilterSuggestion = () => {
       setHotels(data.length ? data : [])
     } catch (error) {
       console.error('Error fetching hotels:', error)
-      Alert.alert('Error', 'Failed to fetch hotels. Please try again.')
+      alert('Failed to fetch hotels. Please try again.')
     }
     setLoading(false)
   }
 
   const transformedHotels = hotels.map(hotel => {
-    // Regex to extract the URLs from the src attributes in the info field
     const imageUrls = [
       ...(hotel.info.match(/src="(https:\/\/[^"]+)"/g) || [])
-    ].map(img => img.match(/src="(https:\/\/[^"]+)"/)[1]) // Extract the actual URL
+    ].map(img => img.match(/src="(https:\/\/[^"]+)"/)[1])
 
     return {
-      _id: hotel.id.toString(), // Ensure ID is a string for keyExtractor
+      _id: hotel.id.toString(),
       name: hotel.name,
       img: hotel.img,
-      images: imageUrls, // Using the extracted image URLs
-      available: hotel.avail, // Placeholder for stars (replace with actual rating if available)
-      reviews: hotel.units, // Placeholder for reviews count (replace if available)
+      images: imageUrls,
+      available: hotel.avail,
+      reviews: hotel.units,
       pricePerNight: hotel.params ? JSON.parse(hotel.params).custprice : 'N/A',
-      location: hotel.alias || 'N/A' // Assuming alias can be treated as location
+      location: hotel.alias || 'N/A'
     }
   })
 
-  ;<View style={{ paddingBottom: 300 }}>
-    <FlatList
-      data={transformedHotels}
-      keyExtractor={item => item._id}
-      renderItem={({ item }) => (
-        <Animatable.View animation='fadeInUp' duration={800}>
-          <SuggestionBox
-            onPress={() => {
-              router.push({
-                pathname: '/SearchPageInfo',
-                params: { id: item._id, pool: selectedPool }
-              })
-            }}
-            image={
-              item.images[0] || 'https://i.postimg.cc/5ttJxCXK/YTW-DELUXE-6.jpg'
-            }
-            name={item.name}
-            stars={item.rating}
-            reviews={item.reviews}
-            price={
-              item.pricePerNight
-                ? Number(item.pricePerNight).toLocaleString()
-                : '100,000,000'
-            }
-            location={item.location || 'N/A'}
-          />
-        </Animatable.View>
-      )}
-    />
-  </View>
-
   return (
-    <View style={styles.container}>
+    <View style={styles.rootContainer}>
+      {/* Dropdown */}
       <View style={{ zIndex: 2000, marginBottom: poolOpen ? 180 : 10 }}>
-        <Text style={styles.label}>Select Hotel:</Text>
         <DropDownPicker
           open={poolOpen}
           value={selectedPool}
@@ -124,35 +121,68 @@ const FilterSuggestion = () => {
           setValue={setSelectedPool}
           setItems={() => {}}
           style={styles.dropdown}
-          placeholder='Select a Hotel'
+          placeholder='Choose a Hotel'
           dropDownDirection='BOTTOM'
           listMode='SCROLLVIEW'
           dropDownContainerStyle={styles.dropdownContainer}
+          ArrowDownIconComponent={() => (
+            <Ionicons name='chevron-down' size={22} color='#7f53ac' />
+          )}
+          ArrowUpIconComponent={() => (
+            <Ionicons name='chevron-up' size={22} color='#7f53ac' />
+          )}
+          tickIconStyle={{ tintColor: '#7f53ac' }}
         />
       </View>
-
+      {/* Search Button */}
       <TouchableOpacity
-        style={styles.searchButton}
+        style={[
+          styles.searchButton,
+          loading ? { backgroundColor: '#a63932' } : {}
+        ]}
         onPress={fetchHotelsByPool}
         disabled={loading}
+        activeOpacity={0.8}
       >
-        {loading ? (
-          <ActivityIndicator color='#fff' />
-        ) : (
-          <Text style={styles.buttonText}>Search Hotels</Text>
-        )}
+        <Animatable.View
+          animation={loading ? undefined : 'pulse'}
+          duration={800}
+          iterationCount='infinite'
+          style={{ flexDirection: 'row', alignItems: 'center' }}
+        >
+          <Ionicons name='search' size={20} color='#fff' />
+          <Text style={styles.buttonText}> Search Hotels</Text>
+        </Animatable.View>
       </TouchableOpacity>
-
-      {loading ? (
-        <ActivityIndicator size='large' color='#a63932' />
-      ) : (
-        <View style={{ paddingBottom: 250 }}>
+      {/* Results */}
+      <View style={{ flex: 1, paddingBottom: 40 }}>
+        {loading ? (
+          <View style={{ marginTop: 8 }}>
+            {[1, 2, 3, 4].map(i => (
+              <SkeletonBox
+                key={i}
+                height={328}
+                width={width - 32}
+                style={{ alignSelf: 'center' }}
+              />
+            ))}
+          </View>
+        ) : (
           <FlatList
             data={transformedHotels}
             keyExtractor={item => item._id}
+            contentContainerStyle={{ paddingBottom: 180 }}
+            ListEmptyComponent={
+              <Text style={styles.emptyListText}>
+                {selectedPool
+                  ? 'No hotels found for your selection.'
+                  : 'Please select a hotel.'}
+              </Text>
+            }
             renderItem={({ item }) => (
               <Animatable.View animation='fadeInUp' duration={800}>
                 <SuggestionBox
+                  futuristic
                   onPress={() => {
                     router.push({
                       pathname: '/SearchedPoolDetailsPage',
@@ -176,51 +206,82 @@ const FilterSuggestion = () => {
               </Animatable.View>
             )}
           />
-        </View>
-      )}
+        )}
+      </View>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  container: {
+  rootContainer: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#f7f8fa',
     padding: 10,
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 }
+    borderRadius: 14,
+    shadowColor: '#7f53ac',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.09,
+    shadowRadius: 12,
+    minHeight: '100%'
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 18,
+    marginTop: 7,
+    paddingHorizontal: 6,
+    gap: 6
+  },
+  headerText: {
+    fontSize: 22,
+    fontWeight: '700',
+    color: '#7f53ac',
+    letterSpacing: 0.5,
+    textShadowColor: '#ccc',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 6
   },
   label: {
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 5,
-    color: '#a63932'
+    color: '#5a3d8c'
   },
   dropdown: {
     marginBottom: 15,
-    borderColor: '#a63932'
+    borderColor: '#a63932',
+    borderRadius: 10,
+    backgroundColor: '#f5f4fb'
+  },
+  dropdownContainer: {
+    borderColor: '#a63932',
+    borderRadius: 10,
+    backgroundColor: '#f7f8fa'
   },
   searchButton: {
     backgroundColor: '#a63932',
-    borderRadius: 8,
-    paddingVertical: 12,
+    borderRadius: 14,
+    paddingVertical: 13,
     alignItems: 'center',
-    marginBottom: 10
+    marginBottom: 12,
+    marginTop: 2,
+    shadowColor: '#a63932',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.24,
+    shadowRadius: 12
   },
   buttonText: {
     color: '#fff',
+    fontSize: 17,
+    fontWeight: 'bold',
+    letterSpacing: 0.3
+  },
+  emptyListText: {
+    color: '#8d8d8d',
     fontSize: 16,
-    fontWeight: 'bold'
-  },
-  hotelBox: {
-    backgroundColor: '#fff',
-    padding: 10,
-    marginVertical: 5,
-    borderRadius: 5
-  },
-  text: {
-    color: 'black'
+    textAlign: 'center',
+    marginTop: 30,
+    fontStyle: 'italic'
   }
 })
 

@@ -45,7 +45,11 @@ export default function PaystackPage () {
   }
 
   // Function to schedule push notification
-  async function sendPushNotification (title: string, body: string) {
+  async function sendPushNotification (
+    title: string,
+    body: string
+    // icon: string
+  ) {
     await Notifications.scheduleNotificationAsync({
       content: {
         title,
@@ -144,7 +148,10 @@ export default function PaystackPage () {
       'Payment Failed',
       'Your payment could not be processed. Please try again.'
     )
-    router.replace({ pathname: '/Payments', params: { price, hotelId } })
+    router.replace({
+      pathname: '/Payments',
+      params: { price, hotelId, bookingData }
+    })
   }
 
   return (
