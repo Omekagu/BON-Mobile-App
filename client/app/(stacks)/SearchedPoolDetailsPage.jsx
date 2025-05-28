@@ -4,7 +4,6 @@ import axios from 'axios'
 import Toast from 'react-native-toast-message'
 import {
   View,
-  SafeAreaView,
   ScrollView,
   Image,
   Text,
@@ -13,7 +12,8 @@ import {
   Linking,
   Modal,
   ActivityIndicator,
-  Share
+  Share,
+  StatusBar
 } from 'react-native'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import Feather from '@expo/vector-icons/Feather'
@@ -23,34 +23,31 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 import Entypo from '@expo/vector-icons/Entypo'
 import { AntDesign, FontAwesome } from '@expo/vector-icons'
 import CustomBotton from '@/component/CustomBotton'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export default function SearchedPoolDetailsPage () {
   const [liked, setLiked] = useState(false)
-  const [likesCount, setLikesCount] = useState(2800) // Example initial likes count
+  const [likesCount, setLikesCount] = useState(2800)
   const [modalVisible, setModalVisible] = useState(false)
-  const { id, pool } = useLocalSearchParams() // Get hotel ID from route params
+  const { id, pool } = useLocalSearchParams()
   const [hotel, setHotel] = useState(null)
   const [loading, setLoading] = useState(true)
 
-  console.log('Hotel ID:', id, pool)
   const handleLike = async () => {
     const newLikedState = !liked
     const newCount = newLikedState ? likesCount + 1 : likesCount - 1
-    if (newLikedState) {
-      setLiked(newLikedState)
-      setLikesCount(newCount)
-      Toast.show({ type: 'success', text1: 'saved to your Favourite.' })
-    } else {
-      Toast.show({ type: 'error', text1: 'Unsaved from Favourite.' })
-      setLiked(newLikedState)
-    }
+    setLiked(newLikedState)
+    setLikesCount(newCount)
+    Toast.show({
+      type: newLikedState ? 'success' : 'error',
+      text1: newLikedState
+        ? 'Saved to your Favourite.'
+        : 'Unsaved from Favourite.'
+    })
     try {
-      // Simulating API call to update likes in the database
       await fetch('https://your-api.com/update-likes', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ liked: newLikedState, likesCount: newCount })
       })
     } catch (error) {
@@ -60,6 +57,7 @@ export default function SearchedPoolDetailsPage () {
 
   useEffect(() => {
     const fetchHotelDetails = async () => {
+      setLoading(true)
       try {
         const response = await axios.get(
           `http:/10.0.1.27:5001/hotel/${pool}/${id}`
@@ -69,20 +67,18 @@ export default function SearchedPoolDetailsPage () {
             img => img.match(/src="(https:\/\/[^"]+)"/)[1]
           )
         }
-
-        // Then inside fetchHotelDetails, after response:
         const data = response.data
         data.images = extractImageUrls(data.info)
         setHotel(data)
-        console.log('Hotel details:', data)
+        // Save just the hotel data to AsyncStorage
+        await AsyncStorage.setItem('hotelDetails', JSON.stringify(data))
       } catch (error) {
         Toast.show({ type: 'error', text1: 'Failed to load hotel details.' })
       }
       setLoading(false)
     }
-
     fetchHotelDetails()
-  }, [id])
+  }, [id, pool])
 
   if (loading) {
     return (
@@ -95,25 +91,29 @@ export default function SearchedPoolDetailsPage () {
   }
 
   const handleCall = () => {
-    Linking.openURL(`tel:${hotel.contact.phone}`)
+    if (hotel?.contact?.phone) Linking.openURL(`tel:${hotel.contact.phone}`)
   }
 
   const handleEmail = () => {
-    Linking.openURL(
-      `mailto:${hotel.contact.email}?subject=Support Request&body=Hello, I need help with...`
-    )
+    if (hotel?.contact?.email)
+      Linking.openURL(
+        `mailto:${hotel.contact.email}?subject=Support Request&body=Hello, I need help with...`
+      )
   }
 
   const handleShare = async () => {
     try {
-      const hotelLink = `https://yourhotelwebsite.com/hotel/${hotel._id}` // Ensure it's a full URL
-      const message = `🏨 Check out this amazing hotel: *${hotel.name}* 📍 ${hotel.location}\n💰 Price: $₦{hotel.params
-                ? JSON.parse(hotel.params).custprice
-                : 'N/A'.toLocaleString()} per night.\n🔗 Click here: ${hotelLink}`
+      const hotelLink = `https://yourhotelwebsite.com/hotel/${hotel._id}`
+      const price = hotel.params
+        ? Number(JSON.parse(hotel.params).custprice).toLocaleString()
+        : hotel.custprice
+        ? Number(hotel.custprice).toLocaleString()
+        : 'N/A'
+      const message = `🏨 Check out this amazing hotel: *${hotel.name}* 📍 ${hotel.location}\n💰 Price: ₦${price} per night.\n🔗 Click here: ${hotelLink}`
 
       const result = await Share.share({
-        message: message,
-        url: hotelLink // Ensures it's detected as a clickable link
+        message,
+        url: hotelLink
       })
 
       if (result.action === Share.sharedAction) {
@@ -129,36 +129,36 @@ export default function SearchedPoolDetailsPage () {
       console.error('Error sharing hotel:', error)
     }
   }
-  // console.log(hotel.contact)
-  // console.log(hotel.reviews)
 
   const OpenInstagram = () => {
     Linking.openURL('https://www.instagram.com/').catch(err =>
       console.error("Couldn't load page", err)
     )
   }
-
   const OpenFacebook = () => {
     Linking.openURL('https://www.facebook.com/').catch(err =>
       console.error("Couldn't load page", err)
     )
   }
-
   const OpenTwitter = () => {
     Linking.openURL('https://www.twitter.com/').catch(err =>
       console.error("Couldn't load page", err)
     )
   }
 
+  // Defensive: for owners, fallback to empty object to avoid errors on undefined
+  const owner = hotel.owners || {}
+
   return (
     <GestureHandlerRootView>
       <View style={styles.container}>
+        <StatusBar barStyle='dark-content' />
         <ScrollView>
-          {/* <View> */}
-
           {/* Navigation & Header */}
           <View style={styles.header}>
-            <Feather name='arrow-left' size={24} color='black' />
+            <TouchableOpacity onPress={() => router.back()}>
+              <Feather name='arrow-left' size={24} color='black' />
+            </TouchableOpacity>
             <View style={styles.right}>
               <TouchableOpacity onPress={handleShare}>
                 <AntDesign
@@ -179,7 +179,6 @@ export default function SearchedPoolDetailsPage () {
           </View>
 
           {/* Hotel Image */}
-          {/* Hotel Image (Click to Open Modal) */}
           <TouchableOpacity onPress={() => setModalVisible(true)}>
             <Image
               style={styles.image}
@@ -206,21 +205,15 @@ export default function SearchedPoolDetailsPage () {
                 <AntDesign name='close' size={30} color='white' />
               </TouchableOpacity>
               <ScrollView horizontal pagingEnabled style={styles.imageScroll}>
-                {[
-                  hotel.images?.[0],
-                  hotel.images?.[1],
-                  hotel.images?.[2],
-                  hotel.images?.[3]
-                  // "https://i.postimg.cc/sDF3pxL1/YTW-EXECUTIVE-3.jpg",
-                  // "https://i.postimg.cc/Bnps9gn1/YTW-SUPERIOR-6.jpg",
-                  // "https://i.postimg.cc/5ttJxCXK/YTW-DELUXE-6.jpg",
-                ].map((img, index) => (
-                  <Image
-                    key={index}
-                    style={styles.modalImage}
-                    source={{ uri: img }}
-                  />
-                ))}
+                {(hotel.images || [])
+                  .slice(0, hotel.images.length)
+                  .map((img, index) => (
+                    <Image
+                      key={index}
+                      style={styles.modalImage}
+                      source={{ uri: img }}
+                    />
+                  ))}
               </ScrollView>
             </View>
           </Modal>
@@ -241,8 +234,8 @@ export default function SearchedPoolDetailsPage () {
             <Text style={styles.price}>
               ₦
               {hotel.params
-                ? JSON.parse(hotel.params).custprice
-                : 'N/A'
+                ? Number(JSON.parse(hotel.params).custprice).toLocaleString()
+                : hotel.custprice
                 ? Number(hotel.custprice).toLocaleString()
                 : '100,000,000'}{' '}
               - A night
@@ -250,10 +243,14 @@ export default function SearchedPoolDetailsPage () {
           </View>
 
           {/* Amenities */}
-          <ScrollView horizontal style={styles.amenities}>
+          <ScrollView
+            horizontal
+            style={styles.amenities}
+            showsHorizontalScrollIndicator={false}
+          >
             <View style={styles.amenityBox}>
               <FontAwesome5 name='bed' size={20} color='black' />
-              <Text style={styles.amenityText}>2 Bed</Text>
+              <Text style={styles.amenityText}>1 -king Size Bed</Text>
             </View>
             <View style={styles.amenityBox}>
               <FontAwesome name='bathtub' size={24} color='black' />
@@ -283,12 +280,12 @@ export default function SearchedPoolDetailsPage () {
               style={styles.ownerImage}
               source={{
                 uri:
-                  hotel.owners?.ownerImage ||
-                  'https://i.postimg.cc/5ttJxCXK/YTW-DELUXE-6.jpg'
+                  owner.ownerImage ||
+                  'data:image/png;base64,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'
               }}
             />
             <View>
-              <Text style={styles.ownerName}>{hotel.owners?.name}</Text>
+              <Text style={styles.ownerName}>{owner.name || 'Angela Yue'}</Text>
               <Text style={styles.ownerRole}>Reservations Personnel</Text>
             </View>
             <View style={styles.contactIcons}>
@@ -301,6 +298,7 @@ export default function SearchedPoolDetailsPage () {
             </View>
           </View>
 
+          {/* Socials */}
           <View>
             <View style={styles.socials}>
               <TouchableOpacity onPress={OpenFacebook}>
@@ -321,34 +319,30 @@ export default function SearchedPoolDetailsPage () {
           <CustomBotton
             button={`Next - ₦${
               hotel.params
-                ? JSON.parse(hotel.params).custprice
+                ? Number(JSON.parse(hotel.params).custprice).toLocaleString()
+                : hotel.custprice
+                ? Number(hotel.custprice).toLocaleString()
                 : 'N/A'
-                ? Number(
-                    hotel.params ? JSON.parse(hotel.params).custprice : 'N/A'
-                  ).toLocaleString()
-                : '100,000'
             }`}
             onPress={() =>
               router.push({
-                pathname: '/SelectDateRange',
+                pathname: '/SelectPoolDateRange',
                 params: {
                   price: hotel.params
                     ? JSON.parse(hotel.params).custprice
-                    : 'N/A',
+                    : hotel.custprice || '100000',
                   hotelId: hotel._id,
                   pool: pool
                 }
               })
             }
           />
-          {/* </View> */}
         </ScrollView>
       </View>
     </GestureHandlerRootView>
   )
 }
 
-// Styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -414,8 +408,6 @@ const styles = StyleSheet.create({
     color: '#000',
     fontSize: 14,
     fontWeight: 'bold'
-    // fontSize: 16,
-    // color: '#FFA500'
   },
   reviews: {
     color: '#000',
@@ -442,7 +434,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    elevation: 3, // Android shadow
+    elevation: 3,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
@@ -506,14 +498,12 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold'
   },
-  // Modal Styles
   modalContainer: {
     flex: 1,
     flexDirection: 'row',
-    backgroundColor: '#000',
+    backgroundColor: '#FFFFFF',
     justifyContent: 'center',
     alignItems: 'center'
-    // height:'3%',
   },
   closeButton: {
     position: 'absolute',
@@ -530,6 +520,6 @@ const styles = StyleSheet.create({
     height: 400,
     marginHorizontal: 10,
     resizeMode: 'cover',
-    borderRadius: 10
+    borderRadius: 5
   }
 })

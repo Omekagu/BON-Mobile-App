@@ -5,7 +5,8 @@ import {
   TouchableOpacity,
   SafeAreaView,
   FlatList,
-  Modal
+  Modal,
+  Platform
 } from 'react-native'
 import DateTimePickerModal from 'react-native-modal-datetime-picker'
 import { useState } from 'react'
@@ -13,6 +14,7 @@ import axios from 'axios'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import Toast from 'react-native-toast-message'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons'
 
 export default function SelectPoolDateRange () {
   const { price, hotelId, pool } = useLocalSearchParams()
@@ -33,6 +35,7 @@ export default function SelectPoolDateRange () {
   const handleDateConfirm = date => {
     if (showPicker.type === 'start') {
       setStartDate(date)
+      if (!endDate || date > endDate) setEndDate(null)
     } else {
       setEndDate(date)
     }
@@ -71,13 +74,10 @@ export default function SelectPoolDateRange () {
       }
       const parsedData = JSON.parse(userData)
       let token = parsedData.token
-      console.log('Retrieved Token:', token)
       token = token.replace(/^"|"$/g, '')
-      console.log('Cleaned JWT Token:', token)
       const response = await axios.get('http:/10.0.1.27:5001/auth/usertoken', {
         headers: { Authorization: `Bearer ${token}` }
       })
-      // console.log('User Data:', response.data)
       return parsedData.userId
     } catch (error) {
       console.error(
@@ -89,6 +89,7 @@ export default function SelectPoolDateRange () {
   }
 
   const handleBooking = async status => {
+    const HotelDetails = AsyncStorage.getItem('hotelDetails')
     try {
       const userId = await getUserId()
       if (!userId) {
@@ -97,8 +98,6 @@ export default function SelectPoolDateRange () {
       }
 
       const nights = calculateNights()
-      console.log(nights)
-
       const bookingData = {
         userId,
         hotelId,
@@ -108,9 +107,10 @@ export default function SelectPoolDateRange () {
         checkInTime: selectedTime,
         guests: selectedGuests,
         rooms: selectedRooms,
-        nights, // Include the calculated nights
-        totalPrice: calculateTotal().replace(/,/g, ''), // Remove commas
-        status
+        nights,
+        totalPrice: calculateTotal().replace(/,/g, ''),
+        status,
+        hotelDetails: JSON.parse(await HotelDetails)
       }
 
       if (status === 'Completed') {
@@ -126,14 +126,10 @@ export default function SelectPoolDateRange () {
         })
       } else if (status === 'Pending') {
         setIsModalVisible(false)
-        // const response = await axios.post(
-        //   'http:/10.0.1.27:5001/hotel/bookingCompleted',
-        //   bookingData
-        // )
-        // console.log('Booking Response:', response.data)
-        router.push({ pathname: '/Bookings', params: { hotelId, pool } })
-
-        console.log('Booking saved for later:', hotelId, pool)
+        router.replace({
+          pathname: '/Bookings',
+          params: { bookingData: JSON.stringify(bookingData) }
+        })
         Toast.show({
           type: 'success',
           text1: 'payment on arrival',
@@ -154,235 +150,371 @@ export default function SelectPoolDateRange () {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaView
         style={{
-          padding: 20,
-          backgroundColor: '#f8f9fa',
-          flex: 1,
-          marginHorizontal: 10
+          padding: 0,
+          backgroundColor: '#7b7b7b',
+          flex: 1
         }}
       >
-        <View style={{ alignItems: 'center' }}>
+        <View
+          style={{
+            alignSelf: 'center',
+            margin: 18,
+            backgroundColor: 'white',
+            borderRadius: 24,
+            padding: 18,
+            elevation: 4,
+            shadowColor: '#000',
+            shadowOpacity: 0.05,
+            shadowOffset: { width: 0, height: 4 },
+            shadowRadius: 16
+          }}
+        >
+          <View style={{ alignItems: 'center', marginBottom: 20 }}>
+            <Ionicons name='receipt' size={24} color='black' />
+            <Text
+              style={{
+                fontSize: 22,
+                fontWeight: 'bold',
+                marginBottom: 8,
+                color: '#232323',
+                textTransform: 'uppercase',
+                letterSpacing: 1.5
+              }}
+            >
+              Reservation Details
+            </Text>
+            <Text
+              style={{
+                fontSize: 20,
+                color: '#a63932',
+                fontWeight: 'bold',
+                marginBottom: 4
+              }}
+            >
+              ₦{nightlyPrice.toLocaleString()}{' '}
+              <Text style={{ color: '#7b7b7b', fontWeight: '600' }}>
+                per night
+              </Text>
+            </Text>
+            <Text style={{ color: '#8b96b2', fontWeight: '500', fontSize: 13 }}>
+              Flexible cancellation • Instant Confirmation
+            </Text>
+          </View>
+
+          {/* Date Selection */}
+          <View style={{ marginTop: 8, marginBottom: 20 }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                gap: 8
+              }}
+            >
+              {['start', 'end'].map(type => (
+                <TouchableOpacity
+                  key={type}
+                  onPress={() => setShowPicker({ type, visible: true })}
+                  style={{
+                    flex: 1,
+                    backgroundColor: '#f6f7fb',
+                    padding: 17,
+                    borderRadius: 12,
+                    marginRight: type === 'start' ? 8 : 0,
+                    elevation: 2,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    gap: 8,
+                    borderWidth: 1.5,
+                    borderColor:
+                      (type === 'start' && startDate) ||
+                      (type === 'end' && endDate)
+                        ? '#a63932'
+                        : '#eee'
+                  }}
+                >
+                  <Ionicons
+                    name={type === 'start' ? 'calendar-outline' : 'calendar'}
+                    size={20}
+                    color={
+                      (type === 'start' && startDate) ||
+                      (type === 'end' && endDate)
+                        ? '#a63932'
+                        : '#b0b4c4'
+                    }
+                    style={{ marginRight: 7 }}
+                  />
+                  <Text
+                    style={{
+                      fontSize: 11,
+                      fontWeight: 'bold',
+                      color:
+                        (type === 'start' && startDate) ||
+                        (type === 'end' && endDate)
+                          ? '#a63932'
+                          : '#7b7b7b'
+                    }}
+                  >
+                    {type === 'start'
+                      ? startDate
+                        ? startDate.toDateString()
+                        : 'Check-in'
+                      : endDate
+                      ? endDate.toDateString()
+                      : 'Check-out'}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+            <DateTimePickerModal
+              isVisible={showPicker.visible}
+              mode='date'
+              minimumDate={
+                showPicker.type === 'end' && startDate ? startDate : new Date()
+              }
+              onConfirm={handleDateConfirm}
+              onCancel={handleCancel}
+              display={Platform.OS === 'ios' ? 'inline' : 'default'}
+            />
+          </View>
+
+          {/* Time Slot Selection */}
           <Text
             style={{
-              fontSize: 15,
-              fontWeight: 'bold',
-              marginBottom: 10,
+              fontSize: 13,
+              fontWeight: '700',
+              textTransform: 'uppercase',
+              marginTop: 10,
+              marginBottom: 7,
+              color: '#232323',
+              letterSpacing: 0.5
+            }}
+          >
+            Check-in Time
+          </Text>
+          <FlatList
+            data={timeSlots}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            keyExtractor={item => item}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                onPress={() => setSelectedTime(item)}
+                style={{
+                  height: 44,
+                  alignSelf: 'center',
+                  paddingHorizontal: 18,
+                  borderRadius: 18,
+                  margin: 5,
+                  backgroundColor:
+                    selectedTime === item ? '#a63932' : '#f6f7fb',
+                  justifyContent: 'center',
+                  borderWidth: selectedTime === item ? 1.5 : 0,
+                  borderColor: '#a63932',
+                  elevation: selectedTime === item ? 3 : 0
+                }}
+              >
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    fontSize: 15,
+                    color: selectedTime === item ? '#fff' : '#232323',
+                    fontWeight: selectedTime === item ? 'bold' : '600'
+                  }}
+                >
+                  {item}
+                </Text>
+              </TouchableOpacity>
+            )}
+          />
+
+          {/* Guest Selection */}
+          <Text
+            style={{
+              fontSize: 13,
+              fontWeight: '700',
+              marginTop: 22,
+              marginBottom: 7,
+              color: '#232323',
               textTransform: 'uppercase'
             }}
           >
-            Choose Preferences
+            Guests
           </Text>
-          <Text style={{ fontSize: 16, color: '#555', fontWeight: 'bold' }}>
-            ₦{nightlyPrice.toLocaleString()} - A night
-          </Text>
-        </View>
-
-        {/* Date Selection */}
-        <View style={{ marginTop: 20 }}>
-          {['start', 'end'].map(type => (
-            <TouchableOpacity
-              key={type}
-              onPress={() => setShowPicker({ type, visible: true })}
-              style={{
-                backgroundColor: '#e9ecef',
-                padding: 15,
-                borderRadius: 3,
-                marginBottom: 10,
-                elevation: 3
-              }}
-            >
-              <Text
+          <FlatList
+            data={guests}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            keyExtractor={item => item.toString()}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                onPress={() => setSelectedGuests(item)}
                 style={{
-                  fontSize: 11,
-                  textTransform: 'capitalize',
-                  color: '#333',
-                  fontWeight: 'bold'
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignSelf: 'center',
+                  padding: 10,
+                  height: 44,
+                  width: 44,
+                  borderRadius: 22,
+                  margin: 5,
+                  backgroundColor:
+                    selectedGuests === item ? '#a63932' : '#f6f7fb',
+                  borderWidth: selectedGuests === item ? 1.5 : 0,
+                  borderColor: '#a63932',
+                  alignItems: 'center',
+                  elevation: selectedGuests === item ? 2 : 0
                 }}
               >
-                {type === 'start'
-                  ? startDate
-                    ? `Check - in  :${startDate.toDateString()}`
-                    : 'Select Check - in Date'
-                  : endDate
-                  ? `Check - out  :${endDate.toDateString()}`
-                  : 'Select Check - out Date'}
-              </Text>
-            </TouchableOpacity>
-          ))}
-          <DateTimePickerModal
-            isVisible={showPicker.visible}
-            mode='date'
-            onConfirm={handleDateConfirm}
-            onCancel={handleCancel}
+                <Text
+                  style={{
+                    fontSize: 16,
+                    color: selectedGuests === item ? '#fff' : '#232323',
+                    fontWeight: selectedGuests === item ? 'bold' : '600'
+                  }}
+                >
+                  {item}
+                </Text>
+              </TouchableOpacity>
+            )}
           />
-        </View>
 
-        {/* Time Slot Selection */}
-        <Text
-          style={{
-            fontSize: 12,
-            fontWeight: 'bold',
-            textTransform: 'uppercase',
-            marginTop: 20,
-            textAlign: 'center'
-          }}
-        >
-          Select Check - in Time
-        </Text>
-        <FlatList
-          data={timeSlots}
-          horizontal
-          keyExtractor={item => item}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              onPress={() => setSelectedTime(item)}
-              style={{
-                height: 60,
-                alignSelf: 'center',
-                padding: 10,
-                borderRadius: 10,
-                margin: 5,
-                backgroundColor: selectedTime === item ? '#a63932' : '#e9ecef'
-              }}
-            >
-              <Text
-                style={{
-                  textAlign: 'center',
-                  fontSize: 14,
-                  color: selectedTime === item ? '#fff' : '#333'
-                }}
-              >
-                {item}
-              </Text>
-            </TouchableOpacity>
-          )}
-        />
-
-        {/* Guest Selection */}
-        <Text
-          style={{
-            fontSize: 12,
-            fontWeight: 'bold',
-            marginTop: 20,
-            textAlign: 'center',
-            textTransform: 'uppercase'
-          }}
-        >
-          Number of Guests
-        </Text>
-        <FlatList
-          data={guests}
-          horizontal
-          keyExtractor={item => item.toString()}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              onPress={() => setSelectedGuests(item)}
-              style={{
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignSelf: 'center',
-                padding: 10,
-                height: 60,
-                borderRadius: 50,
-                margin: 5,
-                backgroundColor: selectedGuests === item ? '#a63932' : '#e9ecef'
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: 16,
-                  color: selectedGuests === item ? '#fff' : '#333'
-                }}
-              >
-                {item}
-              </Text>
-            </TouchableOpacity>
-          )}
-        />
-
-        {/* Room Selection */}
-        <Text
-          style={{
-            fontSize: 12,
-            fontWeight: 'bold',
-            marginTop: 20,
-            textAlign: 'center',
-            textTransform: 'uppercase'
-          }}
-        >
-          Number of Rooms
-        </Text>
-        <FlatList
-          data={rooms}
-          horizontal
-          keyExtractor={item => item.toString()}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              onPress={() => setSelectedRooms(item)}
-              style={{
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignSelf: 'center',
-                padding: 10,
-                height: 60,
-                borderRadius: 50,
-                margin: 5,
-                backgroundColor: selectedRooms === item ? '#a63932' : '#e9ecef'
-              }}
-            >
-              <Text
-                style={{
-                  textAlign: 'center',
-                  fontSize: 16,
-                  color: selectedRooms === item ? '#fff' : '#333'
-                }}
-              >
-                {item}
-              </Text>
-            </TouchableOpacity>
-          )}
-        />
-
-        {/* Book Now Button */}
-        <View
-          style={{ marginTop: 30, alignItems: 'center', marginHorizontal: 10 }}
-        >
-          <TouchableOpacity
-            onPress={() => setIsModalVisible(true)}
+          {/* Room Selection */}
+          <Text
             style={{
-              padding: 15,
-              backgroundColor: '#a63932',
-              borderRadius: 10,
-              width: '80%',
-              alignItems: 'center',
-              elevation: 3
+              fontSize: 13,
+              fontWeight: '700',
+              marginTop: 22,
+              marginBottom: 7,
+              color: '#232323',
+              textTransform: 'uppercase'
             }}
-            disabled={!startDate || !endDate}
           >
-            <Text style={{ color: 'white', fontSize: 18, fontWeight: 'bold' }}>
-              Proceed · ₦{calculateTotal()}
-            </Text>
-          </TouchableOpacity>
+            Rooms
+          </Text>
+          <FlatList
+            data={rooms}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            keyExtractor={item => item.toString()}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                onPress={() => setSelectedRooms(item)}
+                style={{
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignSelf: 'center',
+                  padding: 10,
+                  height: 44,
+                  width: 44,
+                  borderRadius: 22,
+                  margin: 5,
+                  backgroundColor:
+                    selectedRooms === item ? '#a63932' : '#f6f7fb',
+                  borderWidth: selectedRooms === item ? 1.5 : 0,
+                  borderColor: '#a63932',
+                  alignItems: 'center',
+                  elevation: selectedRooms === item ? 2 : 0
+                }}
+              >
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    fontSize: 16,
+                    color: selectedRooms === item ? '#fff' : '#232323',
+                    fontWeight: selectedRooms === item ? 'bold' : '600'
+                  }}
+                >
+                  {item}
+                </Text>
+              </TouchableOpacity>
+            )}
+          />
+
+          {/* Book Now Button */}
+          <View
+            style={{
+              marginTop: 35,
+              alignItems: 'center',
+              marginHorizontal: 10
+            }}
+          >
+            <TouchableOpacity
+              onPress={() => setIsModalVisible(true)}
+              style={{
+                padding: 17,
+                backgroundColor: !startDate || !endDate ? '#c6b3b2' : '#a63932',
+                borderRadius: 18,
+                width: '90%',
+                alignItems: 'center',
+                elevation: 4,
+                flexDirection: 'row',
+                justifyContent: 'center',
+                gap: 8,
+                opacity: !startDate || !endDate ? 0.7 : 1
+              }}
+              activeOpacity={!startDate || !endDate ? 1 : 0.8}
+              disabled={!startDate || !endDate}
+            >
+              <MaterialCommunityIcons
+                name='calendar-check'
+                size={20}
+                color='#fff'
+                style={{ marginRight: 2 }}
+              />
+              <Text
+                style={{
+                  color: 'white',
+                  fontSize: 18,
+                  fontWeight: 'bold',
+                  letterSpacing: 0.2
+                }}
+              >
+                Proceed · ₦{calculateTotal()}
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
         {/* Bottom Sheet */}
-        <Modal visible={isModalVisible} transparent animationType='slide'>
+        <Modal visible={isModalVisible} transparent animationType='fade'>
           <View
             style={{
               flex: 1,
               justifyContent: 'center',
               alignItems: 'center',
-              backgroundColor: 'rgba(0,0,0,0.5)'
+              backgroundColor: 'rgba(0,0,0,0.3)'
             }}
           >
             <View
               style={{
                 backgroundColor: '#fff',
-                padding: 20,
-                borderRadius: 10,
+                padding: 24,
+                borderRadius: 16,
                 width: '80%',
-                alignItems: 'center'
+                alignItems: 'center',
+                elevation: 7,
+                shadowColor: '#000',
+                shadowOpacity: 0.15,
+                shadowOffset: { width: 0, height: 4 },
+                shadowRadius: 16
               }}
             >
+              <MaterialCommunityIcons
+                name='wallet'
+                size={40}
+                color='#a63932'
+                style={{ marginBottom: 10 }}
+              />
+              <Text
+                style={{
+                  fontWeight: 'bold',
+                  fontSize: 18,
+                  marginBottom: 12,
+                  color: '#232323'
+                }}
+              >
+                Payment Options
+              </Text>
               <TouchableOpacity
                 onPress={() => handleBooking('Completed')}
                 style={{
@@ -391,11 +523,16 @@ export default function SelectPoolDateRange () {
                   borderRadius: 10,
                   marginBottom: 10,
                   alignItems: 'center',
-                  width: '100%'
+                  width: '100%',
+                  elevation: 2,
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  gap: 7
                 }}
               >
+                <Ionicons name='card' size={19} color='#fff' />
                 <Text style={{ color: '#fff', fontSize: 16 }}>
-                  Book Now · ₦{calculateTotal()}
+                  Pay Now · ₦{calculateTotal()}
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -405,18 +542,26 @@ export default function SelectPoolDateRange () {
                   backgroundColor: '#f8f9fa',
                   borderRadius: 10,
                   alignItems: 'center',
-                  borderWidth: 1,
+                  borderWidth: 1.5,
                   borderColor: '#a63932',
-                  width: '100%'
+                  width: '100%',
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  gap: 7
                 }}
               >
+                <MaterialCommunityIcons
+                  name='clock-outline'
+                  size={19}
+                  color='#a63932'
+                />
                 <Text style={{ color: '#a63932', fontSize: 16 }}>
-                  Save for Later
+                  Pay on Arrival
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => setIsModalVisible(false)}
-                style={{ marginTop: 10 }}
+                style={{ marginTop: 18 }}
               >
                 <Text style={{ color: '#555', fontSize: 16 }}>Cancel</Text>
               </TouchableOpacity>

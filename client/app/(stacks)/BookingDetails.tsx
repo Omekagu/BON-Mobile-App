@@ -280,7 +280,7 @@ export default function BookingDetails () {
           <ScrollView horizontal style={styles.amenities}>
             <View style={styles.amenityBox}>
               <FontAwesome5 name='bed' size={20} color='black' />
-              <Text style={styles.amenityText}>2 Bed</Text>
+              <Text style={styles.amenityText}>1 King size Bed</Text>
             </View>
             <View style={styles.amenityBox}>
               <FontAwesome name='bathtub' size={24} color='black' />

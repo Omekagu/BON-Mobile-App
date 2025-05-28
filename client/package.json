@@ -50,6 +50,7 @@
     "expo-web-browser": "~14.1.6",
     "i18next": "^24.2.2",
     "moment": "^2.30.1",
+    "prettyjson": "^1.2.5",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-i18next": "^15.4.1",

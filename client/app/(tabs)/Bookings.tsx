@@ -7,22 +7,19 @@ import {
   StyleSheet,
   ScrollView,
   SafeAreaView,
-  Animated,
-  Modal
+  Animated
 } from 'react-native'
-import * as Print from 'expo-print'
 import axios from 'axios'
 import Toast from 'react-native-toast-message'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { router } from 'expo-router'
-import * as Sharing from 'expo-sharing'
+import { useLocalSearchParams } from 'expo-router'
 
 const Bookings = () => {
   const fadeAnim = useRef(new Animated.Value(0)).current
   const [activeTab, setActiveTab] = useState('Completed')
   const [bookings, setBookings] = useState([])
+  const { bookingData } = useLocalSearchParams()
   const [loading, setLoading] = useState(false)
-  const [modalVisible, setModalVisible] = useState(true) // Show modal on load
 
   const tabs = ['Completed', 'Pending', 'Cancelled']
 
@@ -30,14 +27,11 @@ const Bookings = () => {
     try {
       const userData = await AsyncStorage.getItem('token')
       if (!userData) return null
-
       const parsedData = JSON.parse(userData)
       let token = parsedData.token.replace(/^"|"$/g, '')
-
-      const response = await axios.get('http:/10.0.1.27:5001/auth/usertoken', {
+      await axios.get('http://10.0.1.27:5001/auth/usertoken', {
         headers: { Authorization: `Bearer ${token}` }
       })
-      console.log(token)
       return parsedData.userId
     } catch (error) {
       console.error('Error retrieving user ID:', error)
@@ -45,79 +39,79 @@ const Bookings = () => {
     }
   }
 
+  // Helper to pretty print a booking JSON object (safe for missing fields)
+  function printBooking (data) {
+    if (!data) {
+      console.log('No booking data to print.')
+      return
+    }
+    // If received as string, parse it
+    let booking = data
+    if (typeof data === 'string') {
+      try {
+        booking = JSON.parse(data)
+      } catch (err) {
+        console.log('- Unable to parse bookingData string -')
+        return
+      }
+    }
+    console.log('\n' + '='.repeat(50))
+    console.log('BOOKING DETAILS')
+    console.log('-'.repeat(50))
+    Object.entries({
+      'User ID': booking.userId,
+      'Hotel Pool': booking.pool,
+      'Hotel Name': booking.hotelDetails?.name,
+      'Room Type': booking.hotelDetails?.alias,
+      'Check-in': booking.checkInDate,
+      'Check-out': booking.checkOutDate,
+      Time: booking.checkInTime,
+      Guests: booking.guests,
+      Rooms: booking.rooms,
+      Nights: booking.nights,
+      'Total Price': `₦${booking.totalPrice}`,
+      Status: booking.status
+    }).forEach(([k, v]) => console.log(`${k.padEnd(12)}: ${v}`))
+    console.log('-'.repeat(50))
+    if (booking.hotelDetails?.images) {
+      console.log('Images:')
+      booking.hotelDetails.images.forEach((img, i) => {
+        console.log(`  [${i + 1}] ${img}`)
+      })
+    }
+    console.log('='.repeat(50) + '\n')
+  }
+
   useEffect(() => {
     const fetchBookings = async () => {
       setLoading(true)
       try {
-        const userId = await getUserId()
-        if (!userId) return
-
-        const response = await axios.get(
-          `http:/10.0.1.27:5001/hotel/bookings/${userId}`
-        )
-
-        const sortedBookings = Array.isArray(response.data.data)
-          ? response.data.data.sort(
-              (a, b) => new Date(b.checkInDate) - new Date(a.checkInDate)
-            ) // Sorting by date (most recent first)
-          : []
-
-        setBookings(sortedBookings)
-
-        if (!sortedBookings.length) {
-          Toast.show({ type: 'error', text1: 'No bookings found.' })
-        }
+        // const userId = await getUserId()
+        // if (!userId) return
+        // const response = await axios.get(
+        //   `http://10.0.1.27:5001/hotel/bookings/${userId}`
+        // )
+        // const sortedBookings = Array.isArray(response.data.data)
+        //   ? response.data.data.sort(
+        //       (a, b) => new Date(b.checkInDate) - new Date(a.checkInDate)
+        //     )
+        //   : []
+        // setBookings(bookingData)
+        // if (!sortedBookings.length) {
+        //   Toast.show({ type: 'error', text1: 'No bookings found.' })
+        // }
+        printBooking(bookingData)
+        console.log('Successfully Pay on Arrival booking')
       } catch (error) {
         Toast.show({ type: 'error', text1: 'Error fetching bookings.' })
+        // Clean and pretty print bookingData if present
+        printBooking(bookingData)
         console.error('Error fetching bookings:', error)
       }
       setLoading(false)
     }
-
     fetchBookings()
   }, [])
-
-  const handlePrintReceipt = async booking => {
-    if (!booking) return console.error('No booking data available')
-    try {
-      const userData = await AsyncStorage.getItem('token')
-      const parsedData = userData ? JSON.parse(userData) : {}
-      const user = await getUserId()
-
-      const receiptHtml = `
-      <html>
-      <body>
-        <h1>Hotel Receipt</h1>
-        <p><strong>Name:</strong> ${user.username || 'N/A'}</p>
-        <p><strong>Email:</strong> ${user.email || 'N/A'}</p>
-        <p><strong>Hotel:</strong> ${booking.hotelId?.name || 'N/A'}</p>
-        <p><strong>Check-in:</strong> ${new Date(
-          booking.checkInDate
-        ).toDateString()}</p>
-        <p><strong>Check-out:</strong> ${new Date(
-          booking.checkOutDate
-        ).toDateString()}</p>
-        <p><strong>Total Price:</strong> ₦${booking.totalPrice.toLocaleString()}</p>
-      </body>
-      </html>`
-
-      const { uri } = await Print.printToFileAsync({ html: receiptHtml })
-      await Sharing.shareAsync(uri)
-    } catch (error) {
-      console.error('Error generating or sharing PDF:', error)
-    }
-  }
-
-  const handleBookingPress = booking => {
-    if (!booking.hotelId?._id) {
-      Toast.show({ type: 'error', text1: 'Invalid hotel details.' })
-      return
-    }
-    router.push({
-      pathname: '/BookingDetails',
-      params: { id: booking.hotelId._id, userId: booking.userId }
-    })
-  }
 
   const animateTabChange = () => {
     fadeAnim.setValue(0)
@@ -138,48 +132,6 @@ const Bookings = () => {
 
   return (
     <SafeAreaView>
-      {/* Modal for Flight, Ride, and Food Order */}
-      <Modal visible={modalVisible} transparent animationType='slide'>
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContainer}>
-            <Text style={styles.modalTitle}>Continue Booking?</Text>
-            <TouchableOpacity
-              style={styles.modalButton}
-              onPress={() => {
-                setModalVisible(false)
-                router.push('/BookFlight')
-              }}
-            >
-              <Text style={styles.buttonText}>Book a Flight</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.modalButton}
-              onPress={() => {
-                setModalVisible(false)
-                router.push('/BookRide')
-              }}
-            >
-              <Text style={styles.buttonText}>Book a Ride</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.modalButton}
-              onPress={() => {
-                setModalVisible(false)
-                router.push('/OrderFood')
-              }}
-            >
-              <Text style={styles.buttonText}>Order Food</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.cancelButton}
-              onPress={() => setModalVisible(false)}
-            >
-              <Text style={styles.cancelButtonText}>Cancel</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
-
       <View style={styles.container}>
         <ScrollView
           horizontal
@@ -234,7 +186,7 @@ const Bookings = () => {
                       ? 'orange'
                       : 'red'
                   }
-                  onPrintReceipt={() => handlePrintReceipt(booking)} // Pass function here
+                  onPrintReceipt={() => handlePrintReceipt(booking)}
                 />
               ))
             ) : (
@@ -273,34 +225,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     fontSize: 16,
     color: '#555'
-  },
-
-  // Modal Styles
-  modalOverlay: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)'
-  },
-  modalContainer: {
-    backgroundColor: '#fff',
-    padding: 20,
-    borderRadius: 30,
-    width: '80%',
-    alignItems: 'center'
-  },
-  modalTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 10 },
-  modalButton: {
-    backgroundColor: '#993d3d',
-    padding: 10,
-    borderRadius: 15,
-    width: '100%',
-    alignItems: 'center',
-    marginVertical: 5
-  },
-  buttonText: { color: '#fff', fontSize: 20, fontWeight: 900 },
-  cancelButton: { marginTop: 10 },
-  cancelButtonText: { color: 'red', fontSize: 16 }
+  }
 })
 
 export default Bookings
