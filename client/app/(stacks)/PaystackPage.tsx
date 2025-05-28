@@ -122,7 +122,7 @@ export default function PaystackPage () {
         console.log('Parsed Booking Data:', parsedBookingData)
 
         const response = await axios.post(
-          'http://10.0.1.25:5001/hotel/bookingCompleted',
+          'http://10.0.1.27:5001/hotel/bookingCompleted',
           parsedBookingData
         )
       }

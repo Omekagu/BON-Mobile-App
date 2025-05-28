@@ -79,7 +79,7 @@ const FilterSuggestion = () => {
     try {
       console.log('Fetching hotels for:', selectedState)
       const response = await fetch(
-        `http:/10.0.1.25:5001/hotel/search/state/${encodeURIComponent(
+        `http:/10.0.1.27:5001/hotel/search/state/${encodeURIComponent(
           selectedState
         )}`
       )
