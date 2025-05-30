@@ -40,7 +40,7 @@ const Bookings = () => {
   }
 
   // Helper to pretty print a booking JSON object (safe for missing fields)
-  function printBooking (data) {
+  function printBooking (data: any) {
     if (!data) {
       console.log('No booking data to print.')
       return
@@ -65,6 +65,26 @@ const Bookings = () => {
       'Room Type': booking.hotelDetails?.alias,
       'Check-in': booking.checkInDate,
       'Check-out': booking.checkOutDate,
+      id: booking.hotelDetails?.id,
+      name: booking.hotelDetails?.name,
+      img: booking.hotelDetails?.img,
+      idcat: booking.hotelDetails?.idcat,
+      idcarat: booking.hotelDetails?.idcarat,
+      idopt: booking.hotelDetails?.idopt,
+      info: booking.hotelDetails?.info,
+      avail: booking.hotelDetails?.avail,
+      units: booking.hotelDetails?.units,
+      moreimgs: booking.hotelDetails?.moreimgs,
+      fromadult: booking.hotelDetails?.fromadult,
+      toadult: booking.hotelDetails?.toadults,
+      fromchild: booking.hotelDetails?.fromchild,
+      tochild: booking.hotelDetails?.tochild,
+      totpeople: booking.hotelDetails?.totpeople,
+      mintotpeople: booking.hotelDetails?.mintotpeople,
+      params: booking.hotelDetails?.params,
+      imgcaptions: booking.hotelDetails?.imgcaptions,
+      alias: booking.hotelDetails?.alias,
+      smalldesc: booking.hotelDetails?.smalldesc,
       Time: booking.checkInTime,
       Guests: booking.guests,
       Rooms: booking.rooms,
@@ -75,10 +95,11 @@ const Bookings = () => {
     console.log('-'.repeat(50))
     if (booking.hotelDetails?.images) {
       console.log('Images:')
-      booking.hotelDetails.images.forEach((img, i) => {
+      booking.hotelDetails.images.forEach((img: any, i: any) => {
         console.log(`  [${i + 1}] ${img}`)
       })
     }
+
     console.log('='.repeat(50) + '\n')
   }
 
@@ -101,6 +122,7 @@ const Bookings = () => {
         //   Toast.show({ type: 'error', text1: 'No bookings found.' })
         // }
         printBooking(bookingData)
+        // console.log(bookingData)
         console.log('Successfully Pay on Arrival booking')
       } catch (error) {
         Toast.show({ type: 'error', text1: 'Error fetching bookings.' })
