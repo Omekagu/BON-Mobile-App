@@ -89,8 +89,10 @@ export default function SelectPoolDateRange () {
   }
 
   const handleBooking = async status => {
-    const HotelDetails = AsyncStorage.getItem('hotelDetails')
     try {
+      const HotelDetails = await AsyncStorage.getItem('hotelDetails')
+      const hotelDetailsParsed = HotelDetails ? JSON.parse(HotelDetails) : null
+
       const userId = await getUserId()
       if (!userId) {
         Toast.show({ type: 'error', text1: 'User not logged in.' })
@@ -100,7 +102,6 @@ export default function SelectPoolDateRange () {
       const nights = calculateNights()
       const bookingData = {
         userId,
-        hotelId,
         pool,
         checkInDate: startDate.toISOString(),
         checkOutDate: endDate.toISOString(),
@@ -110,42 +111,49 @@ export default function SelectPoolDateRange () {
         nights,
         totalPrice: calculateTotal().replace(/,/g, ''),
         status,
-        hotelDetails: JSON.parse(await HotelDetails)
+        hotelDetails: hotelDetailsParsed
       }
 
-      if (status === 'Completed') {
-        setIsModalVisible(false)
-        router.push({
-          pathname: '/Payments',
-          params: {
-            price: String(calculateTotal()),
-            hotelId,
-            pool,
-            bookingData: JSON.stringify(bookingData)
-          }
-        })
-      } else if (status === 'Pending') {
-        setIsModalVisible(false)
-        router.replace({
-          pathname: '/Bookings',
-          params: { bookingData: JSON.stringify(bookingData) }
-        })
-        Toast.show({
-          type: 'success',
-          text1: 'payment on arrival',
-          position: 'bottom'
-        })
+      // Send booking to backend
+      const res = await axios.post(
+        'http://10.0.1.27:5001/hotel/bookingCompleted',
+        bookingData
+      )
+
+      if (res.data && res.data.status === 'ok') {
+        if (status === 'Completed') {
+          setIsModalVisible(false)
+          router.push({
+            pathname: '/Payments',
+            params: {
+              price: String(calculateTotal()),
+              hotelId,
+              pool,
+              bookingData: JSON.stringify(bookingData)
+            }
+          })
+        } else if (status === 'Pending') {
+          setIsModalVisible(false)
+          router.replace({
+            pathname: '/Bookings'
+            // params: { bookingData: JSON.stringify(bookingData) }
+          })
+          Toast.show({
+            type: 'success',
+            text1: 'Payment on arrival',
+            position: 'bottom'
+          })
+        }
       } else {
         Toast.show({
           type: 'error',
-          text1: 'Booking failed. Please try again.'
+          text1: res.data?.error || 'Booking failed. Please try again.'
         })
       }
     } catch (error) {
       Toast.show({ type: 'error', text1: 'Booking failed. Please try again.' })
     }
   }
-
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaView

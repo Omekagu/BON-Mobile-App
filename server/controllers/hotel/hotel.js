@@ -138,7 +138,7 @@ export const bookingCompleted = async (req, res) => {
   try {
     const {
       userId,
-      hotelId,
+      pool,
       checkInDate,
       checkOutDate,
       checkInTime,
@@ -146,8 +146,13 @@ export const bookingCompleted = async (req, res) => {
       nights,
       rooms,
       totalPrice,
-      status
+      status,
+      hotelDetails
     } = req.body
+
+    console.log('\n' + '='.repeat(50))
+    console.log(req.body)
+    console.log('\n' + '='.repeat(50))
 
     const formattedTotalPrice =
       typeof totalPrice === 'string'
@@ -158,12 +163,12 @@ export const bookingCompleted = async (req, res) => {
       return res.status(400).json({ error: 'Invalid totalPrice value' })
     }
 
-    const hotel = await Hotel.findById(hotelId)
-    if (!hotel) return res.status(404).json({ error: 'Hotel not found' })
+    // const hotel = await Hotel.findById(hotelId)
+    // if (!hotel) return res.status(404).json({ error: 'Hotel not found' })
 
     const newBooking = new Booking({
       userId,
-      hotelId,
+      pool,
       checkInDate,
       checkOutDate,
       checkInTime,
@@ -171,7 +176,8 @@ export const bookingCompleted = async (req, res) => {
       rooms,
       nights,
       totalPrice: formattedTotalPrice,
-      status // Accept 'Completed' or 'Pending'
+      status, // Accept 'Completed' or 'Pending'
+      hotelDetails
     })
 
     await newBooking.save()
@@ -185,6 +191,7 @@ export const bookingCompleted = async (req, res) => {
     res.status(500).json({ error: 'Server error', details: error.message })
   }
 }
+
 // fetch booked room based on userid
 export const bookedUserId = async (req, res) => {
   try {
