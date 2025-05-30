@@ -70,10 +70,7 @@ const _layout = () => {
       <Tabs.Screen
         name='More'
         options={{
-          headerStyle: {
-            backgroundColor: '#a63932'
-          },
-          headerTintColor: '#a63932',
+          headerShown: false,
           title: 'More'
         }}
       />
