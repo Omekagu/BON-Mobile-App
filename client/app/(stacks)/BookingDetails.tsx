@@ -26,13 +26,49 @@ import { AntDesign, FontAwesome } from '@expo/vector-icons'
 
 const { width } = Dimensions.get('window')
 
+interface Owner {
+  ownerImage?: string
+  name?: string
+}
+
+interface HotelDetails {
+  _id: string
+  name: string
+  location: string
+  images?: string[]
+  rating?: number
+  reviews?: number
+  smalldesc?: string
+  owners?: Owner
+  contact?: {
+    phone?: string
+    email?: string
+  }
+}
+
+interface Booking {
+  hotelDetails: HotelDetails
+  checkInDate: string
+  checkOutDate: string
+  guests: number
+  nights: number
+  status: string
+  totalPrice: number
+  _id: string
+}
+
+interface Params {
+  userId?: string
+  id?: string
+}
+
 export default function BookingDetails () {
   const [liked, setLiked] = useState(false)
   const [likesCount, setLikesCount] = useState(2800)
   const [modalVisible, setModalVisible] = useState(false)
-  const { userId, id } = useLocalSearchParams()
-  const [hotel, setHotel] = useState(null)
-  const [bookingDetails, setBookingsDetails] = useState()
+  const { userId, id } = useLocalSearchParams<Params>()
+  const [hotel, setHotel] = useState<HotelDetails | null>(null)
+  const [bookingDetails, setBookingsDetails] = useState<Booking | null>(null)
   const [loading, setLoading] = useState(true)
   const [imgIndex, setImgIndex] = useState(0)
 
@@ -62,7 +98,7 @@ export default function BookingDetails () {
     const fetchHotelDetails = async () => {
       setLoading(true)
       try {
-        const response = await axios.get(
+        const response = await axios.get<{ data: Booking[] }>(
           `http://10.0.1.27:5001/hotel/history/booking/${userId}`
         )
         const booking = Array.isArray(response.data.data)
@@ -73,25 +109,8 @@ export default function BookingDetails () {
           setLoading(false)
           return
         }
-        const {
-          hotelDetails,
-          checkInDate,
-          checkOutDate,
-          guests,
-          nights,
-          status,
-          totalPrice
-        } = booking
-        setHotel(hotelDetails)
-        setBookingsDetails({
-          checkInDate,
-          checkOutDate,
-          guests,
-          nights,
-          status,
-          totalPrice,
-          hotelDetails
-        })
+        setHotel(booking.hotelDetails)
+        setBookingsDetails(booking)
       } catch (error) {
         Toast.show({ type: 'error', text1: 'Failed to load hotel details.' })
       }
@@ -108,7 +127,7 @@ export default function BookingDetails () {
     )
   }
 
-  if (!hotel) {
+  if (!hotel || !bookingDetails) {
     return <Text style={styles.errorText}>Hotel details not found.</Text>
   }
 
@@ -356,10 +375,8 @@ export default function BookingDetails () {
           </View>
 
           {/* Description */}
-          {bookingDetails.hotelDetails.smalldesc ? (
-            <Text style={styles.description}>
-              {bookingDetails.hotelDetails.smalldesc}
-            </Text>
+          {hotel.smalldesc ? (
+            <Text style={styles.description}>{hotel.smalldesc}</Text>
           ) : null}
 
           {/* Action Buttons */}
@@ -371,7 +388,7 @@ export default function BookingDetails () {
                   params: {
                     price: String(bookingDetails.totalPrice),
                     userId: String(userId),
-                    bookingId: String(id),
+                    bookingId: String(bookingDetails._id),
                     hotelId: String(hotel._id)
                   }
                 })
