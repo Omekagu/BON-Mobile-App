@@ -74,7 +74,6 @@ export default function SearchedPoolDetailsPage () {
         const data = response.data
         data.images = extractImageUrls(data.info)
         setHotel(data)
-        console.log(data)
         await AsyncStorage.setItem('hotelDetails', JSON.stringify(data))
       } catch (error) {
         Toast.show({ type: 'error', text1: 'Failed to load hotel details.' })
@@ -120,20 +119,10 @@ export default function SearchedPoolDetailsPage () {
         : 'N/A'
       const message = `🏨 Check out this amazing hotel: *${hotel.name}* 📍 ${hotel.location}\n💰 Price: ₦${price} per night.\n🔗 Click here: ${hotelLink}`
 
-      const result = await Share.share({
+      await Share.share({
         message,
         url: hotelLink
       })
-
-      if (result.action === Share.sharedAction) {
-        if (result.activityType) {
-          console.log('Shared via:', result.activityType)
-        } else {
-          console.log('Shared successfully!')
-        }
-      } else if (result.action === Share.dismissedAction) {
-        console.log('Share dismissed.')
-      }
     } catch (error) {
       console.error('Error sharing hotel:', error)
     }
@@ -156,14 +145,20 @@ export default function SearchedPoolDetailsPage () {
     )
   }
 
-  // Defensive: for owners, fallback to empty object to avoid errors on undefined
   const owner = hotel.owners || {}
+
+  const hotelImages = hotel.images?.length
+    ? hotel.images
+    : ['https://i.postimg.cc/5ttJxCXK/YTW-DELUXE-6.jpg']
 
   return (
     <GestureHandlerRootView>
       <View style={styles.container}>
         <StatusBar barStyle='dark-content' />
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 30 }}
+        >
           {/* Navigation & Header */}
           <View style={styles.header}>
             <TouchableOpacity
@@ -197,14 +192,12 @@ export default function SearchedPoolDetailsPage () {
             <Image
               style={styles.image}
               source={{
-                uri:
-                  hotel.images?.[activeImageIdx] ||
-                  'https://i.postimg.cc/5ttJxCXK/YTW-DELUXE-6.jpg'
+                uri: hotelImages[activeImageIdx]
               }}
             />
-            {hotel.images && hotel.images.length > 1 && (
+            {hotelImages.length > 1 && (
               <View style={styles.imageIndicatorBox}>
-                {hotel.images.map((_, idx) => (
+                {hotelImages.map((_, idx) => (
                   <View
                     key={idx}
                     style={[
@@ -241,7 +234,7 @@ export default function SearchedPoolDetailsPage () {
                   setActiveImageIdx(idx)
                 }}
               >
-                {(hotel.images || []).map((img, index) => (
+                {hotelImages.map((img, index) => (
                   <Image
                     key={index}
                     style={styles.modalImage}
@@ -255,7 +248,6 @@ export default function SearchedPoolDetailsPage () {
           {/* Hotel Details */}
           <View style={styles.detailsContainer}>
             <Text style={styles.hotelName}>{hotel.name}</Text>
-
             <View style={styles.ratingRow}>
               <Text style={styles.reviews}>
                 {hotel.units} · units available
@@ -314,7 +306,7 @@ export default function SearchedPoolDetailsPage () {
               source={{
                 uri:
                   owner.ownerImage ||
-                  'data:image/png;base64,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'
+                  'https://i.postimg.cc/5ttJxCXK/YTW-DELUXE-6.jpg'
               }}
             />
             <View style={{ flex: 1 }}>
@@ -395,7 +387,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 18,
     marginTop: 20,
-    color: '#fff'
+    color: '#a63932'
   },
   header: {
     flexDirection: 'row',

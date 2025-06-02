@@ -38,7 +38,6 @@ const screens = [
   { name: 'Reviews', headerShown: false },
   { name: 'Reward', headerShown: false },
   { name: 'Settings', headerShown: false },
-  // { name: 'Search', headerShown: false },
   { name: 'ChooseNo', headerShown: false },
   { name: 'Payments', headerShown: false },
   { name: 'BookingHistory', headerShown: false },

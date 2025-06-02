@@ -12,13 +12,14 @@ import {
 import axios from 'axios'
 import Toast from 'react-native-toast-message'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { useLocalSearchParams } from 'expo-router'
+import { router, useLocalSearchParams } from 'expo-router'
 
 const Bookings = () => {
   const fadeAnim = useRef(new Animated.Value(0)).current
   const [activeTab, setActiveTab] = useState('Completed')
   const [bookings, setBookings] = useState([])
-  const { bookingData } = useLocalSearchParams()
+  const [userId, setUserId] = useState(null)
+  // const { sortedBookings } = useLocalSearchParams()
   const [loading, setLoading] = useState(false)
 
   const tabs = ['Completed', 'Pending', 'Cancelled']
@@ -39,101 +40,44 @@ const Bookings = () => {
     }
   }
 
-  // Helper to pretty print a booking JSON object (safe for missing fields)
-  function printBooking (data: any) {
-    if (!data) {
-      console.log('No booking data to print.')
-      return
-    }
-    // If received as string, parse it
-    let booking = data
-    if (typeof data === 'string') {
-      try {
-        booking = JSON.parse(data)
-      } catch (err) {
-        console.log('- Unable to parse bookingData string -')
-        return
-      }
-    }
-    console.log('\n' + '='.repeat(50))
-    console.log('BOOKING DETAILS')
-    console.log('-'.repeat(50))
-    Object.entries({
-      'User ID': booking.userId,
-      'Hotel Pool': booking.pool,
-      'Hotel Name': booking.hotelDetails?.name,
-      'Room Type': booking.hotelDetails?.alias,
-      'Check-in': booking.checkInDate,
-      'Check-out': booking.checkOutDate,
-      id: booking.hotelDetails?.id,
-      name: booking.hotelDetails?.name,
-      img: booking.hotelDetails?.img,
-      idcat: booking.hotelDetails?.idcat,
-      idcarat: booking.hotelDetails?.idcarat,
-      idopt: booking.hotelDetails?.idopt,
-      info: booking.hotelDetails?.info,
-      avail: booking.hotelDetails?.avail,
-      units: booking.hotelDetails?.units,
-      moreimgs: booking.hotelDetails?.moreimgs,
-      fromadult: booking.hotelDetails?.fromadult,
-      toadult: booking.hotelDetails?.toadults,
-      fromchild: booking.hotelDetails?.fromchild,
-      tochild: booking.hotelDetails?.tochild,
-      totpeople: booking.hotelDetails?.totpeople,
-      mintotpeople: booking.hotelDetails?.mintotpeople,
-      params: booking.hotelDetails?.params,
-      imgcaptions: booking.hotelDetails?.imgcaptions,
-      alias: booking.hotelDetails?.alias,
-      smalldesc: booking.hotelDetails?.smalldesc,
-      Time: booking.checkInTime,
-      Guests: booking.guests,
-      Rooms: booking.rooms,
-      Nights: booking.nights,
-      'Total Price': `₦${booking.totalPrice}`,
-      Status: booking.status
-    }).forEach(([k, v]) => console.log(`${k.padEnd(12)}: ${v}`))
-    console.log('-'.repeat(50))
-    if (booking.hotelDetails?.images) {
-      console.log('Images:')
-      booking.hotelDetails.images.forEach((img: any, i: any) => {
-        console.log(`  [${i + 1}] ${img}`)
-      })
-    }
-
-    console.log('='.repeat(50) + '\n')
-  }
-
   useEffect(() => {
     const fetchBookings = async () => {
       setLoading(true)
       try {
-        // const userId = await getUserId()
-        // if (!userId) return
-        // const response = await axios.get(
-        //   `http://10.0.1.27:5001/hotel/bookings/${userId}`
-        // )
-        // const sortedBookings = Array.isArray(response.data.data)
-        //   ? response.data.data.sort(
-        //       (a, b) => new Date(b.checkInDate) - new Date(a.checkInDate)
-        //     )
-        //   : []
-        // setBookings(bookingData)
-        // if (!sortedBookings.length) {
-        //   Toast.show({ type: 'error', text1: 'No bookings found.' })
-        // }
-        printBooking(bookingData)
-        // console.log(bookingData)
-        console.log('Successfully Pay on Arrival booking')
+        const user = await getUserId()
+        setUserId(user)
+        console.log(user)
+        if (!userId) return
+        const response = await axios.get(
+          `http://10.0.1.27:5001/hotel/history/booking/${userId}`
+        )
+        const sortedBookings = Array.isArray(response.data.data)
+          ? response.data.data.sort(
+              (a, b) => new Date(b.checkInDate) - new Date(a.checkInDate)
+            )
+          : []
+        setBookings(sortedBookings)
+        if (!sortedBookings.length) {
+          Toast.show({ type: 'error', text1: 'No bookings found.' })
+        }
+        console.log(sortedBookings)
+        console.log('\n' + '=='.replace)
       } catch (error) {
         Toast.show({ type: 'error', text1: 'Error fetching bookings.' })
-        // Clean and pretty print bookingData if present
-        printBooking(bookingData)
+
         console.error('Error fetching bookings:', error)
       }
       setLoading(false)
     }
     fetchBookings()
-  }, [])
+  }, [userId])
+
+  const handleBookingPress = bookingId => {
+    router.push({
+      pathname: '/BookingDetails',
+      params: { userId, id: bookingId }
+    })
+  }
 
   const animateTabChange = () => {
     fadeAnim.setValue(0)
@@ -184,12 +128,12 @@ const Bookings = () => {
               filteredBookings.map(booking => (
                 <CancellationBox
                   key={booking._id}
-                  onPress={() => handleBookingPress(booking)}
+                  onPress={() => handleBookingPress(booking._id)}
                   onDeletePressed={() =>
                     console.log('Cancel pressed', booking._id)
                   }
                   image={
-                    booking.hotelId?.images?.[0] ||
+                    booking.hotelDetails?.images?.[0] ||
                     'https://i.postimg.cc/QtffXzX9/BON-HOTEL-TRANSTELL-ROOMS6.jpg'
                   }
                   city={booking.hotelId?.location || 'Unknown'}
@@ -198,7 +142,7 @@ const Bookings = () => {
                   ).toDateString()} - ${new Date(
                     booking.checkOutDate
                   ).toDateString()}`}
-                  name={booking.hotelId?.name || 'No Name'}
+                  name={booking.hotelDetails?.name || 'No Name'}
                   datePrice={`₦ ${booking.totalPrice.toLocaleString()}`}
                   type={booking.status}
                   color={

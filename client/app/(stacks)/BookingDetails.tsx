@@ -12,7 +12,9 @@ import {
   Linking,
   Modal,
   ActivityIndicator,
-  Share
+  Share,
+  Dimensions,
+  Platform
 } from 'react-native'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import Feather from '@expo/vector-icons/Feather'
@@ -22,34 +24,33 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 import Entypo from '@expo/vector-icons/Entypo'
 import { AntDesign, FontAwesome } from '@expo/vector-icons'
 
+const { width } = Dimensions.get('window')
+
 export default function BookingDetails () {
   const [liked, setLiked] = useState(false)
-  const [likesCount, setLikesCount] = useState(2800) // Example initial likes count
+  const [likesCount, setLikesCount] = useState(2800)
   const [modalVisible, setModalVisible] = useState(false)
-  const { id, userId } = useLocalSearchParams() // Get hotel ID from route params
+  const { userId, id } = useLocalSearchParams()
   const [hotel, setHotel] = useState(null)
   const [bookingDetails, setBookingsDetails] = useState()
   const [loading, setLoading] = useState(true)
+  const [imgIndex, setImgIndex] = useState(0)
 
   const handleLike = async () => {
     const newLikedState = !liked
     const newCount = newLikedState ? likesCount + 1 : likesCount - 1
-    if (newLikedState) {
-      setLiked(newLikedState)
-      setLikesCount(newCount)
-      Toast.show({ type: 'success', text1: 'saved to your Favourite.' })
-    } else {
-      Toast.show({ type: 'error', text1: 'Unsaved from Favourite.' })
-      setLiked(newLikedState)
-    }
-
+    setLiked(newLikedState)
+    setLikesCount(newCount)
+    Toast.show({
+      type: newLikedState ? 'success' : 'error',
+      text1: newLikedState
+        ? 'Saved to your Favourites.'
+        : 'Unsaved from Favourite.'
+    })
     try {
-      // Simulating API call to update likes in the database
       await fetch('https://your-api.com/update-likes', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ liked: newLikedState, likesCount: newCount })
       })
     } catch (error) {
@@ -59,20 +60,21 @@ export default function BookingDetails () {
 
   useEffect(() => {
     const fetchHotelDetails = async () => {
+      setLoading(true)
       try {
         const response = await axios.get(
-          `http:/10.0.1.27:5001/hotel/bookings/${userId}`
+          `http://10.0.1.27:5001/hotel/history/booking/${userId}`
         )
-
-        // Find the booking where hotelId._id matches id
-        const booking = response.data.data.find(b => b.hotelId._id === id)
+        const booking = Array.isArray(response.data.data)
+          ? response.data.data.find(b => b._id === id)
+          : null
         if (!booking) {
-          console.error('No matching booking found for hotelId:', id)
+          Toast.show({ type: 'error', text1: 'No booking found for this ID.' })
+          setLoading(false)
           return
         }
-        // console.log('Matched Booking:', booking)
         const {
-          hotelId,
+          hotelDetails,
           checkInDate,
           checkOutDate,
           guests,
@@ -80,34 +82,29 @@ export default function BookingDetails () {
           status,
           totalPrice
         } = booking
-
-        // console.log('UserId:', userId, 'HotelId', id)
-
-        // const { hotelId, checkInDate, checkOutDate, guests } = booking
-        console.log(hotelId, checkInDate, checkOutDate, guests, nights)
-
-        setHotel(booking.hotelId) // Store only the hotel details
+        setHotel(hotelDetails)
         setBookingsDetails({
-          hotelId,
           checkInDate,
           checkOutDate,
           guests,
           nights,
           status,
-          totalPrice
+          totalPrice,
+          hotelDetails
         })
       } catch (error) {
         Toast.show({ type: 'error', text1: 'Failed to load hotel details.' })
       }
       setLoading(false)
     }
-
     fetchHotelDetails()
-  }, [id])
+  }, [id, userId])
 
   if (loading) {
     return (
-      <ActivityIndicator size='large' color='#a63932' style={styles.loader} />
+      <View style={styles.loader}>
+        <ActivityIndicator size='large' color='#a63932' />
+      </View>
     )
   }
 
@@ -116,92 +113,89 @@ export default function BookingDetails () {
   }
 
   const handleCall = () => {
-    Linking.openURL(`tel:${hotel.contact.phone}`)
+    if (hotel.contact?.phone) Linking.openURL(`tel:${hotel.contact.phone}`)
   }
 
   const handleEmail = () => {
-    Linking.openURL(
-      `mailto:${hotel.contact.email}?subject=Support Request&body=Hello, I need help with...`
-    )
+    if (hotel.contact?.email)
+      Linking.openURL(
+        `mailto:${hotel.contact.email}?subject=Support Request&body=Hello, I need help with...`
+      )
   }
 
   const handleShare = async () => {
     try {
-      const hotelLink = `https://yourhotelwebsite.com/hotel/${hotel._id}` // Ensure it's a full URL
-      const message = `Check out this amazing hotel:
-       🏨 *${hotel.name}* 
-      📍 ${hotel.location}\n
-      💰Price:  ${Number(bookingDetails.totalPrice).toLocaleString()} for ${
+      const hotelLink = `https://yourhotelwebsite.com/hotel/${hotel._id}`
+      const message = `Check out this amazing hotel:\n🏨 ${hotel.name}\n📍 ${
+        hotel.location
+      }\n💰Price:  ${Number(bookingDetails.totalPrice).toLocaleString()} for ${
         bookingDetails.nights
-      } nights.
-       \n🔗 Click here: ${hotelLink}`
-
-      const result = await Share.share({
-        message: message,
-        url: hotelLink // Ensures it's detected as a clickable link
-      })
-
-      if (result.action === Share.sharedAction) {
-        if (result.activityType) {
-          console.log('Shared via:', result.activityType)
-        } else {
-          console.log('Shared successfully!')
-        }
-      } else if (result.action === Share.dismissedAction) {
-        console.log('Share dismissed.')
-      }
+      } nights.\n🔗 Click here: ${hotelLink}`
+      await Share.share({ message, url: hotelLink })
     } catch (error) {
       console.error('Error sharing hotel:', error)
     }
   }
-  // console.log(hotel.contact)
-  // console.log(hotel.reviews)
+
+  const hotelImages = hotel.images?.length
+    ? hotel.images
+    : ['https://i.postimg.cc/5ttJxCXK/YTW-DELUXE-6.jpg']
 
   return (
     <GestureHandlerRootView>
       <View style={styles.container}>
-        <ScrollView>
-          {/* <View> */}
-
-          {/* Navigation & Header */}
+        <ScrollView contentContainerStyle={{ paddingBottom: 30 }}>
+          {/* Header */}
           <View style={styles.header}>
-            <Feather name='arrow-left' size={24} color='black' />
-            <View style={styles.right}>
+            <TouchableOpacity onPress={() => router.back()}>
+              <Feather name='arrow-left' size={28} color='#222' />
+            </TouchableOpacity>
+            <View style={styles.headerActions}>
               <TouchableOpacity onPress={handleShare}>
                 <AntDesign
-                  style={{ marginRight: 20 }}
                   name='sharealt'
-                  size={30}
-                  color='black'
+                  size={26}
+                  color='#222'
+                  style={{ marginRight: 18 }}
                 />
               </TouchableOpacity>
               <TouchableOpacity onPress={handleLike}>
                 <AntDesign
                   name='heart'
-                  size={30}
-                  color={liked ? 'red' : 'black'}
+                  size={26}
+                  color={liked ? '#a63932' : '#222'}
                 />
               </TouchableOpacity>
             </View>
           </View>
 
-          {/* Hotel Image */}
-          {/* Hotel Image (Click to Open Modal) */}
-          <TouchableOpacity onPress={() => setModalVisible(true)}>
+          {/* Hotel Images */}
+          <TouchableOpacity
+            onPress={() => setModalVisible(true)}
+            activeOpacity={0.88}
+          >
             <Image
               style={styles.image}
-              source={{
-                uri:
-                  hotel.images?.[0] ||
-                  'https://i.postimg.cc/5ttJxCXK/YTW-DELUXE-6.jpg'
-              }}
+              source={{ uri: hotelImages[imgIndex] }}
+              resizeMode='cover'
             />
+            <View style={styles.imageDots}>
+              {hotelImages.map((_, idx) => (
+                <View
+                  key={idx}
+                  style={[
+                    styles.dot,
+                    { backgroundColor: idx === imgIndex ? '#a63932' : '#fff' }
+                  ]}
+                />
+              ))}
+            </View>
           </TouchableOpacity>
 
-          {/* Image Modal */}
+          {/* Modal Gallery */}
           <Modal
             animationType='slide'
-            transparent={true}
+            transparent
             visible={modalVisible}
             onRequestClose={() => setModalVisible(false)}
           >
@@ -210,96 +204,114 @@ export default function BookingDetails () {
                 style={styles.closeButton}
                 onPress={() => setModalVisible(false)}
               >
-                <AntDesign name='close' size={30} color='white' />
+                <AntDesign name='close' size={32} color='white' />
               </TouchableOpacity>
-              <ScrollView horizontal pagingEnabled style={styles.imageScroll}>
-                {[
-                  hotel.images?.[0],
-                  hotel.images?.[1],
-                  hotel.images?.[2],
-                  hotel.images?.[3]
-                  // "https://i.postimg.cc/sDF3pxL1/YTW-EXECUTIVE-3.jpg",
-                  // "https://i.postimg.cc/Bnps9gn1/YTW-SUPERIOR-6.jpg",
-                  // "https://i.postimg.cc/5ttJxCXK/YTW-DELUXE-6.jpg",
-                ].map((img, index) => (
+              <ScrollView
+                horizontal
+                pagingEnabled
+                showsHorizontalScrollIndicator={false}
+                onMomentumScrollEnd={e => {
+                  const page = Math.round(e.nativeEvent.contentOffset.x / width)
+                  setImgIndex(page)
+                }}
+                style={styles.imageScroll}
+              >
+                {hotelImages.map((img, index) => (
                   <Image
                     key={index}
                     style={styles.modalImage}
                     source={{ uri: img }}
+                    resizeMode='contain'
                   />
                 ))}
               </ScrollView>
             </View>
           </Modal>
 
-          {/* Hotel Details */}
+          {/* Details */}
           <View style={styles.detailsContainer}>
-            <Text
-              style={[
-                styles.status,
-                {
-                  color:
-                    bookingDetails.status === 'Completed' ? 'green' : 'orange'
-                }
-              ]}
-            >
-              {bookingDetails.status}
-            </Text>
+            <View style={styles.statusRow}>
+              <Text
+                style={[
+                  styles.status,
+                  {
+                    color:
+                      bookingDetails.status === 'Completed'
+                        ? 'green'
+                        : bookingDetails.status === 'Pending'
+                        ? '#FFA500'
+                        : 'red'
+                  }
+                ]}
+              >
+                {bookingDetails.status}
+              </Text>
+              <Text style={styles.likesCount}>{likesCount} likes</Text>
+            </View>
             <Text style={styles.hotelName}>{hotel.name}</Text>
             <View style={styles.location}>
-              <Feather name='map-pin' size={16} color='gray' />
+              <Feather name='map-pin' size={17} color='#a63932' />
               <Text style={styles.locationText}>{hotel.location}</Text>
             </View>
             <View style={styles.rating}>
-              <Text style={styles.star}>⭐{hotel.rating}</Text>
-              <Text style={styles.reviews}>({hotel.reviews})k · reviews</Text>
+              <Text style={styles.star}>⭐ {hotel.rating ?? 4.5}</Text>
+              <Text style={styles.reviews}>
+                ({hotel.reviews ?? 223}) reviews
+              </Text>
             </View>
             <Text style={styles.price}>
               ₦
               {bookingDetails.totalPrice
                 ? Number(bookingDetails.totalPrice).toLocaleString()
-                : '100,000,000'}{' '}
+                : 'N/A'}
               <Text style={styles.bookingDetails}>
-                ( {bookingDetails.nights} ) Nights
+                {' '}
+                • {bookingDetails.nights} Night
+                {bookingDetails.nights > 1 ? 's' : ''}
               </Text>
             </Text>
-
-            <Text style={styles.bookingDetails}>
-              Check - In : {new Date(bookingDetails.checkInDate).toDateString()}
-            </Text>
-            <Text style={styles.bookingDetails}>
-              Check - Out :{' '}
-              {new Date(bookingDetails.checkOutDate).toDateString()}
-            </Text>
-            <Text style={styles.bookingDetails}>
-              Guests : {bookingDetails.guests}
-            </Text>
+            <View style={styles.checkInOutRow}>
+              <Text style={styles.bookingDetails}>
+                Check-In: {new Date(bookingDetails.checkInDate).toDateString()}
+              </Text>
+              <Text style={styles.bookingDetails}>
+                Check-Out:{' '}
+                {new Date(bookingDetails.checkOutDate).toDateString()}
+              </Text>
+              <Text style={styles.bookingDetails}>
+                Guests: {bookingDetails.guests}
+              </Text>
+            </View>
           </View>
 
           {/* Amenities */}
-          <ScrollView horizontal style={styles.amenities}>
+          <ScrollView
+            horizontal
+            style={styles.amenities}
+            showsHorizontalScrollIndicator={false}
+          >
             <View style={styles.amenityBox}>
-              <FontAwesome5 name='bed' size={20} color='black' />
-              <Text style={styles.amenityText}>1 King size Bed</Text>
+              <FontAwesome5 name='bed' size={20} color='#a63932' />
+              <Text style={styles.amenityText}>1 King Bed</Text>
             </View>
             <View style={styles.amenityBox}>
-              <FontAwesome name='bathtub' size={24} color='black' />
+              <FontAwesome name='bathtub' size={22} color='#a63932' />
               <Text style={styles.amenityText}>Bathroom</Text>
             </View>
             <View style={styles.amenityBox}>
-              <FontAwesome5 name='wifi' size={24} color='black' />
-              <Text style={styles.amenityText}>wifi</Text>
+              <FontAwesome5 name='wifi' size={20} color='#a63932' />
+              <Text style={styles.amenityText}>WiFi</Text>
             </View>
             <View style={styles.amenityBox}>
-              <MaterialIcons name='ac-unit' size={24} color='black' />
+              <MaterialIcons name='ac-unit' size={22} color='#a63932' />
               <Text style={styles.amenityText}>AC</Text>
             </View>
             <View style={styles.amenityBox}>
-              <Entypo name='aircraft-take-off' size={20} color='black' />
-              <Text style={styles.amenityText}>Airport Shuttle</Text>
+              <Entypo name='aircraft-take-off' size={20} color='#a63932' />
+              <Text style={styles.amenityText}>Shuttle</Text>
             </View>
             <View style={styles.amenityBox}>
-              <MaterialCommunityIcons name='broom' size={24} color='black' />
+              <MaterialCommunityIcons name='broom' size={22} color='#a63932' />
               <Text style={styles.amenityText}>Room Service</Text>
             </View>
           </ScrollView>
@@ -314,302 +326,342 @@ export default function BookingDetails () {
                   'https://i.postimg.cc/5ttJxCXK/YTW-DELUXE-6.jpg'
               }}
             />
-            <View>
-              <Text style={styles.ownerName}>{hotel.owners?.name}</Text>
+            <View style={{ flex: 1, marginLeft: 10 }}>
+              <Text style={styles.ownerName}>
+                {hotel.owners?.name ?? 'Reservation Personnel'}
+              </Text>
               <Text style={styles.ownerRole}>Customer Service</Text>
             </View>
             <View style={styles.contactIcons}>
-              <TouchableOpacity onPress={handleEmail}>
-                <Feather name='message-circle' size={24} color='black' />
+              <TouchableOpacity onPress={handleEmail} style={styles.iconBtn}>
+                <Feather name='message-circle' size={22} color='#a63932' />
               </TouchableOpacity>
-              <TouchableOpacity onPress={handleCall}>
-                <Feather name='phone-call' size={24} color='black' />
+              <TouchableOpacity onPress={handleCall} style={styles.iconBtn}>
+                <Feather name='phone-call' size={22} color='#a63932' />
               </TouchableOpacity>
             </View>
           </View>
 
-          <View>
-            <View style={styles.socials}>
-              <TouchableOpacity onPress={handleEmail}>
-                <FontAwesome name='facebook-square' size={24} color='black' />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={handleCall}>
-                <FontAwesome5 name='instagram' size={24} color='black' />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={handleCall}>
-                <FontAwesome name='twitter' size={24} color='black' />
-              </TouchableOpacity>
-            </View>
+          {/* Socials */}
+          <View style={styles.socials}>
+            <TouchableOpacity onPress={handleEmail} style={styles.iconBtn}>
+              <FontAwesome name='facebook-square' size={22} color='#4267B2' />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleCall} style={styles.iconBtn}>
+              <FontAwesome5 name='instagram' size={22} color='#C13584' />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleCall} style={styles.iconBtn}>
+              <FontAwesome name='twitter' size={22} color='#1DA1F2' />
+            </TouchableOpacity>
           </View>
 
           {/* Description */}
-          <Text style={styles.description}>{hotel.description}</Text>
+          {bookingDetails.hotelDetails.smalldesc ? (
+            <Text style={styles.description}>
+              {bookingDetails.hotelDetails.smalldesc}
+            </Text>
+          ) : null}
 
-          {/* New buttons */}
-
+          {/* Action Buttons */}
           {bookingDetails.status === 'Pending' ? (
-            <>
-              <TouchableOpacity
-                onPress={() =>
-                  router.push({
-                    pathname: '/Payments',
-                    params: {
-                      price: String(bookingDetails.totalPrice),
-                      userId: String(userId),
-                      bookingId: String(bookingDetails.hotelId._id),
-                      hotelId: String(bookingDetails.hotelId._id)
-                      // bookingData: JSON.stringify(bookingData)
-                    }
-                  })
-                }
-                style={{
-                  padding: 15,
-                  backgroundColor: '#a63932',
-                  borderRadius: 10,
-                  marginBottom: 10,
-                  alignSelf: 'center',
-                  width: '80%'
-                }}
-              >
-                <Text
-                  style={{ color: '#fff', fontSize: 16, alignSelf: 'center' }}
-                >
-                  Book Now · ₦{bookingDetails.totalPrice}
-                  {/* {calculateTotal()} */}
-                </Text>
-              </TouchableOpacity>
-            </>
+            <TouchableOpacity
+              onPress={() =>
+                router.push({
+                  pathname: '/Payments',
+                  params: {
+                    price: String(bookingDetails.totalPrice),
+                    userId: String(userId),
+                    bookingId: String(id),
+                    hotelId: String(hotel._id)
+                  }
+                })
+              }
+              style={styles.primaryBtn}
+              activeOpacity={0.85}
+            >
+              <Text style={styles.primaryBtnText}>
+                Book Now · ₦{bookingDetails.totalPrice}
+              </Text>
+            </TouchableOpacity>
           ) : (
             <View style={styles.buttonContainer}>
               <TouchableOpacity
-                style={styles.actionButton}
+                style={styles.secondaryBtn}
                 onPress={() => router.push('/BookFlight')}
               >
-                <Text style={styles.buttonText}>Book Flight</Text>
+                <Text style={styles.secondaryBtnText}>Book Flight</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={styles.actionButton}
+                style={styles.secondaryBtn}
                 onPress={() => router.push('/OrderFood')}
               >
-                <Text style={styles.buttonText}>Order Food</Text>
+                <Text style={styles.secondaryBtnText}>Order Food</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={styles.actionButton}
+                style={styles.secondaryBtn}
                 onPress={() => router.push('/PlanYourRide')}
               >
-                <Text style={styles.buttonText}>Order Ride</Text>
+                <Text style={styles.secondaryBtnText}>Order Ride</Text>
               </TouchableOpacity>
             </View>
           )}
-
-          {/* </View> */}
         </ScrollView>
       </View>
     </GestureHandlerRootView>
   )
 }
 
-// Styles
 const styles = StyleSheet.create({
-  status: {
-    fontSize: 15,
-    fontWeight: 900
-  },
   container: {
     flex: 1,
-    paddingTop: 30
+    backgroundColor: '#faf8f7',
+    paddingTop: Platform.OS === 'android' ? 34 : 24
   },
   loader: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    backgroundColor: '#faf8f7'
   },
   errorText: {
     textAlign: 'center',
     fontSize: 18,
-    marginTop: 20,
-    color: 'red'
+    marginTop: 40,
+    color: '#a63932'
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 10,
-    padding: 10
-  },
-  socials: {
-    flexDirection: 'row',
-    gap: 15,
-    margin: 15
-  },
-  right: {
-    flexDirection: 'row'
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between'
-  },
-  actionButton: {
-    backgroundColor: '#a63932',
-    padding: 15,
-    borderRadius: 10,
     alignItems: 'center',
-    marginHorizontal: 5
+    marginBottom: 8,
+    paddingHorizontal: 14,
+    paddingTop: 10
   },
-  buttonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold'
+  headerActions: {
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   image: {
-    width: '100%',
-    height: 250,
-    borderRadius: 15,
-    padding: 10
+    width: '94%',
+    height: 220,
+    borderRadius: 16,
+    marginTop: 10,
+    alignSelf: 'center'
+  },
+  imageDots: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 8
+  },
+  dot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginHorizontal: 3,
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#a63932'
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: '#000',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 46,
+    right: 24,
+    zIndex: 2
+  },
+  imageScroll: {
+    width: width,
+    flexGrow: 0
+  },
+  modalImage: {
+    width: width,
+    height: 420,
+    resizeMode: 'contain'
   },
   detailsContainer: {
-    marginTop: 15,
-    padding: 10
+    marginTop: 18,
+    paddingHorizontal: 22
+  },
+  statusRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  },
+  status: {
+    fontSize: 15,
+    fontWeight: '800',
+    textTransform: 'uppercase'
+  },
+  likesCount: {
+    fontSize: 13,
+    color: '#888',
+    fontWeight: '500'
   },
   hotelName: {
     fontSize: 22,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    marginTop: 4,
+    color: '#1a1a1a'
   },
   location: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 5
+    marginTop: 6,
+    marginBottom: 2
   },
   locationText: {
-    color: 'gray',
-    marginLeft: 5
+    color: '#555',
+    marginLeft: 7,
+    fontSize: 15,
+    fontWeight: '500'
   },
   rating: {
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
+    marginVertical: 2
   },
   star: {
-    fontSize: 16,
-    color: '#FFA500'
+    fontSize: 15,
+    color: '#FFA500',
+    fontWeight: 'bold'
   },
   reviews: {
-    fontSize: 14,
-    color: 'gray',
+    fontSize: 13,
+    color: '#888',
     marginLeft: 5
   },
   price: {
-    fontSize: 18,
+    fontSize: 19,
     fontWeight: 'bold',
     color: '#a63932',
-    marginTop: 10
-    // textDecorationLine: 'underline'
+    marginTop: 6,
+    marginBottom: 0
   },
-  amenities: {
+  checkInOutRow: {
+    marginTop: 6,
     flexDirection: 'row',
-    marginVertical: 15,
-    flex: 1,
-    padding: 10
-  },
-  amenityBox: {
-    backgroundColor: 'white',
-    padding: 10,
-    borderRadius: 10,
-    marginRight: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-    elevation: 3, // Android shadow
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2
+    flexWrap: 'wrap',
+    gap: 14
   },
   bookingDetails: {
     fontSize: 14,
-    fontWeight: 700,
-    color: '#eeeee',
-    marginVertical: 5
+    fontWeight: '600',
+    color: '#666'
+  },
+  amenities: {
+    flexDirection: 'row',
+    marginVertical: 18,
+    paddingLeft: 18
+  },
+  amenityBox: {
+    backgroundColor: '#fff',
+    paddingVertical: 13,
+    paddingHorizontal: 15,
+    borderRadius: 13,
+    marginRight: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 2,
+    shadowColor: '#a63932',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.06,
+    shadowRadius: 3
   },
   amenityText: {
     marginTop: 5,
-    fontSize: 12,
-    fontWeight: 'bold'
+    fontSize: 13,
+    fontWeight: 'bold',
+    color: '#a63932'
   },
   ownerSection: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'white',
-    padding: 10,
-    borderRadius: 10,
+    backgroundColor: '#fff',
+    padding: 13,
+    borderRadius: 12,
     marginTop: 10,
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
-    margin: 10
+    marginHorizontal: 12,
+    elevation: 2,
+    shadowColor: '#222',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.06,
+    shadowRadius: 3
   },
   ownerImage: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    marginRight: 10
+    width: 46,
+    height: 46,
+    borderRadius: 23
   },
   ownerName: {
-    fontSize: 16,
-    fontWeight: 'bold'
+    fontSize: 15,
+    fontWeight: 'bold',
+    marginBottom: 2
   },
   ownerRole: {
-    fontSize: 14,
-    color: 'gray'
+    fontSize: 13,
+    color: '#888'
   },
   contactIcons: {
     flexDirection: 'row',
     marginLeft: 'auto',
-    gap: 15
+    gap: 16
+  },
+  iconBtn: {
+    padding: 5
+  },
+  socials: {
+    flexDirection: 'row',
+    gap: 15,
+    margin: 15,
+    justifyContent: 'center'
   },
   description: {
-    marginTop: 15,
+    marginTop: 18,
     fontSize: 14,
-    color: 'gray',
-    lineHeight: 20,
-    padding: 10
+    color: '#444',
+    lineHeight: 21,
+    paddingHorizontal: 18,
+    marginBottom: 10
   },
-  bookButton: {
+  primaryBtn: {
     backgroundColor: '#a63932',
-    margin: 10,
-    padding: 20,
-    borderRadius: 10,
+    marginHorizontal: 20,
+    marginTop: 18,
+    padding: 16,
+    borderRadius: 12,
     alignItems: 'center',
-    marginTop: 20
+    elevation: 2
   },
-  bookButtonText: {
-    color: 'white',
-    fontSize: 18,
+  primaryBtnText: {
+    color: '#fff',
+    fontSize: 17,
     fontWeight: 'bold'
   },
-  // Modal Styles
-  modalContainer: {
-    flex: 1,
+  buttonContainer: {
     flexDirection: 'row',
-    backgroundColor: '#000',
-    justifyContent: 'center',
-    alignItems: 'center'
-    // height:'3%',
+    justifyContent: 'space-between',
+    marginHorizontal: 8,
+    marginTop: 17
   },
-  closeButton: {
-    position: 'absolute',
-    top: 50,
-    right: 20,
-    zIndex: 10
+  secondaryBtn: {
+    backgroundColor: '#fff',
+    borderColor: '#a63932',
+    borderWidth: 1,
+    paddingVertical: 13,
+    paddingHorizontal: 18,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginHorizontal: 4,
+    elevation: 1
   },
-  imageScroll: {
-    flexDirection: 'row',
-    width: '100%'
-  },
-  modalImage: {
-    width: 350,
-    height: 400,
-    marginHorizontal: 10,
-    resizeMode: 'cover',
-    borderRadius: 10
+  secondaryBtnText: {
+    color: '#a63932',
+    fontSize: 15,
+    fontWeight: 'bold'
   }
 })

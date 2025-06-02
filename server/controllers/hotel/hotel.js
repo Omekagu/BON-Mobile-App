@@ -163,9 +163,6 @@ export const bookingCompleted = async (req, res) => {
       return res.status(400).json({ error: 'Invalid totalPrice value' })
     }
 
-    // const hotel = await Hotel.findById(hotelId)
-    // if (!hotel) return res.status(404).json({ error: 'Hotel not found' })
-
     const newBooking = new Booking({
       userId,
       pool,
@@ -196,7 +193,7 @@ export const bookingCompleted = async (req, res) => {
 export const bookedUserId = async (req, res) => {
   try {
     const { userId } = req.params
-
+    console.log(userId)
     if (!userId) {
       return res
         .status(400)
@@ -204,7 +201,6 @@ export const bookedUserId = async (req, res) => {
     }
 
     const bookings = await Booking.find({ userId }) // Fetch only the user's bookings
-      .populate('hotelId')
 
     res.status(200).json({ status: 'ok', data: bookings })
   } catch (error) {

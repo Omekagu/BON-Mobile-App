@@ -67,13 +67,6 @@ export default function IndexPage () {
     if (languageSelected) checkAuth()
   }, [languageSelected])
 
-  // const changeLanguage = async lang => {
-  //   await i18n.changeLanguage(lang)
-  //   await AsyncStorage.setItem('user-language', lang)
-  //   setModalVisible(false)
-  //   setLanguageSelected(true)
-  // }
-
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
