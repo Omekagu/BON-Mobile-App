@@ -347,7 +347,7 @@ export default function BookingDetails () {
             />
             <View style={{ flex: 1, marginLeft: 10 }}>
               <Text style={styles.ownerName}>
-                {hotel.owners?.name ?? 'Reservation Personnel'}
+                {hotel.owners?.name ?? 'Angela Yue'}
               </Text>
               <Text style={styles.ownerRole}>Customer Service</Text>
             </View>

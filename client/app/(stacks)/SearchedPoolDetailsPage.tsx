@@ -14,7 +14,8 @@ import {
   ActivityIndicator,
   Share,
   StatusBar,
-  Dimensions
+  Dimensions,
+  Platform
 } from 'react-native'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import Feather from '@expo/vector-icons/Feather'
@@ -28,12 +29,41 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const { width } = Dimensions.get('window')
 
+interface Owner {
+  ownerImage?: string
+  name?: string
+}
+
+interface Hotel {
+  _id: string
+  name: string
+  location: string
+  units?: number
+  images?: string[]
+  rating?: number
+  reviews?: number
+  smalldesc?: string
+  owners?: Owner
+  contact?: {
+    phone?: string
+    email?: string
+  }
+  params?: string
+  custprice?: number
+  info?: string
+}
+
+interface Params {
+  id?: string
+  pool?: string
+}
+
 export default function SearchedPoolDetailsPage () {
   const [liked, setLiked] = useState(false)
   const [likesCount, setLikesCount] = useState(2800)
   const [modalVisible, setModalVisible] = useState(false)
-  const { id, pool } = useLocalSearchParams()
-  const [hotel, setHotel] = useState(null)
+  const { id, pool } = useLocalSearchParams<Params>()
+  const [hotel, setHotel] = useState<Hotel | null>(null)
   const [loading, setLoading] = useState(true)
   const [activeImageIdx, setActiveImageIdx] = useState(0)
 
@@ -66,13 +96,13 @@ export default function SearchedPoolDetailsPage () {
         const response = await axios.get(
           `http:/10.0.1.27:5001/hotel/${pool}/${id}`
         )
-        const extractImageUrls = htmlString => {
+        const extractImageUrls = (htmlString: string): string[] => {
           return [...(htmlString.match(/src="(https:\/\/[^"]+)"/g) || [])].map(
-            img => img.match(/src="(https:\/\/[^"]+)"/)[1]
+            img => img.match(/src="(https:\/\/[^"]+)"/)?.[1] || ''
           )
         }
-        const data = response.data
-        data.images = extractImageUrls(data.info)
+        const data: Hotel = response.data
+        data.images = extractImageUrls(data.info || '')
         setHotel(data)
         await AsyncStorage.setItem('hotelDetails', JSON.stringify(data))
       } catch (error) {
@@ -86,8 +116,8 @@ export default function SearchedPoolDetailsPage () {
   if (loading) {
     return (
       <View style={styles.loader}>
-        <ActivityIndicator size='large' color='#000' />
-        <Text style={{ color: '#000', fontSize: 16, marginTop: 10 }}>
+        <ActivityIndicator size='large' color='#a63932' />
+        <Text style={{ color: '#a63932', fontSize: 16, marginTop: 10 }}>
           Loading hotel details...
         </Text>
       </View>
@@ -99,11 +129,11 @@ export default function SearchedPoolDetailsPage () {
   }
 
   const handleCall = () => {
-    if (hotel?.contact?.phone) Linking.openURL(`tel:${hotel.contact.phone}`)
+    if (hotel.contact?.phone) Linking.openURL(`tel:${hotel.contact.phone}`)
   }
 
   const handleEmail = () => {
-    if (hotel?.contact?.email)
+    if (hotel.contact?.email)
       Linking.openURL(
         `mailto:${hotel.contact.email}?subject=Support Request&body=Hello, I need help with...`
       )
@@ -165,14 +195,14 @@ export default function SearchedPoolDetailsPage () {
               onPress={() => router.back()}
               style={styles.backBtn}
             >
-              <Feather name='arrow-left' size={28} color='#000' />
+              <Feather name='arrow-left' size={28} color='#222' />
             </TouchableOpacity>
             <View style={styles.right}>
               <TouchableOpacity
                 onPress={handleShare}
                 style={styles.headerIconBtn}
               >
-                <AntDesign name='sharealt' size={26} color='#000' />
+                <AntDesign name='sharealt' size={26} color='#222' />
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={handleLike}
@@ -181,7 +211,7 @@ export default function SearchedPoolDetailsPage () {
                 <AntDesign
                   name='heart'
                   size={26}
-                  color={liked ? '#fc0303' : '#000'}
+                  color={liked ? '#a63932' : '#222'}
                 />
               </TouchableOpacity>
             </View>
@@ -196,13 +226,16 @@ export default function SearchedPoolDetailsPage () {
               }}
             />
             {hotelImages.length > 1 && (
-              <View style={styles.imageIndicatorBox}>
+              <View style={styles.imageDots}>
                 {hotelImages.map((_, idx) => (
                   <View
                     key={idx}
                     style={[
-                      styles.imageIndicatorDot,
-                      activeImageIdx === idx && styles.imageIndicatorDotActive
+                      styles.dot,
+                      {
+                        backgroundColor:
+                          idx === activeImageIdx ? '#a63932' : '#fff'
+                      }
                     ]}
                   />
                 ))}
@@ -222,7 +255,7 @@ export default function SearchedPoolDetailsPage () {
                 style={styles.closeButton}
                 onPress={() => setModalVisible(false)}
               >
-                <AntDesign name='close' size={32} color='#000' />
+                <AntDesign name='close' size={32} color='white' />
               </TouchableOpacity>
               <ScrollView
                 horizontal
@@ -274,27 +307,27 @@ export default function SearchedPoolDetailsPage () {
             contentContainerStyle={{ paddingRight: 15 }}
           >
             <View style={styles.amenityBox}>
-              <FontAwesome5 name='bed' size={22} color='#000' />
+              <FontAwesome5 name='bed' size={22} color='#a63932' />
               <Text style={styles.amenityText}>King Size Bed</Text>
             </View>
             <View style={styles.amenityBox}>
-              <FontAwesome name='bathtub' size={23} color='#000' />
+              <FontAwesome name='bathtub' size={23} color='#a63932' />
               <Text style={styles.amenityText}>Bathroom</Text>
             </View>
             <View style={styles.amenityBox}>
-              <FontAwesome5 name='wifi' size={22} color='#000' />
+              <FontAwesome5 name='wifi' size={22} color='#a63932' />
               <Text style={styles.amenityText}>WiFi</Text>
             </View>
             <View style={styles.amenityBox}>
-              <MaterialIcons name='ac-unit' size={22} color='#000' />
+              <MaterialIcons name='ac-unit' size={22} color='#a63932' />
               <Text style={styles.amenityText}>AC</Text>
             </View>
             <View style={styles.amenityBox}>
-              <Entypo name='aircraft-take-off' size={20} color='#000' />
+              <Entypo name='aircraft-take-off' size={20} color='#a63932' />
               <Text style={styles.amenityText}>Shuttle</Text>
             </View>
             <View style={styles.amenityBox}>
-              <MaterialCommunityIcons name='broom' size={22} color='#000' />
+              <MaterialCommunityIcons name='broom' size={22} color='#a63932' />
               <Text style={styles.amenityText}>Room Service</Text>
             </View>
           </ScrollView>
@@ -309,16 +342,16 @@ export default function SearchedPoolDetailsPage () {
                   'https://i.postimg.cc/5ttJxCXK/YTW-DELUXE-6.jpg'
               }}
             />
-            <View style={{ flex: 1 }}>
+            <View style={{ flex: 1, marginLeft: 10 }}>
               <Text style={styles.ownerName}>{owner.name || 'Angela Yue'}</Text>
               <Text style={styles.ownerRole}>Reservations Personnel</Text>
             </View>
             <View style={styles.contactIcons}>
               <TouchableOpacity onPress={handleEmail}>
-                <Feather name='message-circle' size={22} color='#000' />
+                <Feather name='message-circle' size={22} color='#a63932' />
               </TouchableOpacity>
               <TouchableOpacity onPress={handleCall}>
-                <Feather name='phone-call' size={22} color='#000' />
+                <Feather name='phone-call' size={22} color='#a63932' />
               </TouchableOpacity>
             </View>
           </View>
@@ -327,13 +360,13 @@ export default function SearchedPoolDetailsPage () {
           <View>
             <View style={styles.socials}>
               <TouchableOpacity onPress={OpenFacebook}>
-                <FontAwesome name='facebook-square' size={24} color='#000' />
+                <FontAwesome name='facebook-square' size={24} color='#4267B2' />
               </TouchableOpacity>
               <TouchableOpacity onPress={OpenInstagram}>
-                <FontAwesome5 name='instagram' size={24} color='#000' />
+                <FontAwesome5 name='instagram' size={24} color='#C13584' />
               </TouchableOpacity>
               <TouchableOpacity onPress={OpenTwitter}>
-                <FontAwesome name='twitter' size={24} color='#000' />
+                <FontAwesome name='twitter' size={24} color='#1DA1F2' />
               </TouchableOpacity>
             </View>
           </View>
@@ -373,27 +406,32 @@ export default function SearchedPoolDetailsPage () {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#eee',
-    height: '100%',
-    paddingTop: 30
+    backgroundColor: '#faf8f7',
+    paddingTop: Platform.OS === 'android' ? 34 : 24
   },
   loader: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#eee'
+    backgroundColor: '#faf8f7'
   },
   errorText: {
     textAlign: 'center',
     fontSize: 18,
-    marginTop: 20,
+    marginTop: 40,
     color: '#a63932'
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 10,
-    padding: 10
+    alignItems: 'center',
+    marginBottom: 8,
+    paddingHorizontal: 14,
+    paddingTop: 10
+  },
+  headerActions: {
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   backBtn: {
     backgroundColor: '#fff',
@@ -406,70 +444,57 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 14
   },
-  socials: {
-    flexDirection: 'row',
-    gap: 15,
-    margin: 15,
-    justifyContent: 'center'
-  },
-  right: {
-    flexDirection: 'row'
-  },
   image: {
-    width: '100%',
-    height: 250,
-    borderRadius: 20,
-    marginBottom: 3,
-    backgroundColor: '#ece9f7'
+    width: '94%',
+    height: 220,
+    borderRadius: 16,
+    marginTop: 10,
+    alignSelf: 'center'
   },
-  imageIndicatorBox: {
+  imageDots: {
     flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 8
+  },
+  dot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginHorizontal: 3,
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#a63932'
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: '#000',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  closeButton: {
     position: 'absolute',
-    bottom: 12,
-    left: 0,
-    right: 0,
-    justifyContent: 'center'
+    top: 46,
+    right: 24,
+    zIndex: 2
   },
-  imageIndicatorDot: {
-    width: 9,
-    height: 9,
-    borderRadius: 5,
-    backgroundColor: '#c1b3e5',
-    marginHorizontal: 3
+  imageScroll: {
+    width: width,
+    flexGrow: 0
   },
-  imageIndicatorDotActive: {
-    backgroundColor: '#000'
+  modalImage: {
+    width: width,
+    height: 420,
+    resizeMode: 'contain'
   },
   detailsContainer: {
-    marginTop: 20,
-    padding: 16,
-    backgroundColor: '#fff',
-    borderRadius: 16,
-    marginHorizontal: 8,
-    marginBottom: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8
+    marginTop: 18,
+    paddingHorizontal: 22
   },
   hotelName: {
-    fontSize: 19,
-    textTransform: 'uppercase',
+    fontSize: 22,
     fontWeight: 'bold',
-    color: '#000',
-    marginBottom: 3
-  },
-  locationRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 3,
-    gap: 3
-  },
-  locationText: {
-    color: '#000',
-    fontSize: 14,
-    fontWeight: 'bold',
-    marginLeft: 5
+    marginTop: 4,
+    color: '#1a1a1a'
   },
   ratingRow: {
     flexDirection: 'row',
@@ -478,7 +503,7 @@ const styles = StyleSheet.create({
     gap: 7
   },
   star: {
-    color: '#000',
+    color: '#a63932',
     fontSize: 14,
     fontWeight: 'bold'
   },
@@ -489,7 +514,7 @@ const styles = StyleSheet.create({
     marginLeft: 6
   },
   price: {
-    fontSize: 17,
+    fontSize: 19,
     fontWeight: 'bold',
     color: '#a63932',
     marginTop: 12
@@ -497,56 +522,51 @@ const styles = StyleSheet.create({
   amenities: {
     flexDirection: 'row',
     marginVertical: 18,
-    paddingLeft: 12
+    paddingLeft: 18
   },
   amenityBox: {
     backgroundColor: '#fff',
     paddingVertical: 13,
     paddingHorizontal: 15,
-    borderRadius: 15,
+    borderRadius: 13,
     marginRight: 12,
     alignItems: 'center',
     justifyContent: 'center',
-    elevation: 1,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.13,
-    shadowRadius: 2,
-    minWidth: 90
+    elevation: 2,
+    shadowColor: '#a63932',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.06,
+    shadowRadius: 3
   },
   amenityText: {
     marginTop: 5,
     fontSize: 13,
     fontWeight: 'bold',
-    color: '#000',
-    textAlign: 'center'
+    color: '#a63932'
   },
   ownerSection: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'white',
-    padding: 12,
-    borderRadius: 14,
-    marginTop: 12,
+    backgroundColor: '#fff',
+    padding: 13,
+    borderRadius: 12,
+    marginTop: 10,
+    marginHorizontal: 12,
     elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.16,
-    shadowRadius: 2,
-    margin: 12
+    shadowColor: '#222',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.06,
+    shadowRadius: 3
   },
   ownerImage: {
-    width: 54,
-    height: 54,
-    borderRadius: 27,
-    marginRight: 12,
-    borderWidth: 1.2,
-    borderColor: '#ece9f7'
+    width: 46,
+    height: 46,
+    borderRadius: 23
   },
   ownerName: {
     fontSize: 15,
     fontWeight: 'bold',
-    color: '#000'
+    marginBottom: 2
   },
   ownerRole: {
     fontSize: 13,
@@ -555,43 +575,23 @@ const styles = StyleSheet.create({
   contactIcons: {
     flexDirection: 'row',
     marginLeft: 'auto',
-    gap: 14
+    gap: 16
   },
-  description: {
-    marginTop: 15,
-    fontSize: 15,
-    color: '#3b403b',
-    lineHeight: 21,
-    paddingHorizontal: 16,
-    fontWeight: '500',
-    marginBottom: 16
+  iconBtn: {
+    padding: 5
   },
-  modalContainer: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
+  socials: {
+    flexDirection: 'row',
+    gap: 15,
+    margin: 15,
     justifyContent: 'center'
   },
-  closeButton: {
-    position: 'absolute',
-    top: 56,
-    right: 24,
-    zIndex: 10,
-    backgroundColor: '#fff',
-    borderRadius: 18,
-    padding: 4
-  },
-  imageScroll: {
-    flexDirection: 'row',
-    width: width,
-    height: 420
-  },
-  modalImage: {
-    width: width - 40,
-    height: 400,
-    marginHorizontal: 10,
-    resizeMode: 'cover',
-    borderRadius: 14,
-    marginTop: 50
+  description: {
+    marginTop: 18,
+    fontSize: 14,
+    color: '#444',
+    lineHeight: 21,
+    paddingHorizontal: 18,
+    marginBottom: 10
   }
 })
