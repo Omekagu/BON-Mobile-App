@@ -2,18 +2,9 @@ import mongoose from 'mongoose'
 
 const UserDetailsSchema = new mongoose.Schema(
   {
-    firstname: {
-      type: String,
-      required: true
-    },
-    surname: {
-      type: String,
-      required: true
-    },
-    referralCode: {
-      type: String,
-      required: false
-    },
+    firstname: { type: String },
+    surname: { type: String },
+    referralCode: { type: String },
     email: {
       type: String,
       required: true,
@@ -21,11 +12,18 @@ const UserDetailsSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: true
+      // Only required for local sign ups
+      required: function () {
+        return !this.provider
+      }
     },
-    phoneNumber: {
-      type: String
+    provider: {
+      type: String,
+      enum: ['google', 'facebook', 'apple', null],
+      default: null
     },
+    providerId: { type: String }, // Unique id from Google/Facebook/Apple
+    phoneNumber: { type: String },
     profileImage: { type: String },
     dob: { type: String },
     gender: { type: String },
@@ -34,7 +32,7 @@ const UserDetailsSchema = new mongoose.Schema(
     userCountry: { type: String },
     role: {
       type: String,
-      enum: ['user', 'admin'], // You can have different roles for admin and users
+      enum: ['user', 'admin'],
       default: 'user'
     },
     createdAt: {

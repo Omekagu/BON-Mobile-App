@@ -273,7 +273,7 @@ export default function BookingDetails () {
               <Text style={styles.locationText}>{hotel.location}</Text>
             </View>
             <View style={styles.rating}>
-              <Text style={styles.star}>⭐ {hotel.rating ?? 4.5}</Text>
+              <Text style={styles.star}>⭐{hotel.rating ?? 4.5}</Text>
               <Text style={styles.reviews}>
                 ({hotel.reviews ?? 223}) reviews
               </Text>

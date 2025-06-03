@@ -1,5 +1,5 @@
 import express from 'express'
-import { register } from '../../controllers/users/authentication.js'
+import { register, googleReg } from '../../controllers/users/authentication.js'
 import { Login } from '../../controllers/users/login.js'
 import {
   protectedApi,
@@ -15,6 +15,7 @@ import { uploadAddress } from '../../controllers/users/uploadAddress.js'
 const router = express.Router()
 
 router.post('/register', register)
+router.post('/google', googleReg)
 router.post('/login', Login)
 router.post('/reset-password', resetUserPassword)
 router.post('/protected', protectedApi)
