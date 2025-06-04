@@ -11,10 +11,17 @@ import {
 import Icon from 'react-native-vector-icons/FontAwesome'
 import { useRouter } from 'expo-router'
 import * as Google from 'expo-auth-session/providers/google'
+import * as AuthSession from 'expo-auth-session'
 
 const SignUpScreen = () => {
   const router = useRouter()
+  // console.log(AuthSession.makeRedirectUri())
+
   const [request, response, promptAsync] = Google.useAuthRequest({
+    clientId:
+      '567199935764-ok5g19sj7mr4lud0pe1qmk9g90f0cq37.apps.googleusercontent.com',
+    webClientId:
+      '567199935764-ok5g19sj7mr4lud0pe1qmk9g90f0cq37.apps.googleusercontent.com',
     androidClientId:
       '567199935764-n8dg0v096n1caqa4r6qjkoumfsld397t.apps.googleusercontent.com',
     iosClientId:
@@ -68,7 +75,7 @@ const SignUpScreen = () => {
             icon='google'
             text='Sign Up with Google'
             color='#EA4335'
-            onPress={() => promptAsync && promptAsync()}
+            onPress={() => Alert.alert('Google Sign Up not implemented')}
             // Optionally disable if not ready:
             disabled={!promptAsync}
           />

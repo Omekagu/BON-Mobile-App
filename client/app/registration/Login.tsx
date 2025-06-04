@@ -125,6 +125,7 @@ const Login = () => {
             <View style={styles.passwordBox}>
               <TextInput
                 placeholder='Enter Email'
+                placeholderTextColor={'#fff'}
                 value={email}
                 onChangeText={setEmail}
                 style={styles.inputField}
@@ -136,6 +137,7 @@ const Login = () => {
               <View style={styles.passwordBox}>
                 <TextInput
                   placeholder='Enter password'
+                  placeholderTextColor={'#fff'}
                   secureTextEntry={secure}
                   value={password}
                   onChangeText={setPassword}
@@ -168,7 +170,7 @@ const Login = () => {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    backgroundColor: '#000'
+    backgroundColor: '#fff'
   },
   backgroundImage: {
     width: '100%',
@@ -186,7 +188,7 @@ const styles = StyleSheet.create({
     marginBottom: 20
   },
   profileCard: {
-    backgroundColor: '#6b6963',
+    backgroundColor: '#eee',
     padding: 20,
     borderRadius: 16
   },
@@ -221,7 +223,7 @@ const styles = StyleSheet.create({
   passwordBox: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#1E1E1E',
+    backgroundColor: '#b5b5b3',
     borderRadius: 10,
     paddingHorizontal: 12,
     paddingVertical: 10
@@ -249,7 +251,7 @@ const styles = StyleSheet.create({
   },
   forgotLink: {
     textAlign: 'center',
-    color: '#fff',
+    color: '#000',
     fontWeight: '500',
     marginTop: 15
   }
