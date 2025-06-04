@@ -38,8 +38,8 @@ export const Login = async (req, res) => {
           status: 'ok',
           data: { token, userId: user._id }
         })
+        sendLoginEmail(user.email, user.firstname)
       })
-      sendLoginEmail(user.email, user.firstname)
     })
     .catch(err => {
       res.status(500).json({ status: 'error', message: 'Server error' })

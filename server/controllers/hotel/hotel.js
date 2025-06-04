@@ -1,6 +1,8 @@
 import Booking from '../../model/Booking.js'
 import Country from '../../model/Country.js'
 import Hotel from '../../model/hotelModel.js'
+import User from '../../model/UserDetails.js'
+import { sendBookingCompletedEmail } from '../../utilities/email.js'
 import {
   poolASABA,
   poolASOKORO,
@@ -150,9 +152,23 @@ export const bookingCompleted = async (req, res) => {
       hotelDetails
     } = req.body
 
-    console.log('\n' + '='.repeat(50))
-    console.log(req.body)
-    console.log('\n' + '='.repeat(50))
+    console.log('userId from req.body:', userId)
+
+    // Robust userId check
+    if (
+      !userId ||
+      userId === 'null' ||
+      userId === null ||
+      userId === undefined ||
+      userId === ''
+    ) {
+      return res.status(400).json({ error: 'Invalid or missing userId' })
+    }
+
+    const user = await User.findById(userId)
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' })
+    }
 
     const formattedTotalPrice =
       typeof totalPrice === 'string'
@@ -173,11 +189,26 @@ export const bookingCompleted = async (req, res) => {
       rooms,
       nights,
       totalPrice: formattedTotalPrice,
-      status, // Accept 'Completed' or 'Pending'
+      status,
       hotelDetails
     })
 
     await newBooking.save()
+
+    await sendBookingCompletedEmail({
+      firstname: user.firstname,
+      email: user.email,
+      hotelDetails,
+      checkInDate,
+      checkOutDate,
+      checkInTime,
+      guests,
+      nights,
+      rooms,
+      totalPrice: formattedTotalPrice,
+      status
+    })
+
     res.status(201).json({
       status: 'ok',
       message: 'Booking processed successfully',
@@ -291,7 +322,7 @@ export const fetchHotelpool = async (req, res) => {
     // Assuming rooms table instead of hotels table
     const [rows] = await selectedPool.query('SELECT * FROM wp_vikbooking_rooms')
     res.json(rows)
-    console.log(rows)
+    // console.log(rows)
   } catch (err) {
     console.error(err)
     res.status(500).json({ message: 'Error fetching rooms' })
