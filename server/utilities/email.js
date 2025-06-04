@@ -193,6 +193,7 @@ export const sendWelcomeEmail = (email, firstname) => {
 export const bookingCompletedTemplate = ({
   firstname,
   hotelDetails,
+  hotelName,
   checkInDate,
   checkOutDate,
   checkInTime,
@@ -202,10 +203,11 @@ export const bookingCompletedTemplate = ({
   totalPrice,
   status
 }) => {
-  const hotelName = hotelDetails?.name || 'BON Hotel'
+  const hotel = hotelName || 'BON Hotel'
+  const roomType = hotelDetails?.name || 'BON Hotel'
   const hotelAddress = hotelDetails?.address || ''
   const hotelImage =
-    hotelDetails?.image ||
+    hotelDetails?.image[0] ||
     'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80'
 
   return `
@@ -222,15 +224,19 @@ export const bookingCompletedTemplate = ({
           <p>
             Thank you for your ${
               status === 'Completed' ? 'completed' : 'pending'
-            } booking at <strong>${hotelName}</strong>!<br>
+            } booking at <strong>${hotel}</strong>!<br>
             We are delighted to have you stay with us and look forward to providing a wonderful experience.
           </p>
-          <img src="${hotelImage}" alt="${hotelName}" width="100%" style="border-radius:8px;margin:18px 0;"/>
+          <img src="${hotelImage}" alt="${hotel}" width="100%" style="border-radius:8px;margin:18px 0;"/>
           <h2 style="color:#a63932;">Booking Details</h2>
           <table style="width:100%;font-size:16px;border-collapse:collapse;margin-bottom:18px;">
             <tr>
               <td style="padding:6px 0;"><strong>Hotel:</strong></td>
-              <td style="padding:6px 0;">${hotelName}</td>
+              <td style="padding:6px 0;">${hotel}</td>
+            </tr>
+            <tr>
+              <td style="padding:6px 0;"><strong>Hotel:</strong></td>
+              <td style="padding:6px 0;">${roomType}</td>
             </tr>
             ${
               hotelAddress
@@ -298,6 +304,7 @@ export const bookingCompletedTemplate = ({
 export const sendBookingCompletedEmail = async ({
   email,
   firstname,
+  hotelName,
   hotelDetails,
   checkInDate,
   checkOutDate,
@@ -312,6 +319,7 @@ export const sendBookingCompletedEmail = async ({
   const html = bookingCompletedTemplate({
     firstname,
     hotelDetails,
+    hotelName,
     checkInDate,
     checkOutDate,
     checkInTime,

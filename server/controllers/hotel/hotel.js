@@ -135,6 +135,23 @@ export const createMenuHotelId = async (req, res) => {
   }
 }
 
+// Mapping of pool value to hotel label/name
+const poolToHotelName = {
+  IkejaResSQL: 'BON Hotel Ikeja Lagos',
+  NestGarkiSQL: 'BON Hotel Nest Garki, Abuja',
+  KanoSQL: 'BON Hotel Kano',
+  TranstellSQL: 'BON Hotel Transtell',
+  HyattiSQL: 'BON Hotel Hyatti',
+  PlatinumSQL: 'BON Hotel Platinum',
+  RoyalParkLaneSQL: 'BON Hotel Royal Parklane',
+  ImperialSQL: 'BON Hotel Imperial',
+  SmithCitySQL: 'BON Hotel Smithcity',
+  ElvisSQL: 'BON Hotel Elvis',
+  AsokoroSQL: 'BON Hotel Asokoro',
+  AsabaSQL: 'BON Hotel Asaba',
+  NestIBSQL: 'BON Hotel Nest Ibadan'
+}
+
 // booking completed
 export const bookingCompleted = async (req, res) => {
   try {
@@ -179,9 +196,13 @@ export const bookingCompleted = async (req, res) => {
       return res.status(400).json({ error: 'Invalid totalPrice value' })
     }
 
+    // Derive hotelName from pool value
+    const hotelName = poolToHotelName[pool] || 'Unknown Hotel'
+
     const newBooking = new Booking({
       userId,
       pool,
+      hotelName, // add hotelName property
       checkInDate,
       checkOutDate,
       checkInTime,
@@ -199,6 +220,7 @@ export const bookingCompleted = async (req, res) => {
       firstname: user.firstname,
       email: user.email,
       hotelDetails,
+      hotelName, // pass hotelName to email if needed
       checkInDate,
       checkOutDate,
       checkInTime,

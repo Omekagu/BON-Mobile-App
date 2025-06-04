@@ -3,6 +3,7 @@ const BookingSchema = new mongoose.Schema(
   {
     userId: { type: String, required: true },
     pool: { type: String, required: true },
+    hotelName: { type: String, required: true },
     checkInDate: { type: Date, required: true },
     checkOutDate: { type: Date, required: true },
     checkInTime: { type: String, required: true },

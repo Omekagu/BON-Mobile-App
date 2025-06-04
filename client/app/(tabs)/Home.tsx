@@ -9,8 +9,6 @@ import {
 } from 'react-native'
 import axios from 'axios'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-// import Suggestions from '@/component/Suggestions'
-import FilterSuggestion from '../../component/FilterSuggestion'
 import FetchHotelsPool from '@/component/FetchHotelsPool'
 
 export default function Home () {

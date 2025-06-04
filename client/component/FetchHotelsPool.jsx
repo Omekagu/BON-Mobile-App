@@ -11,7 +11,7 @@ import DropDownPicker from 'react-native-dropdown-picker'
 import SuggestionBox from './SuggestionBox'
 import * as Animatable from 'react-native-animatable'
 import { useRouter } from 'expo-router'
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons'
+import { Ionicons } from '@expo/vector-icons'
 
 // Simple custom skeleton component for React Native
 const SkeletonBox = ({ height = 120, width = '100%', style = {} }) => (
