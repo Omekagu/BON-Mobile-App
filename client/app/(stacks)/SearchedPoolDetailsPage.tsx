@@ -187,7 +187,7 @@ export default function SearchedPoolDetailsPage () {
         <StatusBar barStyle='dark-content' />
         <ScrollView
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: 30 }}
+          contentContainerStyle={{ paddingVertical: 10 }}
         >
           {/* Navigation & Header */}
           <View style={styles.header}>
@@ -197,7 +197,7 @@ export default function SearchedPoolDetailsPage () {
             >
               <Feather name='arrow-left' size={28} color='#222' />
             </TouchableOpacity>
-            <View style={styles.right}>
+            <View style={{ flexDirection: 'row' }}>
               <TouchableOpacity
                 onPress={handleShare}
                 style={styles.headerIconBtn}
@@ -211,7 +211,7 @@ export default function SearchedPoolDetailsPage () {
                 <AntDesign
                   name='heart'
                   size={26}
-                  color={liked ? '#a63932' : '#222'}
+                  color={liked ? '#fa0505' : '#000'}
                 />
               </TouchableOpacity>
             </View>
@@ -255,7 +255,7 @@ export default function SearchedPoolDetailsPage () {
                 style={styles.closeButton}
                 onPress={() => setModalVisible(false)}
               >
-                <AntDesign name='close' size={32} color='white' />
+                <AntDesign name='close' size={32} color={'dark'} />
               </TouchableOpacity>
               <ScrollView
                 horizontal
@@ -467,12 +467,13 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     flex: 1,
-    backgroundColor: '#000',
+    backgroundColor: '#fff',
     justifyContent: 'center',
     alignItems: 'center'
   },
   closeButton: {
     position: 'absolute',
+
     top: 46,
     right: 24,
     zIndex: 2
