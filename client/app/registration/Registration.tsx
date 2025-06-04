@@ -164,8 +164,6 @@ const Registration: React.FC = () => {
     closeSheet()
   }
 
-  // Move all hooks above this line!
-
   if (loading) return <Text>Loading...</Text>
 
   return (

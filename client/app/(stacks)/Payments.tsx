@@ -42,7 +42,7 @@ export default function Payments () {
           bookingData: JSON.stringify(bookingData)
         }
       })
-      console.log([price, hotelId])
+      console.log([price, bookingData])
     } else if (paymentMethod === 'crypto') {
       router.push('/CryptoPayment')
     } else if (paymentMethod === 'wallet') {

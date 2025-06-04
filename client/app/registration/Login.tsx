@@ -14,7 +14,6 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import axios from 'axios'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import Toast from 'react-native-toast-message'
-import { Ionicons } from '@expo/vector-icons'
 import { Button } from 'react-native-paper'
 
 const Login = () => {
@@ -102,7 +101,7 @@ const Login = () => {
           <Text style={styles.loginTitle}>WELCOME TO BON</Text>
           <Button
             mode='contained'
-            onPress={() => router.push('registration/Registration')}
+            onPress={() => router.push('/registration/Registration')}
             style={{
               backgroundColor: '#a63932',
               marginLeft: 'auto',
@@ -156,7 +155,7 @@ const Login = () => {
             </TouchableOpacity>
 
             <TouchableOpacity
-              onPress={() => router.push('registration/ForgotPassword')}
+              onPress={() => router.push('/registration/ForgotPassword')}
             >
               <Text style={styles.forgotLink}>Forgot your password?</Text>
             </TouchableOpacity>

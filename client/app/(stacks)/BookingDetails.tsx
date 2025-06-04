@@ -387,9 +387,8 @@ export default function BookingDetails () {
                   pathname: '/Payments',
                   params: {
                     price: String(bookingDetails.totalPrice),
-                    userId: String(userId),
-                    bookingId: String(bookingDetails._id),
-                    hotelId: String(hotel._id)
+                    // hotelId,
+                    bookingData: bookingDetails
                   }
                 })
               }

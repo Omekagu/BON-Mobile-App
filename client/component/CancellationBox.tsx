@@ -45,7 +45,7 @@ export default function CancellationBox ({
     return (
       <TouchableOpacity onPress={handleDelete} style={styles.deleteButton}>
         <Animated.Text style={[styles.deleteText, { transform: [{ scale }] }]}>
-          Delete
+          Cancel
         </Animated.Text>
       </TouchableOpacity>
     )
