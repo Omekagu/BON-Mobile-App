@@ -203,11 +203,10 @@ export const bookingCompletedTemplate = ({
   totalPrice,
   status
 }) => {
-  const hotel = hotelName || 'BON Hotel'
   const roomType = hotelDetails?.name || 'BON Hotel'
   const hotelAddress = hotelDetails?.address || ''
   const hotelImage =
-    hotelDetails?.image[0] ||
+    hotelDetails?.image ||
     'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80'
 
   return `
@@ -224,18 +223,18 @@ export const bookingCompletedTemplate = ({
           <p>
             Thank you for your ${
               status === 'Completed' ? 'completed' : 'pending'
-            } booking at <strong>${hotel}</strong>!<br>
+            } booking at  <strong>${hotelName}</strong> - <strong>${roomType}</strong>!<br>
             We are delighted to have you stay with us and look forward to providing a wonderful experience.
           </p>
-          <img src="${hotelImage}" alt="${hotel}" width="100%" style="border-radius:8px;margin:18px 0;"/>
+          <img src="${hotelImage}" alt="${roomType}" width="100%" style="border-radius:8px;margin:18px 0;"/>
           <h2 style="color:#a63932;">Booking Details</h2>
           <table style="width:100%;font-size:16px;border-collapse:collapse;margin-bottom:18px;">
             <tr>
               <td style="padding:6px 0;"><strong>Hotel:</strong></td>
-              <td style="padding:6px 0;">${hotel}</td>
+              <td style="padding:6px 0;">${hotelName}</td>
             </tr>
             <tr>
-              <td style="padding:6px 0;"><strong>Hotel:</strong></td>
+              <td style="padding:6px 0;"><strong>Room Type:</strong></td>
               <td style="padding:6px 0;">${roomType}</td>
             </tr>
             ${
@@ -248,11 +247,14 @@ export const bookingCompletedTemplate = ({
             }
             <tr>
               <td style="padding:6px 0;"><strong>Check-In:</strong></td>
-              <td style="padding:6px 0;">${checkInDate.toLocaleString()} (${checkInTime.toLocaleString()})</td>
+              <td style="padding:6px 0;">${checkInDate.toLocaleDateString()} (${checkInTime.toLocaleTimeString(
+    [],
+    { hour: '2-digit', minute: '2-digit' }
+  )}</td>
             </tr>
             <tr>
               <td style="padding:6px 0;"><strong>Check-Out:</strong></td>
-              <td style="padding:6px 0;">${checkOutDate}</td>
+              <td style="padding:6px 0;">${checkOutDate.toLocaleDateString()}</td>
             </tr>
             <tr>
               <td style="padding:6px 0;"><strong>Guests:</strong></td>

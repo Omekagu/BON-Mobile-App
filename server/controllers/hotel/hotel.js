@@ -198,7 +198,7 @@ export const bookingCompleted = async (req, res) => {
 
     // Derive hotelName from pool value
     const hotelName = poolToHotelName[pool] || 'Unknown Hotel'
-
+    console.log(hotelName)
     const newBooking = new Booking({
       userId,
       pool,
@@ -215,7 +215,7 @@ export const bookingCompleted = async (req, res) => {
     })
 
     await newBooking.save()
-
+    console.log(newBooking)
     await sendBookingCompletedEmail({
       firstname: user.firstname,
       email: user.email,
