@@ -136,7 +136,6 @@ export default function SelectPoolDateRange () {
           setIsModalVisible(false)
           router.replace({
             pathname: '/Bookings'
-            // params: { bookingData: JSON.stringify(bookingData) }
           })
           Toast.show({
             type: 'success',

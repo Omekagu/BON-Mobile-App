@@ -15,9 +15,9 @@ import * as Device from 'expo-device'
 import * as Localization from 'expo-localization'
 import axios from 'axios'
 import Toast from 'react-native-toast-message'
-import { useAuth } from '../hooks/useAuth'
 import BottomSheet from '@gorhom/bottom-sheet'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
+import { useAuth } from '@/hooks/useAuth'
 
 // Sample country data
 const COUNTRY_CODES = [
@@ -233,6 +233,7 @@ const Registration: React.FC = () => {
                     placeholderTextColor={'#fff'}
                     placeholder='Enter phone number'
                     value={phoneNumber}
+                    maxLength={10}
                     onChangeText={setPhoneNumber}
                     style={[styles.inputField, { marginLeft: 8 }]}
                     keyboardType='phone-pad'

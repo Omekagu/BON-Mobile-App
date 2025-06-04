@@ -68,6 +68,8 @@ export default function More () {
         )
         const imageUrl = uploadResponse.data.secure_url
         await updateProfileImage(imageUrl)
+      } else {
+        ;<ActivityIndicator />
       }
     } catch (error) {
       console.error('Image picking error:', error)
