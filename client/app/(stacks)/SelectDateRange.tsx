@@ -123,7 +123,7 @@ export default function SelectDateRange () {
             bookingData: JSON.stringify(bookingData)
           }
         })
-      } else if (status === 'Pending') {
+      } else if (status === 'PayOn-Arrival') {
         // const response = await axios.post(
         //   'http:/10.0.1.27:5001/hotel/bookingCompleted',
         //   bookingData
@@ -396,7 +396,7 @@ export default function SelectDateRange () {
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => handleBooking('Pending')}
+                onPress={() => handleBooking('PayOn-Arrival')}
                 style={{
                   padding: 15,
                   backgroundColor: '#f8f9fa',

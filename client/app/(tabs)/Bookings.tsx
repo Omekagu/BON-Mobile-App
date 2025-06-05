@@ -22,7 +22,7 @@ const Bookings = () => {
   // const { sortedBookings } = useLocalSearchParams()
   const [loading, setLoading] = useState(false)
 
-  const tabs = ['Completed', 'Pending', 'Cancelled']
+  const tabs = ['Completed', 'PayOn-Arrival', 'Cancelled']
 
   const getUserId = async () => {
     try {
@@ -148,7 +148,7 @@ const Bookings = () => {
                   color={
                     booking.status === 'Completed'
                       ? 'green'
-                      : booking.status.toLowerCase() === 'pending'
+                      : booking.status.toLowerCase() === 'PayOn-Arrival'
                       ? 'orange'
                       : 'red'
                   }

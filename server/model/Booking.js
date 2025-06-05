@@ -11,7 +11,11 @@ const BookingSchema = new mongoose.Schema(
     rooms: { type: Number, required: true },
     nights: { type: Number, required: true },
     totalPrice: { type: Number, required: true },
-    status: { type: String, enum: ['Completed', 'Pending'], required: true },
+    status: {
+      type: String,
+      enum: ['Completed', 'PayOn-Arrival'],
+      required: true
+    },
     hotelDetails: { type: mongoose.Schema.Types.Mixed, required: true }
   },
   { timestamps: true }

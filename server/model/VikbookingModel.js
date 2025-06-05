@@ -37,7 +37,7 @@ const VikBookingSchema = new mongoose.Schema(
     nights: { type: Number },
     status: {
       type: String,
-      enum: ['Completed', 'Pending', 'Cancelled'],
+      enum: ['Completed', 'PayOn-Arrival', 'Cancelled'],
       default: 'Completed'
     }
   },

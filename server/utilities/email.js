@@ -188,8 +188,6 @@ export const sendWelcomeEmail = (email, firstname) => {
   })
 }
 
-// Add this near the top of your file
-
 export const bookingCompletedTemplate = ({
   firstname,
   hotelDetails,
@@ -203,6 +201,56 @@ export const bookingCompletedTemplate = ({
   totalPrice,
   status
 }) => {
+  let formattedCheckInDate = 'N/A'
+  let formattedTime = 'N/A'
+  let formattedCheckOutDate = 'N/A'
+
+  console.log('checkInDate:', checkInDate, typeof checkInDate)
+  console.log('checkInTime:', checkInTime, typeof checkInTime)
+  console.log('checkOutDate:', checkOutDate, typeof checkOutDate)
+
+  function parseTimeTo24Hour (timeStr) {
+    // Example input: "08:00 AM" or "03:45 PM"
+    const [time, modifier] = timeStr.split(' ')
+    let [hours, minutes] = time.split(':').map(Number)
+    if (modifier === 'PM' && hours !== 12) hours += 12
+    if (modifier === 'AM' && hours === 12) hours = 0
+    // Pad hours
+    return `${hours.toString().padStart(2, '0')}:${minutes
+      .toString()
+      .padStart(2, '0')}`
+  }
+
+  try {
+    if (
+      checkInDate &&
+      checkInTime &&
+      /^\d{2}:\d{2}\s?(AM|PM)$/i.test(checkInTime)
+    ) {
+      const isoTime = parseTimeTo24Hour(checkInTime)
+      // checkInDate is already an ISO string with time, but you want to use YOUR time, so strip off the time
+      const datePart = checkInDate.split('T')[0] // "2025-06-05"
+      const dateTimeString = `${datePart}T${isoTime}:00` // e.g. "2025-06-05T08:00:00"
+      const checkInDateTime = new Date(dateTimeString)
+      if (!isNaN(checkInDateTime)) {
+        formattedCheckInDate = checkInDateTime.toLocaleDateString()
+        formattedTime = checkInDateTime.toLocaleTimeString([], {
+          hour: '2-digit',
+          minute: '2-digit'
+        })
+      }
+    }
+
+    if (checkOutDate) {
+      const checkOutDateTime = new Date(checkOutDate)
+      if (!isNaN(checkOutDateTime)) {
+        formattedCheckOutDate = checkOutDateTime.toLocaleDateString()
+      }
+    }
+  } catch (e) {
+    // fallback: keep N/A
+  }
+
   const roomType = hotelDetails?.name || 'BON Hotel'
   const hotelAddress = hotelDetails?.address || ''
   const hotelImage =
@@ -222,7 +270,7 @@ export const bookingCompletedTemplate = ({
           <p style="font-size:18px;">Dear ${firstname},</p>
           <p>
             Thank you for your ${
-              status === 'Completed' ? 'completed' : 'pending'
+              status === 'Completed' ? 'completed' : 'PayOn-Arrival'
             } booking at  <strong>${hotelName}</strong> - <strong>${roomType}</strong>!<br>
             We are delighted to have you stay with us and look forward to providing a wonderful experience.
           </p>
@@ -247,14 +295,11 @@ export const bookingCompletedTemplate = ({
             }
             <tr>
               <td style="padding:6px 0;"><strong>Check-In:</strong></td>
-              <td style="padding:6px 0;">${checkInDate.toLocaleDateString()} (${checkInTime.toLocaleTimeString(
-    [],
-    { hour: '2-digit', minute: '2-digit' }
-  )}</td>
+              <td style="padding:6px 0;">${formattedCheckInDate} (${formattedTime})</td>
             </tr>
             <tr>
               <td style="padding:6px 0;"><strong>Check-Out:</strong></td>
-              <td style="padding:6px 0;">${checkOutDate.toLocaleDateString()}</td>
+              <td style="padding:6px 0;">${formattedCheckOutDate}</td>
             </tr>
             <tr>
               <td style="padding:6px 0;"><strong>Guests:</strong></td>
@@ -317,7 +362,7 @@ export const sendBookingCompletedEmail = async ({
   totalPrice,
   status
 }) => {
-  const subject = `Booking Confirmation – ${hotelDetails?.name || 'BON Hotel'}`
+  const subject = `Booking Confirmation – ${hotelName || 'BON Hotel'}`
   const html = bookingCompletedTemplate({
     firstname,
     hotelDetails,

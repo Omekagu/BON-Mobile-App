@@ -257,7 +257,7 @@ export default function BookingDetails () {
                     color:
                       bookingDetails.status === 'Completed'
                         ? 'green'
-                        : bookingDetails.status === 'Pending'
+                        : bookingDetails.status === 'PayOn-Arrival'
                         ? '#FFA500'
                         : 'red'
                   }
@@ -380,7 +380,7 @@ export default function BookingDetails () {
           ) : null}
 
           {/* Action Buttons */}
-          {bookingDetails.status === 'Pending' ? (
+          {bookingDetails.status === 'PayOn-Arrival' ? (
             <TouchableOpacity
               onPress={() =>
                 router.push({

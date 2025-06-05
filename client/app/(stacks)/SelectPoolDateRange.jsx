@@ -132,7 +132,7 @@ export default function SelectPoolDateRange () {
               bookingData: JSON.stringify(bookingData)
             }
           })
-        } else if (status === 'Pending') {
+        } else if (status === 'PayOn-Arrival') {
           setIsModalVisible(false)
           router.replace({
             pathname: '/Bookings'
@@ -543,7 +543,7 @@ export default function SelectPoolDateRange () {
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => handleBooking('Pending')}
+                onPress={() => handleBooking('PayOn-Arrival')}
                 style={{
                   padding: 15,
                   backgroundColor: '#f8f9fa',
