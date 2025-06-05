@@ -85,9 +85,7 @@ const Login = () => {
   return (
     <KeyboardAwareScrollView contentContainerStyle={styles.container}>
       <Image
-        source={{
-          uri: 'https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg?auto=compress&cs=tinysrgb&w=600'
-        }} // Replace with the actual image path
+        source={require('../../assets/images/home-header-bg-placeholder.jpg')} // Replace with the actual image path
         style={styles.backgroundImage}
       />
       <View style={styles.overlay}>
@@ -114,9 +112,7 @@ const Login = () => {
 
         <View style={styles.profileCard}>
           <Image
-            source={{
-              uri: 'https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg?auto=compress&cs=tinysrgb&w=600'
-            }} // Replace with user avatar if available
+            source={require('../../assets/images/home-header-bg-placeholder.jpg')} // Replace with user avatar if available
             style={styles.avatar}
           />
           <View style={styles.inputContainer}>
@@ -124,7 +120,7 @@ const Login = () => {
             <View style={styles.passwordBox}>
               <TextInput
                 placeholder='Enter Email'
-                placeholderTextColor={'#fff'}
+                placeholderTextColor={'#000'}
                 value={email}
                 onChangeText={setEmail}
                 style={styles.inputField}
@@ -136,7 +132,7 @@ const Login = () => {
               <View style={styles.passwordBox}>
                 <TextInput
                   placeholder='Enter password'
-                  placeholderTextColor={'#fff'}
+                  placeholderTextColor={'#000'}
                   secureTextEntry={secure}
                   value={password}
                   onChangeText={setPassword}

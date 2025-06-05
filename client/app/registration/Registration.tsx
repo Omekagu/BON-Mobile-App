@@ -18,6 +18,7 @@ import Toast from 'react-native-toast-message'
 import BottomSheet from '@gorhom/bottom-sheet'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { useAuth } from '@/hooks/useAuth'
+import { Button } from 'react-native-paper'
 
 // Sample country data
 const COUNTRY_CODES = [
@@ -171,20 +172,29 @@ const Registration: React.FC = () => {
       <KeyboardAwareScrollView contentContainerStyle={styles.container}>
         <View style={styles.bgContainer}>
           <Image
-            source={{
-              uri: 'https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg?auto=compress&cs=tinysrgb&w=600'
-            }}
+            source={require('../../assets/images/home-header-bg-placeholder.jpg')}
             style={styles.backgroundImage}
           />
           <View style={styles.overlay}>
             <View
               style={{
-                marginBottom: 10,
+                marginBottom: 20,
                 flexDirection: 'row',
                 alignItems: 'center'
               }}
             >
-              <Text style={styles.loginTitle}>Create an account. </Text>
+              <Text style={styles.loginTitle}>WELCOME TO BON</Text>
+              <Button
+                mode='contained'
+                onPress={() => router.push('/registration/Login')}
+                style={{
+                  backgroundColor: '#a63932',
+                  marginLeft: 'auto',
+                  borderRadius: 10
+                }}
+              >
+                Login
+              </Button>
             </View>
 
             <View style={styles.profileCard}>
@@ -192,7 +202,7 @@ const Registration: React.FC = () => {
                 <Text style={styles.inputLabel}>Firstname</Text>
                 <View style={styles.passwordBox}>
                   <TextInput
-                    placeholderTextColor={'#fff'}
+                    placeholderTextColor={'#000'}
                     placeholder='Enter your first name'
                     value={firstname}
                     onChangeText={setFirstname}
@@ -202,7 +212,7 @@ const Registration: React.FC = () => {
                 <Text style={styles.inputLabel}>Surname</Text>
                 <View style={styles.passwordBox}>
                   <TextInput
-                    placeholderTextColor={'#fff'}
+                    placeholderTextColor={'#000'}
                     placeholder='Enter your surname'
                     value={surname}
                     onChangeText={setSurname}
@@ -212,7 +222,7 @@ const Registration: React.FC = () => {
                 <Text style={styles.inputLabel}>Email</Text>
                 <View style={styles.passwordBox}>
                   <TextInput
-                    placeholderTextColor={'#fff'}
+                    placeholderTextColor={'#000'}
                     placeholder='Enter email'
                     value={email}
                     onChangeText={setEmail}
@@ -230,7 +240,7 @@ const Registration: React.FC = () => {
                     </Text>
                   </Pressable>
                   <TextInput
-                    placeholderTextColor={'#fff'}
+                    placeholderTextColor={'#000'}
                     placeholder='Enter phone number'
                     value={phoneNumber}
                     maxLength={10}
@@ -243,7 +253,7 @@ const Registration: React.FC = () => {
                 <Text style={styles.inputLabel}>Referral Code</Text>
                 <View style={styles.passwordBox}>
                   <TextInput
-                    placeholderTextColor={'#fff'}
+                    placeholderTextColor={'#000'}
                     placeholder='Enter referral code'
                     value={referralCode}
                     onChangeText={setReferralCode}
@@ -254,7 +264,7 @@ const Registration: React.FC = () => {
                   <Text style={styles.inputLabel}>Password</Text>
                   <View style={styles.passwordBox}>
                     <TextInput
-                      placeholderTextColor={'#fff'}
+                      placeholderTextColor={'#000'}
                       placeholder='Enter password'
                       secureTextEntry={secure}
                       value={password}
@@ -270,13 +280,6 @@ const Registration: React.FC = () => {
                 </View>
                 <TouchableOpacity style={styles.button} onPress={handleSubmit}>
                   <Text style={styles.buttonText}>Sign Up</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => router.push('/registration/Login')}
-                >
-                  <Text style={styles.forgotLink}>
-                    Already have an account? <Text>Login</Text>
-                  </Text>
                 </TouchableOpacity>
               </View>
             </View>

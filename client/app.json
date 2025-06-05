@@ -5,15 +5,20 @@
     "slug": "Bon-hotel",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/Logo.png",
+    "icon": "../client/assets/images/Logo.png",
     "scheme": "bonhotel",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/images/Logo.png",
+      "image": "../client/assets/images/Logo.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "ios": {
+      "splash": {
+        "image": "../client/assets/images/Logo.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#ffffff"
+      },
       "supportsTablet": true,
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "This app needs access to your photo library to allow you to upload a profile picture.",
@@ -36,8 +41,13 @@
       }
     },
     "android": {
+      "splash": {
+        "image": "../client/assets/images/Logo.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#ffffff"
+      },
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/Logo.png",
+        "foregroundImage": "../client/assets/images/Logo.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.anonymous.Bonhotel",
@@ -46,7 +56,7 @@
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/Logo.png"
+      "favicon": "../client/assets/images/Logo.png"
     },
     "plugins": [
       "expo-router",

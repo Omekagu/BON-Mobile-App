@@ -33,35 +33,35 @@ export default function _layout () {
       >
         <Stack.Screen
           name='index'
-          options={{ headerShown: false, animation: 'fade' }}
+          options={{ headerShown: false, animation: 'flip' }}
         />
         <Stack.Screen
           name='registration/WelcomeScreen'
-          options={{ headerShown: false, animation: 'fade' }}
+          options={{ headerShown: false, animation: 'slide_from_bottom' }}
         />
         <Stack.Screen
           name='registration/SignUpScreen'
-          options={{ headerShown: false, animation: 'fade' }}
+          options={{ headerShown: false, animation: 'slide_from_right' }}
         />
         <Stack.Screen
           name='registration/Registration'
-          options={{ headerShown: false, animation: 'fade' }}
+          options={{ headerShown: false, animation: 'slide_from_right' }}
         />
         <Stack.Screen
           name='registration/Login'
-          options={{ headerShown: false, animation: 'fade' }}
+          options={{ headerShown: false, animation: 'slide_from_right' }}
         />
         <Stack.Screen
           name='registration/ForgotPassword'
-          options={{ headerShown: false, animation: 'fade' }}
+          options={{ headerShown: false, animation: 'slide_from_right' }}
         />
         <Stack.Screen
           name='(tabs)'
-          options={{ headerShown: false, animation: 'fade' }}
+          options={{ headerShown: false, animation: 'flip' }}
         />
         <Stack.Screen
           name='(stacks)'
-          options={{ headerShown: false, animation: 'fade' }}
+          options={{ headerShown: false, animation: 'flip' }}
         />
         <Stack.Screen name='[missing]' options={{ title: '404' }} />
       </Stack>
