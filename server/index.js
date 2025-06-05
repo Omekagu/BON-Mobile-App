@@ -72,8 +72,8 @@ io.on('connection', socket => {
 })
 
 // Mongo db Connection
-const mongoUrl =
-  'mongodb+srv://mikecheq5:GMxS40xnuCn8Jwp0@cluster0.sz9xp.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
+const mongoUrl = process.env.MONGODB_URI
+
 mongoose
   .connect(mongoUrl)
   .then(() => {
@@ -108,4 +108,4 @@ testDbConnection(poolASOKORO, 'AsokoroSQL')
 testDbConnection(poolTRANSTELL, 'TranstellSQL')
 testDbConnection(poolIKEJARES, 'IkejaResSQL')
 
-app.listen(5001, console.log('server is up and running '))
+app.listen(process.env.PORT, console.log('server is up and running '))
